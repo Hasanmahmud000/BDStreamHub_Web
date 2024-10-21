@@ -129,7 +129,7 @@
         function loadChannels() {
             // Simulate delay for loading channels
             setTimeout(() => {
-                fetch('https://raw.githubusercontent.com/BDS-Tv/Web-tv/refs/heads/main/Web%20tv.m3u8')
+                fetch('https://raw.githubusercontent.com/BDS-Tv/Web-tv/refs/heads/main/index.html')
                     .then(response => response.text())
                     .then(data => {
                         const lines = data.split('\n');
