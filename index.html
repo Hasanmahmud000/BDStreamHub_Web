@@ -1,328 +1,897 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+  <meta charset="UTF-8" />  
+  <meta name="viewport" content="width=device-width, initial-scale=1" />  
+  <title>CricStreamZone - Live Matches & Upcoming</title>  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.4/lottie.min.js">  
+</script>  
+  <style>  
+  	.menu-dropdown {  
+  position: relative;  
+  display: inline-block;  
+}  
+  
+.menu-toggle {  
+  background: none;  
+  border: none;  
+  font-size: 22px;  
+  color: #0ff;  
+  cursor: pointer;  
+  padding: 5px;  
+  margin-left: 10px;  
+}  
+  
+.dropdown-content {  
+  display: none;  
+  position: absolute;  
+  right: 0;  
+  top: 30px;  
+  background-color: #222;  
+  box-shadow: 0 4px 8px rgba(0,0,0,0.7);  
+  border-radius: 8px;  
+  z-index: 1001;  
+  overflow: hidden;  
+  min-width: 180px;  
+}  
+  
+.dropdown-content a {  
+  color: #fff;  
+  padding: 10px 16px;  
+  display: block;  
+  text-decoration: none;  
+  font-size: 14px;  
+  transition: background 0.3s ease;  
+}  
+  
+.dropdown-content a:hover {  
+  background-color: #0af;  
+}  
+  
+.menu-dropdown:hover .dropdown-content {  
+  display: block;  
+}  
 
-<head>
-    <!-- Navbar -->
-    <div class="navbar">
-        <h1></h1>
-    </div> 
-    
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BDSTREAMHUB GLOBAL</title>
-    <meta name="description" content="ENJOY FREE LIVE IPTV">
-    <meta name="keywords" content="Watch live sports streaming online, including football, basketball, baseball, hockey, and more. Stream your favorite sports teams and events in HD, with no cable subscription required.">
-    <meta name="author" content="HASAN">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <link rel="shortcut icon" type="image/x-icon" href="https://i.postimg.cc/Dfrk7rNN/20241007-050729.png"
+/* Drawer (Side menu) */  
+#drawer {  
+  position: fixed;  
+  top: 0;  
+  left: -600px;  
+  width: 280px;  
+  height: 100%;  
+  background: #111;  
+  z-index: 2000;  
+  padding: 20px;  
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.7);  
+  transition: left 0.3s ease;  
+}  
+#drawer.open {  
+  left: 0;  
+}  
+#drawer h3 {  
+  color: #0af;  
+  margin-bottom: 20px;  
+}  
+#drawer a {  
+  display: block;  
+  color: #fff;  
+  text-decoration: none;  
+  margin-bottom: 12px;  
+  padding: 10px;  
+  border-radius: 6px;  
+  transition: background 0.2s ease;  
+  font-weight: 600;  
+  background: #222;  
+}  
+#drawer a:hover {  
+  background: #0af;  
+  color: #fff;  
+}  
+#drawerClose {  
+  background: none;  
+  color: #ccc;  
+  border: none;  
+  font-size: 22px;  
+  position: absolute;  
+  top: 10px;  
+  right: 15px;  
+  cursor: pointer;  
+}  
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.6.2/dist/plyr.css" />
-    <script src="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@1.1.4/dist/hls.min.js"></script>
-<link rel="me" href="https://t.me/bdstreamhub" />
-<meta name='google-adsense-platform-account' content='ca-host-pub-1556223355139109'/>
-<meta name='google-adsense-platform-domain' content='blogspot.com'/>
-</head>
+/* Backdrop overlay */  
+#drawerOverlay {  
+  display: none;  
+  position: fixed;  
+  top: 0;  
+  left: 0;  
+  height: 100%;  
+  width: 100%;  
+  background: #00000080;  
+  z-index: 1500;  
+}  
+#drawerOverlay.show {  
+  display: block;  
+}  
 
-<body>
-    <!-- Custom Text Section -->
-    <div class="custom-text">
-       <header> 
-        <a href="https://bd-stream-hub-web.vercel.app/"><img src="https://i.postimg.cc/Dfrk7rNN/20241007-050729.png" class="responsive-img" style="width: 200px; height: auto;"></a>
-       </div>
+    body {  
+      margin: 0;  
+      background: #111;  
+      color: #fff;  
+      font-family: 'Segoe UI', sans-serif;  
+    }  
+    nav {  
+      background: #222;  
+      padding: 12px 20px;  
+      display: flex;  
+      align-items: center;  
+      justify-content: space-between;  
+    }  
+    .logo {  
+      font-size: 20px;  
+      font-weight: bold;  
+      color: #0ff;  
+    }  
+    .search-container {  
+      flex: 1;  
+      display: flex;  
+      justify-content: center;  
+    }  
+    .search-container input {  
+      border-radius: 25px;  
+      padding: 8px 15px;  
+      border: none;  
+      outline: none;  
+      width: 70%;  
+      max-width: 300px;  
+      background: #333;  
+      color: #fff;  
+      text-align: center;  
+    }  
+    .notice {  
+      background: yellow;  
+      color: #000;  
+      padding: 10px;  
+      font-weight: bold;  
+      text-align: center;  
+    }  
+  
+    /* সাব-ট্যাব স্টাইল */  
+    .sub-tab-btns {  
+      padding: 8px;  
+      text-align: center;  
+      background: #222;  
+    }  
+    .sub-tab-btns button {  
+      margin: 0 6px;  
+      padding: 6px 14px;  
+      border: none;  
+      border-radius: 5px;  
+      background: #333;  
+      color: #fff;  
+      cursor: pointer;  
+      font-weight: 600;  
+      font-size: 14px;  
+      transition: background 0.3s ease;  
+    }  
+    .sub-tab-btns button:hover {  
+      background: #0af;  
+    }  
+    .sub-tab-btns .active {  
+      background: #0af;  
+    }  
+  
+    /* নিচের বড় ট্যাব স্টাইল */  
+    .bottom-tab-btns {  
+      position: fixed;  
+      bottom: 0;  
+      width: 100%;  
+      background: #222;  
+      display: flex;  
+      justify-content: space-around;  
+      padding: 10px 0;  
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.8);  
+      z-index: 1000;  
+    }  
+    .bottom-tab-btns button {  
+      background: #333;  
+      border: none;  
+      color: #fff;  
+      padding: 12px 20px;  
+      font-size: 16px;  
+      font-weight: 700;  
+      border-radius: 8px;  
+      cursor: pointer;  
+      flex: 1;  
+      margin: 0 8px;  
+      transition: background 0.3s ease;  
+    }  
+    .bottom-tab-btns button.active {  
+      background: #0af;  
+      color: #fff;  
+    }  
+    .bottom-tab-btns button:hover:not(.active) {  
+      background: #555;  
+    }  
+  
+    #match-list {  
+      padding: 10px 10px 70px; /* নিচের ট্যাব স্পেস ফাঁকা রাখলাম */  
+    }  
+    .match {  
+      background: #1a1a1a;  
+      border-radius: 12px;  
+      padding: 15px;  
+      margin-bottom: 15px;  
+      box-shadow: 0 2px 5px rgba(0,0,0,0.5);  
+      transition: transform 0.3s ease, box-shadow 0.3s ease;  
+    }  
+    .match:hover {  
+      box-shadow: 0 0 15px #0af;  
+      transform: scale(1.03);  
+    }  
+    .teams {  
+      display: flex;  
+      align-items: center;  
+      justify-content: center;  
+      font-size: 16px;  
+      font-weight: bold;  
+      margin-bottom: 8px;  
+    }  
+    .teams img {  
+      height: 30px;  
+      width: 30px;  
+      border-radius: 50%;  
+      margin: 0 10px;  
+    }  
+    .match-time {  
+      font-size: 14px;  
+      text-align: center;  
+      margin-bottom: 8px;  
+      color: #bbb;  
+    }  
+    .countdown, .started {  
+      font-size: 15px;  
+      text-align: center;  
+      color: #0f0;  
+      margin-bottom: 10px;  
+    }  
+    .btns {  
+      text-align: center;  
+      margin-top: 10px;  
+    }  
+    .btns a {  
+      background: #08f;  
+      color: #fff;  
+      padding: 6px 12px;  
+      text-decoration: none;  
+      border-radius: 5px;  
+      margin: 0 5px;  
+      display: inline-block;  
+      font-weight: 600;  
+      font-size: 14px;  
+    }  
+    .liveBlink {  
+      display: inline-block;  
+      padding: 6px 10px;  
+      font-weight: 900;  
+      font-size: 10px;  
+      color: white;  
+      background: linear-gradient(45deg, #ff003c, #ff7700, #ff003c);  
+      background-size: 200% 200%;  
+      border-radius: 25px;  
+      animation: gradientPulse 3s ease infinite, blinkOpacity 1.5s infinite;  
+      box-shadow: 0 0 10px #ff003c, 0 0 20px #ff7700;  
+      user-select: none;  
+      text-transform: uppercase;  
+    }  
+    @keyframes blinkOpacity {  
+      0%, 100% { opacity: 1; }  
+      50% { opacity: 0.3; }  
+    }  
+    @keyframes gradientPulse {  
+      0% { background-position: 0% 50%; }  
+      50% { background-position: 100% 50%; }  
+      100% { background-position: 0% 50%; }  
+    }  
+  
+    /* TV & FM আলাদা সেকশন */  
+    #tv-section, #fm-section {  
+      padding: 10px;  
+      font-size: 16px;  
+      color: #ccc;  
+      text-align: center;  
+    }  
+  </style>  
+</head>  
+<body>  
 
-        <div class="header">
+<!-- Drawer / Side Menu -->  
+<div id="drawer">  
+  <button id="drawerClose" onclick="toggleDrawer()">✕</button>  
+  
+  <!-- Logo Section with Image -->
+<div style="text-align: center; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid #333;">
+  <img src="https://i.postimg.cc/3rPWWckN/icon-192.png" alt="CricStreamZone Logo" style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 10px; border: 3px solid #0af;" />
+  <div style="color: #0af; font-size: 18px; font-weight: bold;">CricStreamZone</div>
+  <div style="color: #888; font-size: 12px;">All Sports Live Streaming</div>
+</div>
+  
+  <h3></h3>  
+  <a href="https://t.me/CricStreamZone" target="_blank">📣 Join Telegram</a>  
+  <a href="https://play.google.com/store/apps/details?id=com.genuine.leone" target="_blank">📲 Download NS Player</a>  
+  <a href="#" onclick="showCategory('live'); toggleDrawer();">🏏 Live Matches</a>  
+  <a href="#" onclick="showCategory('tv'); toggleDrawer();">📺 Live TV</a>  
+  <a href="#" onclick="showCategory('fm'); toggleDrawer();">📻 FM Radio</a>  
+</div>  
+<div id="drawerOverlay" onclick="toggleDrawer()"></div>
 
-       <h1></h1>
-        <p class="current-time" id="current-time"></p>
-    </div>
-    <script>
-        // Function to change the iframe source
-        function changeIframeSource(url) {
-            document.getElementById('match-iframe').src = url;
-        }
-
-        // Current time display
-        function updateCurrentTime() {
-            const now = new Date();
-            const currentTime = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = `Current Time: ${currentTime}`;
-        }
-        setInterval(updateCurrentTime, 1000);
-    </script>
-     
-     <br></br>
-     <br></br>
-     <br> </br>
-         <script disable-devtool-auto src='https://cdn.jsdelivr.net/npm/disable-devtool@latest'></script>
-</body>
-</html>
-   
-
-    <!-- Video Player Section -->
-    <div class="video-player">
-        
-        <div id="videoLoading" class="loading">
-            <p>Loading video...</p>
-        </div>
-        <video id="videoPlayer" controls crossorigin playsinline unmuted autoplay>
-            <source id="videoSource" type="application/vnd.apple.mpegurl" src="">
-        </video>
-    </div>
-    <div class="col-md-12">
-<style> 
-.notice-movies{margin-top:3px;background:#C21E56;color:white;position:relative;padding:10px;overflow:hidden;font-family:var(--font-secondary);border-radius:7px}.notice-movies::before{content:'';position:absolute;border-left:17px solid var(--black);border-bottom:17px solid var(--black);border-top:17px solid transparent;border-right:17px solid transparent;left:98px;top:0;z-index:1}.notice-movies::after{content:'Notice:';position:absolute;height:100%;padding:0 6px;line-height:43px;background:Blue;color:white;font-family:var(--font-primary);font-weight:600;left:0;top:0} </style>
-<center>
-     <marquee class="notice-movies" scrollamount="4">
-       *** আসসালামু আলাইকুম | বিডিস্ট্রিমহাব টিভিতে আপনাকে স্বাগতম | শুধু মাত্র লাইভ খেলাগুলো সম্প্রচার করা হবে | দেশী বিদেশী সকল চ্যানেল দেখতে এখনি টেলিগ্রাম জয়েন হয়ে যান | টেলিগ্রাম লিংক (@bdstreamhub) | ধন্যবাদ আমাদের সাথেই থাকুন ***
-     </marquee>
-</center>
-    </div>
-    
-        <div id="channelLoading" class="loading">
-            <p>Loading channels...</p>
-        </div>
-        <div class="channel-buttons" id="channelList" style="display: none;">
-            <!-- Channels will be dynamically loaded here -->
-        </div>
-    </div>
-
-    <script>
-        const video = document.getElementById('videoPlayer');
-        const videoLoading = document.getElementById('videoLoading');
-        const channelLoading = document.getElementById('channelLoading');
-        const channelList = document.getElementById('channelList');
-
-        // Display video loading animation
-        video.addEventListener('waiting', function () {
-            videoLoading.style.display = 'block';
-        });
-
-        video.addEventListener('playing', function () {
-            videoLoading.style.display = 'none';
-        });
-
-        // Load demo video when the page loads
-        document.addEventListener('DOMContentLoaded', function () {
-            const demoVideoUrl = 'https://dzkyvlfyge.erbvr.com/PeaceTvBangla/tracks-v3a1/mono.m3u8';
-            loadVideo(demoVideoUrl);
-
-            // Fetch and load channels
-            loadChannels();
-        });
-
-        function loadVideo(sourceUrl) {
-            if (Hls.isSupported()) {
-                if (window.hls) {
-                    window.hls.destroy();
-                }
-                var hls = new Hls();
-                hls.loadSource(sourceUrl);
-                hls.attachMedia(video);
-                window.hls = hls;
-            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                video.src = sourceUrl;
-            }
-            video.play();
-        }
-
-        function loadChannels() {
-            // Simulate delay for loading channels
-            setTimeout(() => {
-                fetch('https://raw.githubusercontent.com/Hasanmahmud000/Hasan/refs/heads/main/index.html')
-                    .then(response => response.text())
-                    .then(data => {
-                        const lines = data.split('\n');
-                        let channels = [];
-                        let currentChannel = {};
-
-                        lines.forEach(line => {
-                            if (line.startsWith('#EXTINF')) {
-                                const logoMatch = line.match(/tvg-logo="(.*?)"/);
-                                const nameMatch = line.match(/,(.*)/);
-                                if (logoMatch && nameMatch) {
-                                    currentChannel.logo = logoMatch[1];
-                                    currentChannel.name = nameMatch[1];
-                                }
-                            } else if (line.startsWith('http')) {
-                                currentChannel.url = line.trim();
-                                channels.push(currentChannel);
-                                currentChannel = {};
-                            }
-                        });
-
-                        channels.forEach(channel => {
-                            const channelButton = document.createElement('a');
-                            channelButton.href = "#";
-                            channelButton.classList.add('channel-link');
-                            channelButton.setAttribute('data-link', channel.url);
-
-                            const logoImg = document.createElement('img');
-                            logoImg.src = channel.logo;
-                            logoImg.alt = channel.name + ' Logo';
-
-                            channelButton.appendChild(logoImg);
-                            channelList.appendChild(channelButton);
-                        });
-
-                        // Display channels after loading
-                        channelLoading.style.display = 'none';
-                        channelList.style.display = 'flex';
-
-                        // Add event listeners to channel links
-                        document.querySelectorAll('.channel-link').forEach(function (link) {
-                            link.addEventListener('click', function (event) {
-                                event.preventDefault();
-                                const newSource = this.getAttribute('data-link');
-                                loadVideo(newSource);
-                            });
-                        });
-                    });
-            }, 2000); // Simulating a delay for demonstration
-        }
-    </script>
-
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #181818;
-            color: #fff;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Custom Text Styling */
-        .custom-text {
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .custom-text h1 {
-            font-size: 2rem;
-            color: #4CAF50;
-            background-color: #222;
-            padding: 10px;
-            border-radius: 10px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-        }
-
-        .video-player {
-            padding: 20px;
-            border-radius: 15px;
-            margin: 20px 0;
-            background-color: #1a1a1a;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-            width: 100%;
-            max-width: 900px;
-            text-align: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .video-player h2 {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-
-        .video-player video {
-            width: 100%;
-            height: auto;
-            border-radius: 10px;
-            border: 2px solid #4CAF50;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        .loading {
-            font-size: 18px;
-            color: white;
-            background-color: rgba(0, 0, 0, 0.8);
-            padding: 10px;
-            border-radius: 10px;
-            display: block;
-            text-align: center;
-        }
-
-        .channel-list {
-            background-color: #2b2b2b;
-            padding: 20px;
-            border-radius: 10px;
-            width: 100%;
-            max-width: 900px;
-            text-align: center;
-        }
-
-        .channel-list h2 {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-
-        .channel-buttons {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            margin-top: 20px;
-        }
-
-        .channel-buttons a {
-            background-color: #333;
-            width: 100px;
-            height: 100px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 10px;
-            margin: 10px;
-            transition: background-color 0.3s ease;
-            text-decoration: none;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .channel-buttons a img {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-        }
-
-        .channel-buttons a:hover {
-            background-color: #4CAF50;
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.4);
-        }
-
-        @media (max-width: 768px) {
-            .video-player,
-            .channel-list {
-                width: 100%;
-                padding: 10px;
-            }
-
-            .channel-buttons a {
-                width: 80px;
-                height: 80px;
-            }
-
-            .channel-buttons a img {
-                width: 60px;
-                height: 60px;
-            }
-        }
-    </style>
-    <!-- Footer -->
-    <div class="footer">
-        <p>Copyright © 2024-2025 ~ BDSTREAMHUB</p>
-        <p><a href="#"></a><a href="#"></a></p>
+<nav>  
+  <div style="display: flex; align-items: center;">
+    <button onclick="toggleDrawer()" class="menu-toggle">☰</button>
+    <div class="logo">CricStreamZone</div>
   </div>
-    
-</body>
+  <div class="search-container">  
+    <input id="search" type="text" placeholder="Search matches or teams" />  
+  </div>
+</nav>  
+  
+<div class="notice">  
+  <marquee scrollamount="5">Welcome To CricStreamZone ! ⚠️ Attention All Users ! For flawless live sports streaming on your mobile device ! please install the NS Player app now ! Without NS Player, videos may not play properly or could stop unexpectedly ! 📲 Don't miss a single moment — install NS Player today and enjoy uninterrupted live matches ! You can download the app from:  
+Google Play Store or join our Telegram channel for the latest updates and app links:CricStreamZone Telegram ! </marquee>  
+</div>  
+  
+<!-- সাব-ট্যাব শুধুমাত্র Live Category তে দেখাবে -->  
+<div id="subTabs" class="sub-tab-btns" style="display:none;">  
+  <button id="subLive" class="active">Live <span id="countLive"></span></button>  
+  <button id="subToday">Today <span id="countToday"></span></button>  
+  <button id="subUpcoming">Upcoming <span id="countUpcoming"></span></button>  
+</div>  
+  
+<div id="match-list"></div>  
+  
+<!-- TV এবং FM সেকশন -->  
+<div id="tv-section" style="display:none;">  
+  <h2>Live TV Channels</h2>  
+  <p>TV Channel 1 - Link, TV Channel 2 - Link ... (এখানে TV এর লিংক দেখাবে)</p>  
+</div>  
+  
+<div id="fm-section" style="display:none;">  
+  <h2>FM Radio Stations</h2>  
+  <p>FM Station 1 - Link, FM Station 2 - Link ... (এখানে FM এর লিংক দেখাবে)</p>  
+</div>  
+  
+<!-- নিচের বড় ৩টা ট্যাব -->  
+<div class="bottom-tab-btns">  
+  <button id="bottomLive" class="active">  
+    <img src="https://i.postimg.cc/BvWg87Rd/videocam-24dp-E3-E3-E3-FILL0-wght400-GRAD0-opsz24.png" alt="Live Icon" style="vertical-align: middle; margin-right: 6px;" />  
+    Live  
+  </button>  
+    <button id="bottomTV">  
+    <img src="https://i.postimg.cc/K8JDvvxs/live-tv-24dp-E3-E3-E3-FILL0-wght400-GRAD0-opsz24.png" alt="TV Icon" style="vertical-align: middle; margin-right: 6px;" />  
+    TV  
+  </button>  
+  <button id="bottomFM">  
+    <img src="https://i.postimg.cc/YC472jwd/radio-24dp-E3-E3-E3-FILL0-wght400-GRAD0-opsz24.png" alt="FM Icon" style="vertical-align: middle; margin-right: 6px;" />  
+    FM  
+  </button>  
+</div>  
 
+<!-- Telegram Join Popup -->  
+<div id="telegramPopup" style="display:none;">  
+  <div style="position:fixed; top:0; left:0; width:100%; height:100%; background:#000000aa; z-index:9999; display:flex; align-items:center; justify-content:center;">  
+    <div style="background:#222; padding:20px 25px; border-radius:12px; max-width:90%; width:340px; text-align:center; box-shadow:0 0 10px #000;">  
+      <h3 style="color:#0af; margin-bottom:10px;">📣 Join Our Telegram</h3>  
+      <p style="color:#ccc; font-size:14px;">🔔 For live match updates, instant scores, and exclusive stream links —  
+Join our official Telegram channel now!  
+📲 Download the NS Player app for smooth, uninterrupted streaming.</p>  
+      <div style="margin-top:15px;">  
+        <a href="https://t.me/CricStreamZone" target="_blank" style="background:#08f; color:#fff; padding:10px 18px; text-decoration:none; border-radius:8px; display:inline-block; font-weight:600;">Join Now</a>  
+        <button onclick="closeTelegramPopup()" style="margin-left:10px; background:#444; color:#ccc; padding:10px 18px; border:none; border-radius:8px; cursor:pointer;">Later</button>  
+      </div>  
+    </div>  
+  </div>  
+</div>
+
+<script>  
+  // Drawer toggle function
+  function toggleDrawer() {  
+    const drawer = document.getElementById('drawer');  
+    const overlay = document.getElementById('drawerOverlay');  
+    drawer.classList.toggle('open');  
+    overlay.classList.toggle('show');  
+  }
+
+  // Telegram popup functions
+  function closeTelegramPopup() {  
+    document.getElementById('telegramPopup').style.display = 'none';  
+    localStorage.setItem('hideTelegramPopup', 'true');  
+  }  
+  
+  window.addEventListener('load', () => {  
+    const alreadyClosed = localStorage.getItem('hideTelegramPopup');  
+    if (!alreadyClosed) {  
+      setTimeout(() => {  
+        document.getElementById('telegramPopup').style.display = 'block';  
+      }, 5000); // ৫ সেকেন্ড পরে দেখাবে  
+    }  
+  });
+
+  // API url (আপনার গুগল অ্যাপস স্ক্রিপ্ট / API url দিন এখানে)  
+  const matchesApi = "https://script.google.com/macros/s/AKfycbxzx4xcwEGidoxEd7BQshkR9FKHjK5o0p8ukNY4NsKNR0EsShY7eV3MUxA2iXz1V8bmHg/exec";  
+  
+  let matches = [];  
+  let intervals = [];  
+  let currentSubTab = 'live'; // Live Category এর জন্য সাব-ট্যাব  
+  
+  function clearIntervals() {  
+    intervals.forEach(i => clearInterval(i));  
+    intervals = [];  
+  }  
+  
+  function getNow() { return new Date(); }  
+  function getCountdown(t) { return Math.max(0, new Date(t) - getNow()); }  
+  function formatCountdown(ms) {  
+    let s = Math.floor(ms / 1000), m = Math.floor(s / 60), h = Math.floor(m / 60), d = Math.floor(h / 24);  
+    h %= 24; m %= 60; s %= 60;  
+    return `${d}d ${h}h ${m}m ${s}s left`;  
+  }  
+  function formatCountUp(ms) {  
+    let s = Math.floor(ms / 1000), m = Math.floor(s / 60), h = Math.floor(m / 60);  
+    s %= 60; m %= 60;  
+    return `${h > 0 ? h + 'h ' : ''}${m}m ${s}s ago`;  
+  }  
+  
+  function renderMatches(type = 'live') {  
+  clearIntervals();  
+  const now = getNow();  
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());  
+  const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);  
+  
+  const list = document.getElementById('match-list');  
+  list.innerHTML = "";  
+  const filter = document.getElementById('search').value.toLowerCase();  
+  
+  let filteredMatches = matches.filter(m => {  
+  const ct = new Date(m.MatchTime);  
+  const isLive = now >= ct;  
+  
+  if (type === 'live' && !isLive) return false;  
+  
+  else if (type === 'today') {  
+    if (ct < todayStart || ct >= todayEnd || isLive) return false;  
+  }  
+  
+  else if (type === 'upcoming') {  
+    if (ct < now || (ct >= todayStart && ct < todayEnd)) return false;  
+  }  
+  
+  if (filter && !(m.Match.toLowerCase().includes(filter) || m.Team1.toLowerCase().includes(filter) || m.Team2.toLowerCase().includes(filter))) return false;  
+  
+  return true;  
+});  
+  
+// 🔀 এইখানে টাইম অনুযায়ী ছোট থেকে বড় সাজানো হচ্ছে  
+filteredMatches.sort((a, b) => new Date(a.MatchTime) - new Date(b.MatchTime));  
+  
+  if (filteredMatches.length === 0) {  
+  let emojiMessage = '😴 No matches available right now.';  
+  if (type === 'live') emojiMessage = '📴 No live matches at the moment.';  
+  else if (type === 'upcoming') emojiMessage = '🕒 No upcoming matches found.';  
+  else if (type === 'today') emojiMessage = '📅 No matches scheduled for today.';  
+  
+  list.innerHTML = `  
+    <div style="  
+      max-width: 420px;  
+      margin: 40px auto;  
+      padding: 30px 20px;  
+      background: #1e1e1e;  
+      border-radius: 14px;  
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);  
+      color: #ccc;  
+      font-family: 'Segoe UI', sans-serif;  
+      font-size: 1.25rem;  
+      font-weight: 500;  
+      text-align: center;  
+      user-select: none;  
+      display: flex;  
+      align-items: center;  
+      justify-content: center;  
+      gap: 14px;  
+    ">  
+      <span style="font-size: 2.5rem;">${emojiMessage.match(/^(\p{Emoji_Presentation}|\p{Extended_Pictographic})+/u)[0]}</span>  
+      <span>${emojiMessage.replace(/^(\p{Emoji_Presentation}|\p{Extended_Pictographic})+\s*/, '')}</span>  
+    </div>  
+  `;  
+  return;  
+}  
+  
+  filteredMatches.forEach((m, i) => {  
+  const ct = new Date(m.MatchTime);  
+  const isLive = now >= ct;  
+  
+  const div = document.createElement('div');  
+  div.className = "match";  
+  
+  let timerHtml = '';  
+  if (isLive) {  
+    const diffLive = getNow() - ct;  
+    timerHtml = `  
+      <div style="text-align: center; margin: 10px 0;">  
+        <div id="liveAnim${i}" style="width: 60px; height: 60px; margin: 0 auto;"></div>  
+        <div class="countdown" id="cd${type}${i}">Started ${formatCountUp(diffLive)}</div>  
+      </div>  
+    `;  
+  } else {  
+    const dateStr = ct.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });  
+    const timeStr = ct.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });  
+    timerHtml = `  
+      <div class="match-time"> ${dateStr}</div>  
+      <div class="match-time"> ${timeStr}</div>  
+      <div class="countdown" id="cd${type}${i}">⏳ ${formatCountdown(getCountdown(m.MatchTime))}</div>  
+      ${getCountdown(m.MatchTime) <= 15 * 60 * 1000 ? `<div class="coming-soon-anim">⏳ Coming Soon...</div>` : ''}  
+    `;  
+  }  
+  
+  div.innerHTML = `
+  <div style="background: #1a1a28; border-radius: 12px; padding: 16px; max-width: 360px; margin: auto; color: #fff; font-family: 'Segoe UI', sans-serif;">
+
+    <!-- Match Title -->
+    <div style="text-align:center; font-size:15px; font-weight:600; margin-bottom:14px; background:#000; padding:6px 10px; border-radius:8px;">
+      ${m.Match}
+    </div>
+
+    <!-- Teams Row -->
+    <div style="display: flex; justify-content: space-around; align-items: center; margin-bottom: 14px;">
+      <!-- Team 1 -->
+      <div style="display: flex; flex-direction: column; align-items: center; min-width: 90px;">
+        <img src="${m.Team1Logo}" alt="${m.Team1} logo" style="width:40px; height:40px; border-radius:50%;" loading="lazy" />
+        <span style="font-size:15px; font-weight:bold; text-align:center; margin-top:6px;">${m.Team1}</span>
+      </div>
+
+      <!-- VS Center -->
+      <div style="font-weight: bold; color: #0af; font-size:16px;">VS</div>
+
+      <!-- Team 2 -->
+      <div style="display: flex; flex-direction: column; align-items: center; min-width: 90px;">
+        <img src="${m.Team2Logo}" alt="${m.Team2} logo" style="width:40px; height:40px; border-radius:50%;" loading="lazy" />
+        <span style="font-size:15px; font-weight:bold; text-align:center; margin-top:6px;">${m.Team2}</span>
+      </div>
+    </div>
+
+    <!-- Timer -->
+    <div style="text-align:center; font-size:16px; color:#ccc; font-weight:500; margin-bottom:16px;">
+      ${timerHtml || '00:00:00'}
+    </div>
+
+    <!-- Server Buttons -->
+    <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+      ${m.servers && m.servers.length > 0 ? 
+  m.servers.map((server, index) => {
+    const colors = ['#00bcd4', '#009688', '#3f51b5', '#ff5722', '#9c27b0', '#4caf50', '#ff9800'];
+    const bgColor = colors[index % colors.length];
+    return `<a href="${server.link}" target="_blank" rel="noopener noreferrer" style="background:${bgColor}; padding:6px 12px; border-radius:6px; color:#fff; text-decoration:none; font-size:14px; margin:2px;">${server.name}</a>`;
+  }).join('') 
+  : '<span style="color:#888; font-size:12px;">No servers available</span>'
+}
+    </div>
+  </div>
+`;
+  
+  list.appendChild(div);  
+  
+  // ⬇️ এইখানে Lottie animation শুরু হবে live এর জন্য  
+  if (isLive) {  
+    setTimeout(() => {  
+      bodymovin.loadAnimation({  
+        container: document.getElementById('liveAnim' + i),  
+        renderer: 'svg',  
+        loop: true,  
+        autoplay: true,  
+        path: 'https://raw.githubusercontent.com/Hasanmahmud000/HasanTv/refs/heads/main/live-icon.json'  
+      });  
+    }, 0);  
+  }  
+  
+    if (!isLive) {  
+      intervals.push(setInterval(() => {  
+        const cdEl = div.querySelector(`#cd${type}${i}`);  
+        if (cdEl) {  
+          const remain = getCountdown(m.MatchTime);  
+          cdEl.innerText = remain > 0 ? formatCountdown(remain) : "Starting soon";  
+        }  
+      }, 1000));  
+    } else {  
+      intervals.push(setInterval(() => {  
+        const cdEl = div.querySelector(`#cd${type}${i}`);  
+        if (cdEl) {  
+          const diffLive = getNow() - ct;  
+          cdEl.innerText = `Started ${formatCountUp(diffLive)}`;  
+        }  
+      }, 1000));  
+    }  
+  });  
+}  
+  
+  // নিচের বড় ট্যাব হ্যান্ডলার  
+  function showCategory(category) {  
+    // প্রথমে সব ট্যাব হালকা করে দেব  
+    document.getElementById('bottomLive').classList.remove('active');  
+    document.getElementById('bottomTV').classList.remove('active');  
+    document.getElementById('bottomFM').classList.remove('active');  
+  
+    // তারপর সিলেক্টেড ট্যাবে active যোগ করব  
+    document.getElementById('bottom' + category.charAt(0).toUpperCase() + category.slice(1)).classList.add('active');  
+  
+    // সার্চ ইনপুট ফাঁকা করব  
+    document.getElementById('search').value = '';  
+  
+    // সব সেকশন লুকিয়ে দিব  
+    document.getElementById('subTabs').style.display = 'none';  
+    document.getElementById('match-list').style.display = 'none';  
+    document.getElementById('tv-section').style.display = 'none';  
+    document.getElementById('fm-section').style.display = 'none';  
+  
+    if(category === 'live') {  
+      // Live Category এ উপরের সাব-ট্যাব দেখাবো  
+      document.getElementById('subTabs').style.display = 'block';  
+      document.getElementById('match-list').style.display = 'block';  
+      // প্রথমে সাব-ট্যাবে active সেট করে রেন্ডার করবো  
+      currentSubTab = 'live';  
+      setActiveSubTab(currentSubTab);  
+      renderMatches(currentSubTab);  
+    } else if(category === 'tv') {  
+      document.getElementById('tv-section').style.display = 'block';  
+    } else if(category === 'fm') {  
+      document.getElementById('fm-section').style.display = 'block';  
+    }  
+  }  
+  
+  // সাব-ট্যাব হ্যান্ডলার  
+  function setActiveSubTab(subTab) {  
+  document.getElementById('subLive').classList.remove('active');  
+  document.getElementById('subToday').classList.remove('active');   // নতুন Today এর জন্য  
+  document.getElementById('subUpcoming').classList.remove('active');  
+  
+  document.getElementById('sub' + subTab.charAt(0).toUpperCase() + subTab.slice(1)).classList.add('active');  
+}  
+  
+    document.getElementById('bottomLive').addEventListener('click', () => showCategory('live'));  
+  document.getElementById('bottomTV').addEventListener('click', () => showCategory('tv'));  
+  document.getElementById('bottomFM').addEventListener('click', () => showCategory('fm'));  
+  
+  // Sub Tab buttons click  
+document.getElementById('subLive').addEventListener('click', () => {  
+  currentSubTab = 'live';  
+  setActiveSubTab(currentSubTab);  
+  renderMatches(currentSubTab);  
+});  
+  
+document.getElementById('subUpcoming').addEventListener('click', () => {  
+  currentSubTab = 'upcoming';  
+  setActiveSubTab(currentSubTab);  
+  renderMatches(currentSubTab);  
+});  
+  
+// ✅ এই লাইনটা নিচে বসাও  
+document.getElementById('subToday').addEventListener('click', () => {  
+  currentSubTab = 'today';  
+  setActiveSubTab(currentSubTab);  
+  renderMatches(currentSubTab);  
+});  
+  
+  document.getElementById('search').addEventListener('input', () => {  
+    if(document.getElementById('subTabs').style.display === 'block'){  
+      renderMatches(currentSubTab);  
+    }  
+  });  
+  
+  // প্রথমে ডাটা লোড করে Live Category দেখাবে  
+  fetch(matchesApi)  
+  .then(res => res.json())  
+  .then(data => {  
+    matches = data.matches || [];  
+  
+    const now = new Date();  
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());  
+    const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);  
+  
+    // 🔹 সংখ্যাগুলো বের করো  
+    const liveCount = matches.filter(m => new Date(m.MatchTime) <= now).length;  
+    const todayCount = matches.filter(m => {  
+      const ct = new Date(m.MatchTime);  
+      return ct >= todayStart && ct < todayEnd && ct > now;  
+    }).length;  
+    const upcomingCount = matches.filter(m => new Date(m.MatchTime) > todayEnd).length;  
+  
+    // 🔹 UI তে সংখ্যা বসাও  
+    document.getElementById("countLive").innerText = `(${liveCount})`;  
+    document.getElementById("countToday").innerText = `(${todayCount})`;  
+    document.getElementById("countUpcoming").innerText = `(${upcomingCount})`;  
+  
+    // 🔹 ম্যাচগুলোকে ফিল্টার করে সাজাও  
+    const todayMatches = matches.filter(m => {  
+      const ct = new Date(m.MatchTime);  
+      return ct >= todayStart && ct < todayEnd && ct > now;  
+    });  
+  
+    const upcomingMatches = matches.filter(m => {  
+      const ct = new Date(m.MatchTime);  
+      return ct > todayEnd;  
+    });  
+  
+    const liveMatches = matches.filter(m => new Date(m.MatchTime) <= now);  
+  
+    matches = [  
+      ...liveMatches.map(m => ({ ...m, isLive: true })),  
+      ...todayMatches.map(m => ({ ...m, isToday: true })),  
+      ...upcomingMatches.map(m => ({ ...m, isUpcoming: true })),  
+    ];  
+  
+    showCategory('live');  
+  })  
+    .catch(e => {  
+      console.error('Error fetching matches:', e);  
+      document.getElementById('match-list').innerHTML = '<p style="text-align:center; color:#f00;">Failed to load match data.</p>';  
+    });
+
+  // Service Worker for PWA
+  if ('serviceWorker' in navigator) {  
+    navigator.serviceWorker.register('sw.js').then(registration => {  
+  
+      function showUpdatePopup() {  
+        const box = document.createElement('div');  
+        box.innerHTML = "🆕 New version available — <b>Tap to update</b>";  
+        box.style.cssText = `  
+          position: fixed;  
+          bottom: 20px;  
+          left: 50%;  
+          transform: translateX(-50%);  
+          background: #0af;  
+          color: white;  
+          padding: 12px 16px;  
+          border-radius: 30px;  
+          font-weight: bold;  
+          box-shadow: 0 4px 8px rgba(0,0,0,0.3);  
+          z-index: 9999;  
+          cursor: pointer;  
+        `;  
+        box.onclick = () => {  
+          box.remove();  
+          if (registration.waiting) {  
+            registration.waiting.postMessage({ action: "skipWaiting" });  
+          }  
+        };  
+        document.body.appendChild(box);  
+      }  
+  
+      function listenForWaitingSW(reg) {  
+        if (!reg) return;  
+        if (reg.waiting) return showUpdatePopup();  
+  
+        if (reg.installing) {  
+          reg.installing.addEventListener("statechange", function () {  
+            if (this.state === "installed" && navigator.serviceWorker.controller) {  
+              showUpdatePopup();  
+            }  
+          });  
+        }  
+  
+        reg.addEventListener("updatefound", () => {  
+          if (reg.installing) {  
+            reg.installing.addEventListener("statechange", function () {  
+              if (this.state === "installed" && navigator.serviceWorker.controller) {  
+                showUpdatePopup();  
+              }  
+            });  
+          }  
+        });  
+      }  
+  
+      listenForWaitingSW(registration);  
+    });  
+  
+        navigator.serviceWorker.addEventListener("controllerchange", () => {  
+      window.location.reload();  
+    });  
+  }  
+
+  // Touch/Swipe functionality for sub-tabs
+  let touchStartX = 0;
+  let touchEndX = 0;
+  let touchStartY = 0;
+  let touchEndY = 0;
+
+  function handleSwipe() {
+    const deltaX = touchEndX - touchStartX;
+    const deltaY = touchEndY - touchStartY;
+    
+    // Check if horizontal swipe is more significant than vertical
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
+      // Only work when sub-tabs are visible (Live category)
+      if (document.getElementById('subTabs').style.display === 'block') {
+        const subTabs = ['live', 'today', 'upcoming'];
+        const currentIndex = subTabs.indexOf(currentSubTab);
+        
+        if (deltaX > 0) {
+          // Swipe right - go to previous tab
+          if (currentIndex > 0) {
+            const newTab = subTabs[currentIndex - 1];
+            currentSubTab = newTab;
+            setActiveSubTab(currentSubTab);
+            renderMatches(currentSubTab);
+          }
+        } else {
+          // Swipe left - go to next tab
+          if (currentIndex < subTabs.length - 1) {
+            const newTab = subTabs[currentIndex + 1];
+            currentSubTab = newTab;
+            setActiveSubTab(currentSubTab);
+            renderMatches(currentSubTab);
+          }
+        }
+      }
+    }
+  }
+
+  // Touch event listeners
+  document.addEventListener('touchstart', function(e) {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+  }, { passive: true });
+
+  document.addEventListener('touchend', function(e) {
+    touchEndX = e.changedTouches[0].screenX;
+    touchEndY = e.changedTouches[0].screenY;
+    handleSwipe();
+  }, { passive: true });
+
+  // Mouse event listeners for desktop
+  let mouseStartX = 0;
+  let mouseStartY = 0;
+  let isMouseDown = false;
+
+  document.addEventListener('mousedown', function(e) {
+    mouseStartX = e.clientX;
+    mouseStartY = e.clientY;
+    isMouseDown = true;
+  });
+
+  document.addEventListener('mouseup', function(e) {
+    if (isMouseDown) {
+      const deltaX = e.clientX - mouseStartX;
+      const deltaY = e.clientY - mouseStartY;
+      
+      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
+        if (document.getElementById('subTabs').style.display === 'block') {
+          const subTabs = ['live', 'today', 'upcoming'];
+          const currentIndex = subTabs.indexOf(currentSubTab);
+          
+          if (deltaX > 0) {
+            if (currentIndex > 0) {
+              const newTab = subTabs[currentIndex - 1];
+              currentSubTab = newTab;
+              setActiveSubTab(currentSubTab);
+              renderMatches(currentSubTab);
+            }
+          } else {
+            if (currentIndex < subTabs.length - 1) {
+              const newTab = subTabs[currentIndex + 1];
+              currentSubTab = newTab;
+              setActiveSubTab(currentSubTab);
+              renderMatches(currentSubTab);
+            }
+          }
+        }
+      }
+      isMouseDown = false;
+    }
+  });
+
+  document.addEventListener('mouseleave', function() {
+    isMouseDown = false;
+  });
+
+</script>  
+
+  
+</body>  
 </html>
