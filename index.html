@@ -4,114 +4,120 @@
   <meta charset="UTF-8" />  
   <meta name="viewport" content="width=device-width, initial-scale=1" />  
   <title>CricStreamZone - Live Matches & Upcoming</title>  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.4/lottie.min.js">  
-</script>  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.4/lottie.min.js"></script>  
+  <!-- Video.js CSS -->
+  <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet">
+  <!-- HLS.js for HLS support -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <!-- Video.js JavaScript -->
+  <script src="https://vjs.zencdn.net/8.6.1/video.min.js"></script>
+  
   <style>  
-  	.menu-dropdown {  
-  position: relative;  
-  display: inline-block;  
-}  
-  
-.menu-toggle {  
-  background: none;  
-  border: none;  
-  font-size: 22px;  
-  color: #0ff;  
-  cursor: pointer;  
-  padding: 5px;  
-  margin-left: 10px;  
-}  
-  
-.dropdown-content {  
-  display: none;  
-  position: absolute;  
-  right: 0;  
-  top: 30px;  
-  background-color: #222;  
-  box-shadow: 0 4px 8px rgba(0,0,0,0.7);  
-  border-radius: 8px;  
-  z-index: 1001;  
-  overflow: hidden;  
-  min-width: 180px;  
-}  
-  
-.dropdown-content a {  
-  color: #fff;  
-  padding: 10px 16px;  
-  display: block;  
-  text-decoration: none;  
-  font-size: 14px;  
-  transition: background 0.3s ease;  
-}  
-  
-.dropdown-content a:hover {  
-  background-color: #0af;  
-}  
-  
-.menu-dropdown:hover .dropdown-content {  
-  display: block;  
-}  
+    .menu-dropdown {  
+      position: relative;  
+      display: inline-block;  
+    }  
+    
+    .menu-toggle {  
+      background: none;  
+      border: none;  
+      font-size: 22px;  
+      color: #0ff;  
+      cursor: pointer;  
+      padding: 5px;  
+      margin-left: 10px;  
+    }  
+    
+    .dropdown-content {  
+      display: none;  
+      position: absolute;  
+      right: 0;  
+      top: 30px;  
+      background-color: #222;  
+      box-shadow: 0 4px 8px rgba(0,0,0,0.7);  
+      border-radius: 8px;  
+      z-index: 1001;  
+      overflow: hidden;  
+      min-width: 180px;  
+    }  
+    
+    .dropdown-content a {  
+      color: #fff;  
+      padding: 10px 16px;  
+      display: block;  
+      text-decoration: none;  
+      font-size: 14px;  
+      transition: background 0.3s ease;  
+    }  
+    
+    .dropdown-content a:hover {  
+      background-color: #0af;  
+    }  
+    
+    .menu-dropdown:hover .dropdown-content {  
+      display: block;  
+    }  
 
-/* Drawer (Side menu) */  
-#drawer {  
-  position: fixed;  
-  top: 0;  
-  left: -600px;  
-  width: 280px;  
-  height: 100%;  
-  background: #111;  
-  z-index: 2000;  
-  padding: 20px;  
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.7);  
-  transition: left 0.3s ease;  
-}  
-#drawer.open {  
-  left: 0;  
-}  
-#drawer h3 {  
-  color: #0af;  
-  margin-bottom: 20px;  
-}  
-#drawer a {  
-  display: block;  
-  color: #fff;  
-  text-decoration: none;  
-  margin-bottom: 12px;  
-  padding: 10px;  
-  border-radius: 6px;  
-  transition: background 0.2s ease;  
-  font-weight: 600;  
-  background: #222;  
-}  
-#drawer a:hover {  
-  background: #0af;  
-  color: #fff;  
-}  
-#drawerClose {  
-  background: none;  
-  color: #ccc;  
-  border: none;  
-  font-size: 22px;  
-  position: absolute;  
-  top: 10px;  
-  right: 15px;  
-  cursor: pointer;  
-}  
+    /* Drawer (Side menu) */  
+    #drawer {  
+      position: fixed;  
+      top: 0;  
+      left: -600px;  
+      width: 280px;  
+      height: 100%;  
+      background: #111;  
+      z-index: 2000;  
+      padding: 20px;  
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.7);  
+      transition: left 0.3s ease;  
+    }  
+    #drawer.open {  
+      left: 0;  
+    }  
+    #drawer h3 {  
+      color: #0af;  
+      margin-bottom: 20px;  
+    }  
+    #drawer a {  
+      display: block;  
+      color: #fff;  
+      text-decoration: none;  
+      margin-bottom: 12px;  
+      padding: 10px;  
+      border-radius: 6px;  
+      transition: background 0.2s ease;  
+      font-weight: 600;  
+      background: #222;  
+    }  
+    #drawer a:hover {  
+      background: #0af;  
+      color: #fff;  
+    }  
+    #drawerClose {  
+      background: none;  
+      color: #ccc;  
+      border: none;  
+      font-size: 22px;  
+      position: absolute;  
+      top: 10px;  
+      right: 15px;  
+      cursor: pointer;  
+    }  
 
-/* Backdrop overlay */  
-#drawerOverlay {  
-  display: none;  
-  position: fixed;  
-  top: 0;  
-  left: 0;  
-  height: 100%;  
-  width: 100%;  
-  background: #00000080;  
-  z-index: 1500;  
-}  
-#drawerOverlay.show {  
-  display: block;  
-}  
+    /* Backdrop overlay */  
+    #drawerOverlay {  
+      display: none;  
+      position: fixed;  
+      top: 0;  
+      left: 0;  
+      height: 100%;  
+      width: 100%;  
+      background: #00000080;  
+      z-index: 1500;  
+    }  
+    #drawerOverlay.show {  
+      display: block;  
+    }  
 
     body {  
       margin: 0;  
@@ -154,7 +160,7 @@
       font-weight: bold;  
       text-align: center;  
     }  
-  
+
     /* সাব-ট্যাব স্টাইল */  
     .sub-tab-btns {  
       padding: 8px;  
@@ -179,7 +185,7 @@
     .sub-tab-btns .active {  
       background: #0af;  
     }  
-  
+
     /* নিচের বড় ট্যাব স্টাইল */  
     .bottom-tab-btns {  
       position: fixed;  
@@ -212,7 +218,7 @@
     .bottom-tab-btns button:hover:not(.active) {  
       background: #555;  
     }  
-  
+
     #match-list {  
       padding: 10px 10px 70px; /* নিচের ট্যাব স্পেস ফাঁকা রাখলাম */  
     }  
@@ -292,17 +298,276 @@
       50% { background-position: 100% 50%; }  
       100% { background-position: 0% 50%; }  
     }  
-  
+
     /* TV & FM আলাদা সেকশন */  
     #tv-section, #fm-section {  
       padding: 10px;  
       font-size: 16px;  
       color: #ccc;  
       text-align: center;  
-    }  
+    }
+
+    /* Video Player Modal Styles */
+    .video-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 9999;
+      overflow: auto;
+    }
+
+    .video-modal.show {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .video-container {
+      position: relative;
+      width: 95%;
+      max-width: 900px;
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 30px rgba(0, 175, 255, 0.3);
+    }
+
+    .video-header {
+      background: #222;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #0af;
+    }
+
+    .video-title {
+      color: #0af;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .close-btn {
+      background: #ff4444;
+      border: none;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    .close-btn:hover {
+      background: #ff6666;
+    }
+
+    .video-player-wrapper {
+      position: relative;
+      width: 100%;
+      height: 0;
+      padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    }
+
+    .video-player-wrapper video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .server-selector {
+      background: #333;
+      padding: 15px 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .server-btn {
+      background: #555;
+      border: none;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .server-btn.active {
+      background: #0af;
+      transform: scale(1.05);
+    }
+
+    .server-btn:hover:not(.active) {
+      background: #777;
+    }
+
+    .loading-spinner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #0af;
+      font-size: 24px;
+      z-index: 10;
+    }
+
+    .error-message {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #ff4444;
+      text-align: center;
+      font-weight: bold;
+      z-index: 10;
+    }
+
+    /* Custom Video.js styling */
+    .video-js {
+      background-color: #000;
+    }
+
+    .video-js .vjs-big-play-button {
+      background-color: rgba(0, 175, 255, 0.8);
+      border-color: #0af;
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      line-height: 80px;
+      margin-top: -40px;
+      margin-left: -40px;
+    }
+
+    .video-js .vjs-control-bar {
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    }
+
+    .video-js .vjs-progress-control .vjs-progress-holder .vjs-play-progress {
+      background-color: #0af;
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+    	      .video-container {
+        width: 98%;
+        margin: 10px;
+      }
+
+      .video-header {
+        padding: 10px 15px;
+      }
+
+      .video-title {
+        font-size: 16px;
+      }
+
+      .server-selector {
+        padding: 10px 15px;
+      }
+
+      .server-btn {
+        padding: 6px 12px;
+        font-size: 14px;
+      }
+    }
+
+    /* Fullscreen support */
+    .video-js.vjs-fullscreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10000;
+    }
+
+    /* Quality selector */
+    .quality-selector {
+      background: #444;
+      padding: 10px 20px;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .quality-btn {
+      background: #666;
+      border: none;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .quality-btn.active {
+      background: #0af;
+    }
+
+    .quality-label {
+      color: #ccc;
+      font-size: 14px;
+      font-weight: 600;
+    }
   </style>  
 </head>  
 <body>  
+
+<!-- Video Player Modal -->
+<div id="videoModal" class="video-modal">
+  <div class="video-container">
+    <div class="video-header">
+      <div class="video-title" id="videoTitle">Live Stream</div>
+      <button class="close-btn" onclick="closeVideoPlayer()">✕ Close</button>
+    </div>
+    
+    <div class="video-player-wrapper">
+      <div class="loading-spinner" id="loadingSpinner">
+        <div style="animation: spin 1s linear infinite;">⟳</div>
+        <div style="margin-top: 10px; font-size: 14px;">Loading stream...</div>
+      </div>
+      <div class="error-message" id="errorMessage" style="display: none;">
+        <div>❌ Failed to load stream</div>
+        <div style="font-size: 12px; margin-top: 5px;">Please try another server</div>
+      </div>
+      <video
+        id="videoPlayer"
+        class="video-js vjs-default-skin"
+        controls
+        preload="auto"
+        data-setup='{"fluid": true, "responsive": true}'
+        style="display: none;">
+        <p class="vjs-no-js">
+          To view this video please enable JavaScript, and consider upgrading to a web browser that
+          <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>.
+        </p>
+      </video>
+    </div>
+
+    <div class="quality-selector" id="qualitySelector" style="display: none;">
+      <span class="quality-label">Quality:</span>
+      <button class="quality-btn active" data-quality="auto">Auto</button>
+      <button class="quality-btn" data-quality="720p">720p</button>
+      <button class="quality-btn" data-quality="480p">480p</button>
+      <button class="quality-btn" data-quality="360p">360p</button>
+    </div>
+
+    <div class="server-selector" id="serverSelector">
+      <!-- Server buttons will be populated dynamically -->
+    </div>
+  </div>
+</div>
 
 <!-- Drawer / Side Menu -->  
 <div id="drawer">  
@@ -335,8 +600,7 @@
 </nav>  
   
 <div class="notice">  
-  <marquee scrollamount="5">Welcome To CricStreamZone ! ⚠️ Attention All Users ! For flawless live sports streaming on your mobile device ! please install the NS Player app now ! Without NS Player, videos may not play properly or could stop unexpectedly ! 📲 Don't miss a single moment — install NS Player today and enjoy uninterrupted live matches ! You can download the app from:  
-Google Play Store or join our Telegram channel for the latest updates and app links:CricStreamZone Telegram ! </marquee>  
+  <marquee scrollamount="5">Welcome To CricStreamZone ! ⚠️ Built-in NS Player integrated ! No need to download external apps ! 📲 Enjoy seamless live streaming directly in your browser ! Join our Telegram channel for updates: CricStreamZone Telegram ! </marquee>  
 </div>  
   
 <!-- সাব-ট্যাব শুধুমাত্র Live Category তে দেখাবে -->  
@@ -382,7 +646,7 @@ Google Play Store or join our Telegram channel for the latest updates and app li
       <h3 style="color:#0af; margin-bottom:10px;">📣 Join Our Telegram</h3>  
       <p style="color:#ccc; font-size:14px;">🔔 For live match updates, instant scores, and exclusive stream links —  
 Join our official Telegram channel now!  
-📲 Download the NS Player app for smooth, uninterrupted streaming.</p>  
+📲 Built-in NS Player for smooth, uninterrupted streaming.</p>  
       <div style="margin-top:15px;">  
         <a href="https://t.me/CricStreamZone" target="_blank" style="background:#08f; color:#fff; padding:10px 18px; text-decoration:none; border-radius:8px; display:inline-block; font-weight:600;">Join Now</a>  
         <button onclick="closeTelegramPopup()" style="margin-left:10px; background:#444; color:#ccc; padding:10px 18px; border:none; border-radius:8px; cursor:pointer;">Later</button>  
@@ -392,6 +656,12 @@ Join our official Telegram channel now!
 </div>
 
 <script>  
+  // Video Player Variables
+  let currentPlayer = null;
+  let currentHls = null;
+  let currentServers = [];
+  let currentMatchTitle = '';
+
   // Drawer toggle function
   function toggleDrawer() {  
     const drawer = document.getElementById('drawer');  
@@ -399,6 +669,225 @@ Join our official Telegram channel now!
     drawer.classList.toggle('open');  
     overlay.classList.toggle('show');  
   }
+
+  // Video Player Functions
+  function openVideoPlayer(servers, matchTitle) {
+    currentServers = servers;
+    currentMatchTitle = matchTitle;
+    
+    document.getElementById('videoTitle').textContent = matchTitle;
+    document.getElementById('videoModal').classList.add('show');
+    
+    // Populate server selector
+    const serverSelector = document.getElementById('serverSelector');
+    serverSelector.innerHTML = '';
+    
+    servers.forEach((server, index) => {
+      const colors = ['#00bcd4', '#009688', '#3f51b5', '#ff5722', '#9c27b0', '#4caf50', '#ff9800'];
+      const bgColor = colors[index % colors.length];
+      
+      const btn = document.createElement('button');
+      btn.className = 'server-btn';
+      btn.style.backgroundColor = bgColor;
+      btn.textContent = server.name;
+      btn.onclick = () => loadStream(server.link, index);
+      
+      if (index === 0) btn.classList.add('active');
+      
+      serverSelector.appendChild(btn);
+    });
+    
+    // Load first server by default
+    if (servers.length > 0) {
+      loadStream(servers[0].link, 0);
+    }
+    
+    // Prevent body scroll
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeVideoPlayer() {
+    document.getElementById('videoModal').classList.remove('show');
+    
+    // Cleanup video player
+    if (currentPlayer) {
+      currentPlayer.dispose();
+      currentPlayer = null;
+    }
+    
+    if (currentHls) {
+      currentHls.destroy();
+      currentHls = null;
+    }
+    
+    // Reset UI
+    document.getElementById('loadingSpinner').style.display = 'block';
+    document.getElementById('errorMessage').style.display = 'none';
+    document.getElementById('videoPlayer').style.display = 'none';
+    
+    // Restore body scroll
+    document.body.style.overflow = 'auto';
+  }
+
+  function loadStream(streamUrl, serverIndex) {
+    // Update active server button
+    document.querySelectorAll('.server-btn').forEach((btn, index) => {
+      btn.classList.toggle('active', index === serverIndex);
+    });
+    
+    // Show loading
+    document.getElementById('loadingSpinner').style.display = 'block';
+    document.getElementById('errorMessage').style.display = 'none';
+    document.getElementById('videoPlayer').style.display = 'none';
+    
+    // Cleanup previous player
+    if (currentPlayer) {
+      currentPlayer.dispose();
+      currentPlayer = null;
+    }
+    
+    if (currentHls) {
+      currentHls.destroy();
+      currentHls = null;
+    }
+    
+    // Create new video element
+    const videoContainer = document.querySelector('.video-player-wrapper');
+    const oldVideo = document.getElementById('videoPlayer');
+    if (oldVideo) {
+      oldVideo.remove();
+    }
+    
+    const newVideo = document.createElement('video');
+    newVideo.id = 'videoPlayer';
+    newVideo.className = 'video-js vjs-default-skin';
+    newVideo.setAttribute('controls', '');
+    newVideo.setAttribute('preload', 'auto');
+    newVideo.setAttribute('data-setup', '{"fluid": true, "responsive": true}');
+    newVideo.style.display = 'none';
+    
+    videoContainer.appendChild(newVideo);
+    
+    // Initialize Video.js player
+    setTimeout(() => {
+      try {
+        currentPlayer = videojs('videoPlayer', {
+          fluid: true,
+          responsive: true,
+          playbackRates: [0.5, 1, 1.25, 1.5, 2],
+          controls: true,
+          preload: 'auto',
+          html5: {
+            vhs: {
+              overrideNative: true
+            },
+            nativeVideoTracks: false,
+            nativeAudioTracks: false,
+            nativeTextTracks: false
+          }
+        });
+        
+        currentPlayer.ready(() => {
+          loadVideoSource(streamUrl);
+        });
+        
+        currentPlayer.on('error', () => {
+          showError();
+        });
+        
+        currentPlayer.on('loadstart', () => {
+          document.getElementById('loadingSpinner').style.display = 'block';
+        });
+        
+        currentPlayer.on('canplay', () => {
+          document.getElementById('loadingSpinner').style.display = 'none';
+          document.getElementById('errorMessage').style.display = 'none';
+          document.getElementById('videoPlayer').style.display = 'block';
+        });
+        
+      } catch (error) {
+        console.error('Video.js initialization error:', error);
+        showError();
+      }
+    }, 100);
+  }
+
+  function loadVideoSource(streamUrl) {
+    if (!currentPlayer) return;
+    
+    try {
+      // Check if it's an HLS stream
+      if (streamUrl.includes('.m3u8') || streamUrl.includes('m3u8')) {
+        if (Hls.isSupported()) {
+          currentHls = new Hls({
+            enableWorker: true,
+            lowLatencyMode: true,
+            backBufferLength: 90
+          });
+                    currentHls.loadSource(streamUrl);
+          currentHls.attachMedia(currentPlayer.tech().el());
+          
+          currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
+            console.log('HLS manifest loaded');
+            currentPlayer.play().catch(e => console.log('Autoplay prevented:', e));
+          });
+          
+          currentHls.on(Hls.Events.ERROR, (event, data) => {
+            console.error('HLS error:', data);
+            if (data.fatal) {
+              showError();
+            }
+          });
+          
+        } else if (currentPlayer.tech().el().canPlayType('application/vnd.apple.mpegurl')) {
+          // Safari native HLS support
+          currentPlayer.src({
+            src: streamUrl,
+            type: 'application/vnd.apple.mpegurl'
+          });
+        } else {
+          showError();
+        }
+      } else {
+        // Regular video formats
+        const videoType = getVideoType(streamUrl);
+        currentPlayer.src({
+          src: streamUrl,
+          type: videoType
+        });
+      }
+    } catch (error) {
+      console.error('Error loading video source:', error);
+      showError();
+    }
+  }
+
+  function getVideoType(url) {
+    if (url.includes('.mp4')) return 'video/mp4';
+    if (url.includes('.webm')) return 'video/webm';
+    if (url.includes('.ogg')) return 'video/ogg';
+    if (url.includes('.flv')) return 'video/x-flv';
+    if (url.includes('rtmp://')) return 'rtmp/mp4';
+    return 'video/mp4'; // default
+  }
+
+  function showError() {
+    document.getElementById('loadingSpinner').style.display = 'none';
+    document.getElementById('errorMessage').style.display = 'block';
+    document.getElementById('videoPlayer').style.display = 'none';
+  }
+
+  // Quality selector functionality
+  document.querySelectorAll('.quality-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.quality-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      // Here you can implement quality switching logic
+      const quality = btn.dataset.quality;
+      console.log('Quality changed to:', quality);
+    });
+  });
 
   // Telegram popup functions
   function closeTelegramPopup() {  
@@ -568,7 +1057,7 @@ filteredMatches.sort((a, b) => new Date(a.MatchTime) - new Date(b.MatchTime));
   m.servers.map((server, index) => {
     const colors = ['#00bcd4', '#009688', '#3f51b5', '#ff5722', '#9c27b0', '#4caf50', '#ff9800'];
     const bgColor = colors[index % colors.length];
-    return `<a href="${server.link}" target="_blank" rel="noopener noreferrer" style="background:${bgColor}; padding:6px 12px; border-radius:6px; color:#fff; text-decoration:none; font-size:14px; margin:2px;">${server.name}</a>`;
+    return `<button onclick="openVideoPlayer(${JSON.stringify(m.servers).replace(/"/g, '&quot;')}, '${m.Match.replace(/'/g, '\\\'')}')" style="background:${bgColor}; padding:6px 12px; border-radius:6px; color:#fff; border:none; font-size:14px; margin:2px; cursor:pointer; font-weight:600;">${server.name}</button>`;
   }).join('') 
   : '<span style="color:#888; font-size:12px;">No servers available</span>'
 }
@@ -629,8 +1118,7 @@ filteredMatches.sort((a, b) => new Date(a.MatchTime) - new Date(b.MatchTime));
     document.getElementById('match-list').style.display = 'none';  
     document.getElementById('tv-section').style.display = 'none';  
     document.getElementById('fm-section').style.display = 'none';  
-  
-    if(category === 'live') {  
+      if(category === 'live') {  
       // Live Category এ উপরের সাব-ট্যাব দেখাবো  
       document.getElementById('subTabs').style.display = 'block';  
       document.getElementById('match-list').style.display = 'block';  
@@ -890,8 +1378,529 @@ document.getElementById('subToday').addEventListener('click', () => {
     isMouseDown = false;
   });
 
+  // Keyboard shortcuts for video player
+  document.addEventListener('keydown', function(e) {
+    if (document.getElementById('videoModal').classList.contains('show')) {
+      switch(e.key) {
+        case 'Escape':
+          closeVideoPlayer();
+          break;
+        case ' ':
+          e.preventDefault();
+          if (currentPlayer) {
+            if (currentPlayer.paused()) {
+              currentPlayer.play();
+            } else {
+              currentPlayer.pause();
+            }
+          }
+          break;
+        case 'f':
+        case 'F':
+          if (currentPlayer) {
+            if (currentPlayer.isFullscreen()) {
+              currentPlayer.exitFullscreen();
+            } else {
+              currentPlayer.requestFullscreen();
+            }
+          }
+          break;
+        case 'm':
+        case 'M':
+          if (currentPlayer) {
+            currentPlayer.muted(!currentPlayer.muted());
+          }
+          break;
+        case 'ArrowLeft':
+          if (currentPlayer) {
+            currentPlayer.currentTime(currentPlayer.currentTime() - 10);
+          }
+          break;
+        case 'ArrowRight':
+          if (currentPlayer) {
+            currentPlayer.currentTime(currentPlayer.currentTime() + 10);
+          }
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          if (currentPlayer) {
+            currentPlayer.volume(Math.min(1, currentPlayer.volume() + 0.1));
+          }
+          break;
+        case 'ArrowDown':
+          e.preventDefault();
+          if (currentPlayer) {
+            currentPlayer.volume(Math.max(0, currentPlayer.volume() - 0.1));
+          }
+          break;
+      }
+    }
+  });
+
+  // Picture-in-Picture support
+  function togglePiP() {
+    if (currentPlayer && currentPlayer.tech().el()) {
+      const video = currentPlayer.tech().el();
+      if (document.pictureInPictureElement) {
+        document.exitPictureInPicture();
+      } else if (video.requestPictureInPicture) {
+        video.requestPictureInPicture().catch(err => {
+          console.log('PiP not supported or failed:', err);
+        });
+      }
+    }
+  }
+
+  // Add PiP button to video controls (if supported)
+  if ('pictureInPictureEnabled' in document) {
+    // PiP is supported, you can add a button to the video controls
+    console.log('Picture-in-Picture is supported');
+  }
+
+  // Handle orientation change for mobile
+  window.addEventListener('orientationchange', function() {
+    setTimeout(() => {
+      if (currentPlayer) {
+        currentPlayer.trigger('resize');
+      }
+    }, 500);
+  });
+
+  // Add CSS animation for loading spinner
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .video-modal .loading-spinner div:first-child {
+      animation: spin 1s linear infinite;
+    }
+    
+    /* Custom scrollbar for video modal */
+    .video-modal::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .video-modal::-webkit-scrollbar-track {
+      background: #333;
+    }
+    
+    .video-modal::-webkit-scrollbar-thumb {
+      background: #0af;
+      border-radius: 4px;
+    }
+    
+    .video-modal::-webkit-scrollbar-thumb:hover {
+      background: #08d;
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Auto-hide video controls after inactivity
+  let controlsTimeout;
+  function resetControlsTimeout() {
+    if (currentPlayer) {
+      currentPlayer.userActive(true);
+      clearTimeout(controlsTimeout);
+      controlsTimeout = setTimeout(() => {
+        if (currentPlayer && !currentPlayer.paused()) {
+          currentPlayer.userActive(false);
+        }
+      }, 3000);
+    }
+  }
+
+  // Add mouse move listener to video container
+  document.addEventListener('mousemove', function(e) {
+    if (document.getElementById('videoModal').classList.contains('show')) {
+      resetControlsTimeout();
+    }
+  });
+
+  // Network status monitoring
+  function checkNetworkStatus() {
+    if (!navigator.onLine) {
+      if (currentPlayer) {
+        currentPlayer.pause();
+        showError();
+      }
+    }
+  }
+
+  window.addEventListener('online', () => {
+    console.log('Network connection restored');
+    if (currentPlayer && currentPlayer.error()) {
+      // Try to reload the current stream
+            const currentSrc = currentPlayer.currentSrc();
+      if (currentSrc) {
+        loadVideoSource(currentSrc);
+      }
+    }
+  });
+
+  window.addEventListener('offline', () => {
+    console.log('Network connection lost');
+    checkNetworkStatus();
+  });
+
+  // Adaptive bitrate for better streaming
+  function setupAdaptiveBitrate() {
+    if (currentHls) {
+      // Monitor network conditions
+      const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      
+      if (connection) {
+        const updateQuality = () => {
+          const effectiveType = connection.effectiveType;
+          let targetLevel = -1; // Auto by default
+          
+          switch(effectiveType) {
+            case 'slow-2g':
+            case '2g':
+              targetLevel = 0; // Lowest quality
+              break;
+            case '3g':
+              targetLevel = 1; // Medium quality
+              break;
+            case '4g':
+              targetLevel = -1; // Auto (highest available)
+              break;
+          }
+          
+          if (currentHls.levels.length > 0) {
+            currentHls.currentLevel = targetLevel;
+          }
+        };
+        
+        connection.addEventListener('change', updateQuality);
+        updateQuality(); // Set initial quality
+      }
+    }
+  }
+
+  // Error recovery mechanism
+  function setupErrorRecovery() {
+    if (currentHls) {
+      currentHls.on(Hls.Events.ERROR, (event, data) => {
+        if (data.fatal) {
+          switch(data.type) {
+            case Hls.ErrorTypes.NETWORK_ERROR:
+              console.log('Network error, trying to recover...');
+              setTimeout(() => {
+                currentHls.startLoad();
+              }, 1000);
+              break;
+            case Hls.ErrorTypes.MEDIA_ERROR:
+              console.log('Media error, trying to recover...');
+              currentHls.recoverMediaError();
+              break;
+            default:
+              console.log('Fatal error, cannot recover');
+              showError();
+              break;
+          }
+        }
+      });
+    }
+  }
+
+  // Buffer health monitoring
+  function monitorBufferHealth() {
+    if (currentPlayer) {
+      const video = currentPlayer.tech().el();
+      
+      setInterval(() => {
+        if (video && !video.paused && !video.ended) {
+          const buffered = video.buffered;
+          const currentTime = video.currentTime;
+          
+          if (buffered.length > 0) {
+            const bufferEnd = buffered.end(buffered.length - 1);
+            const bufferHealth = bufferEnd - currentTime;
+            
+            // If buffer is low (less than 5 seconds), show loading
+            if (bufferHealth < 5 && !video.seeking) {
+              document.getElementById('loadingSpinner').style.display = 'block';
+            } else {
+              document.getElementById('loadingSpinner').style.display = 'none';
+            }
+          }
+        }
+      }, 1000);
+    }
+  }
+
+  // Enhanced video loading with retry mechanism
+  function loadVideoSourceWithRetry(streamUrl, retryCount = 0) {
+    const maxRetries = 3;
+    
+    if (retryCount >= maxRetries) {
+      showError();
+      return;
+    }
+    
+    try {
+      loadVideoSource(streamUrl);
+      
+      // Set up retry on error
+      if (currentPlayer) {
+        currentPlayer.one('error', () => {
+          console.log(`Stream failed, retry ${retryCount + 1}/${maxRetries}`);
+          setTimeout(() => {
+            loadVideoSourceWithRetry(streamUrl, retryCount + 1);
+          }, 2000 * (retryCount + 1)); // Exponential backoff
+        });
+      }
+      
+    } catch (error) {
+      console.error('Error loading stream:', error);
+      setTimeout(() => {
+        loadVideoSourceWithRetry(streamUrl, retryCount + 1);
+      }, 2000 * (retryCount + 1));
+    }
+  }
+
+  // Update the loadStream function to use retry mechanism
+  function loadStreamWithRetry(streamUrl, serverIndex) {
+    // Update active server button
+    document.querySelectorAll('.server-btn').forEach((btn, index) => {
+      btn.classList.toggle('active', index === serverIndex);
+    });
+    
+    // Show loading
+    document.getElementById('loadingSpinner').style.display = 'block';
+    document.getElementById('errorMessage').style.display = 'none';
+    document.getElementById('videoPlayer').style.display = 'none';
+    
+    // Cleanup previous player
+    if (currentPlayer) {
+      currentPlayer.dispose();
+      currentPlayer = null;
+    }
+    
+    if (currentHls) {
+      currentHls.destroy();
+      currentHls = null;
+    }
+    
+    // Create new video element
+    const videoContainer = document.querySelector('.video-player-wrapper');
+    const oldVideo = document.getElementById('videoPlayer');
+    if (oldVideo) {
+      oldVideo.remove();
+    }
+    
+    const newVideo = document.createElement('video');
+    newVideo.id = 'videoPlayer';
+    newVideo.className = 'video-js vjs-default-skin';
+    newVideo.setAttribute('controls', '');
+    newVideo.setAttribute('preload', 'auto');
+    newVideo.setAttribute('data-setup', '{"fluid": true, "responsive": true}');
+    newVideo.style.display = 'none';
+    
+    videoContainer.appendChild(newVideo);
+    
+    // Initialize Video.js player with enhanced settings
+    setTimeout(() => {
+      try {
+        currentPlayer = videojs('videoPlayer', {
+          fluid: true,
+          responsive: true,
+          playbackRates: [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2],
+          controls: true,
+          preload: 'auto',
+          techOrder: ['html5'],
+          html5: {
+            vhs: {
+              overrideNative: true,
+              enableLowInitialPlaylist: true,
+              smoothQualityChange: true,
+              useBandwidthFromLocalStorage: true
+            },
+            nativeVideoTracks: false,
+            nativeAudioTracks: false,
+            nativeTextTracks: false
+          },
+          plugins: {
+            // Add any Video.js plugins here
+          }
+        });
+        
+        currentPlayer.ready(() => {
+          loadVideoSourceWithRetry(streamUrl);
+          setupAdaptiveBitrate();
+          setupErrorRecovery();
+          monitorBufferHealth();
+        });
+        
+        // Enhanced event handlers
+        currentPlayer.on('loadstart', () => {
+          document.getElementById('loadingSpinner').style.display = 'block';
+        });
+        
+        currentPlayer.on('canplay', () => {
+          document.getElementById('loadingSpinner').style.display = 'none';
+          document.getElementById('errorMessage').style.display = 'none';
+          document.getElementById('videoPlayer').style.display = 'block';
+        });
+        
+        currentPlayer.on('waiting', () => {
+          document.getElementById('loadingSpinner').style.display = 'block';
+        });
+        
+        currentPlayer.on('playing', () => {
+          document.getElementById('loadingSpinner').style.display = 'none';
+        });
+        
+        currentPlayer.on('stalled', () => {
+          console.log('Stream stalled, attempting recovery...');
+          setTimeout(() => {
+            if (currentPlayer && currentPlayer.readyState() < 3) {
+              currentPlayer.load();
+            }
+          }, 3000);
+        });
+        
+        // Add custom controls
+        addCustomControls();
+        
+      } catch (error) {
+        console.error('Video.js initialization error:', error);
+        showError();
+      }
+    }, 100);
+  }
+
+  // Add custom controls to video player
+  function addCustomControls() {
+    if (!currentPlayer) return;
+    
+    // Add PiP button if supported
+    if ('pictureInPictureEnabled' in document) {
+      const pipButton = currentPlayer.controlBar.addChild('button', {
+        text: 'PiP',
+        className: 'vjs-pip-control vjs-control vjs-button'
+      });
+      
+      pipButton.on('click', togglePiP);
+    }
+    
+    // Add server switch button
+    const serverButton = currentPlayer.controlBar.addChild('button', {
+      text: 'Servers',
+      className: 'vjs-server-control vjs-control vjs-button'
+    });
+    
+    serverButton.on('click', () => {
+      const serverSelector = document.getElementById('serverSelector');
+      serverSelector.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+
+  // Performance monitoring
+  function monitorPerformance() {
+    if (currentPlayer) {
+      const video = currentPlayer.tech().el();
+      
+      setInterval(() => {
+        if (video && !video.paused) {
+          const stats = {
+            currentTime: video.currentTime,
+            duration: video.duration,
+            buffered: video.buffered.length > 0 ? video.buffered.end(0) : 0,
+            videoWidth: video.videoWidth,
+            videoHeight: video.videoHeight,
+            playbackRate: video.playbackRate
+          };
+          
+          // Log performance stats (you can send this to analytics)
+          console.log('Video stats:', stats);
+        }
+      }, 10000); // Every 10 seconds
+    }
+  }
+
+  // Update the original loadStream function call in renderMatches
+  // Replace the onclick handler in the server buttons with:
+  function updateServerButtons() {
+    // This function will be called when rendering matches
+    // The onclick handlers are already updated in the renderMatches function
+  }
+
+  // Add volume persistence
+  function saveVolume(volume) {
+    localStorage.setItem('videoVolume', volume);
+  }
+
+  function loadVolume() {
+    const savedVolume = localStorage.getItem('videoVolume');
+    return savedVolume ? parseFloat(savedVolume) : 1.0;
+  }
+
+  // Apply saved volume when player is ready
+  function applySavedSettings() {
+    if (currentPlayer) {
+      const savedVolume = loadVolume();
+      currentPlayer.volume(savedVolume);
+      
+      // Save volume changes
+      currentPlayer.on('volumechange', () => {
+        saveVolume(currentPlayer.volume());
+      });
+    }
+  }
+
+  // Add to the player ready callback
+  function enhancePlayerReady() {
+    if (currentPlayer) {
+      applySavedSettings();
+      monitorPerformance();
+      
+      // Add double-click for fullscreen
+      currentPlayer.on('dblclick', () => {
+        if (currentPlayer.isFullscreen()) {
+          currentPlayer.exitFullscreen();
+        } else {
+          currentPlayer.requestFullscreen();
+        }
+      });
+    }
+  }
+
+  // Update the loadStream function name in the HTML generation
+  // Replace loadStream with loadStreamWithRetry in the renderMatches function
+  
+  // Add this CSS for better video controls
+  const videoStyles = document.createElement('style');
+  videoStyles.textContent = `
+    .vjs-pip-control:before {
+      content: '⧉';
+      font-size: 18px;
+    }
+    
+    .vjs-server-control:before {
+      content: '⚙';
+      font-size: 16px;
+    }
+    
+    .video-js .vjs-control:hover {
+      color: #0af !important;
+    }
+    
+    .video-js .vjs-slider {
+      background-color: rgba(255,255,255,0.3);
+    }
+    
+    .video-js .vjs-volume-level,
+    .video-js .vjs-play-progress {
+      background-color: #0af;
+    }
+  `;
+  document.head.appendChild(videoStyles);
+
 </script>  
 
-  
 </body>  
 </html>
