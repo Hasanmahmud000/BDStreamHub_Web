@@ -4,1468 +4,613 @@
   <meta charset="UTF-8" />  
   <meta name="viewport" content="width=device-width, initial-scale=1" />  
   <title>CricStreamZone - Live Matches & Upcoming</title>  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.4/lottie.min.js"></script>  
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#0af">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.4/lottie.min.js">  
+</script>  
   <style>  
-    :root {
-      --primary-color: #0af;
-      --secondary-color: #08f;
-      --bg-primary: #111;
-      --bg-secondary: #222;
-      --bg-card: #1a1a1a;
-      --text-primary: #fff;
-      --text-secondary: #ccc;
-      --text-muted: #888;
-      --border-color: #333;
-      --success-color: #4caf50;
-      --warning-color: #ff9800;
-      --error-color: #f44336;
-      --shadow: 0 2px 8px rgba(0,0,0,0.3);
-    }
+  	.menu-dropdown {  
+  position: relative;  
+  display: inline-block;  
+}  
+  
+.menu-toggle {  
+  background: none;  
+  border: none;  
+  font-size: 22px;  
+  color: #0ff;  
+  cursor: pointer;  
+  padding: 5px;  
+  margin-left: 10px;  
+}  
+  
+.dropdown-content {  
+  display: none;  
+  position: absolute;  
+  right: 0;  
+  top: 30px;  
+  background-color: #222;  
+  box-shadow: 0 4px 8px rgba(0,0,0,0.7);  
+  border-radius: 8px;  
+  z-index: 1001;  
+  overflow: hidden;  
+  min-width: 180px;  
+}  
+  
+.dropdown-content a {  
+  color: #fff;  
+  padding: 10px 16px;  
+  display: block;  
+  text-decoration: none;  
+  font-size: 14px;  
+  transition: background 0.3s ease;  
+}  
+  
+.dropdown-content a:hover {  
+  background-color: #0af;  
+}  
+  
+.menu-dropdown:hover .dropdown-content {  
+  display: block;  
+}  
 
-    [data-theme="light"] {
-      --bg-primary: #f5f5f5;
-      --bg-secondary: #fff;
-      --bg-card: #fff;
-      --text-primary: #333;
-      --text-secondary: #666;
-      --text-muted: #999;
-      --border-color: #ddd;
-      --shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
+/* Drawer (Side menu) */  
+#drawer {  
+  position: fixed;  
+  top: 0;  
+  left: -600px;  
+  width: 280px;  
+  height: 100%;  
+  background: #111;  
+  z-index: 2000;  
+  padding: 20px;  
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.7);  
+  transition: left 0.3s ease;  
+}  
+#drawer.open {  
+  left: 0;  
+}  
+#drawer h3 {  
+  color: #0af;  
+  margin-bottom: 20px;  
+}  
+#drawer a {  
+  display: block;  
+  color: #fff;  
+  text-decoration: none;  
+  margin-bottom: 12px;  
+  padding: 10px;  
+  border-radius: 6px;  
+  transition: background 0.2s ease;  
+  font-weight: 600;  
+  background: #222;  
+}  
+#drawer a:hover {  
+  background: #0af;  
+  color: #fff;  
+}  
+#drawerClose {  
+  background: none;  
+  color: #ccc;  
+  border: none;  
+  font-size: 22px;  
+  position: absolute;  
+  top: 10px;  
+  right: 15px;  
+  cursor: pointer;  
+}  
 
-    * {
-      box-sizing: border-box;
-    }
+/* Backdrop overlay */  
+#drawerOverlay {  
+  display: none;  
+  position: fixed;  
+  top: 0;  
+  left: 0;  
+  height: 100%;  
+  width: 100%;  
+  background: #00000080;  
+  z-index: 1500;  
+}  
+#drawerOverlay.show {  
+  display: block;  
+}  
 
     body {  
       margin: 0;  
-      background: var(--bg-primary);  
-      color: var(--text-primary);  
+      background: #111;  
+      color: #fff;  
       font-family: 'Segoe UI', sans-serif;  
-      transition: all 0.3s ease;
     }  
-
-    /* Loading Screen */
-    .loading-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: var(--bg-primary);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      transition: opacity 0.5s ease;
-    }
-
-    .loading-screen.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .loading-animation {
-      width: 80px;
-      height: 80px;
-      margin-bottom: 20px;
-    }
-
-    .loading-text {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--primary-color);
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-
-    /* Navigation */
     nav {  
-      background: var(--bg-secondary);  
+      background: #222;  
       padding: 12px 20px;  
       display: flex;  
       align-items: center;  
       justify-content: space-between;  
-      box-shadow: var(--shadow);
-      position: sticky;
-      top: 0;
-      z-index: 100;
     }  
-
-    .nav-left {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .menu-toggle {  
-      background: none;  
-      border: none;  
-      font-size: 22px;  
-      color: var(--primary-color);  
-      cursor: pointer;  
-      padding: 8px;
-      border-radius: 6px;
-      transition: background 0.3s ease;
-    }  
-
-    .menu-toggle:hover {
-      background: var(--border-color);
-    }
-
     .logo {  
       font-size: 20px;  
       font-weight: bold;  
-      color: var(--primary-color);  
+      color: #0ff;  
     }  
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .theme-toggle {
-      background: none;
-      border: none;
-      font-size: 20px;
-      color: var(--text-secondary);
-      cursor: pointer;
-      padding: 8px;
-      border-radius: 6px;
-      transition: all 0.3s ease;
-    }
-
-    .theme-toggle:hover {
-      background: var(--border-color);
-      color: var(--primary-color);
-    }
-
-    .notification-btn {
-      position: relative;
-      background: none;
-      border: none;
-      font-size: 20px;
-      color: var(--text-secondary);
-      cursor: pointer;
-      padding: 8px;
-      border-radius: 6px;
-      transition: all 0.3s ease;
-    }
-
-    .notification-btn:hover {
-      background: var(--border-color);
-      color: var(--primary-color);
-    }
-
-    .notification-badge {
-      position: absolute;
-      top: 2px;
-      right: 2px;
-      background: var(--error-color);
-      color: white;
-      border-radius: 50%;
-      width: 18px;
-      height: 18px;
-      font-size: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-    }
-
-    .favorites-btn {
-      background: none;
-      border: none;
-      font-size: 20px;
-      color: var(--text-secondary);
-      cursor: pointer;
-      padding: 8px;
-      border-radius: 6px;
-      transition: all 0.3s ease;
-    }
-
-    .favorites-btn:hover {
-      background: var(--border-color);
-      color: var(--primary-color);
-    }
-
     .search-container {  
       flex: 1;  
       display: flex;  
       justify-content: center;  
-      max-width: 400px;
-      margin: 0 20px;
     }  
-
-    .search-wrapper {
-      position: relative;
-      width: 100%;
-    }
-
     .search-container input {  
       border-radius: 25px;  
-      padding: 10px 40px 10px 15px;  
-      border: 2px solid var(--border-color);  
-      outline: none;  
-      width: 100%;  
-      background: var(--bg-card);  
-      color: var(--text-primary);  
-      font-size: 14px;
-      transition: all 0.3s ease;
-    }  
-
-    .search-container input:focus {
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(0, 175, 255, 0.1);
-    }
-
-    .search-btn {
-      position: absolute;
-      right: 8px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      color: var(--text-secondary);
-      cursor: pointer;
-      padding: 6px;
-      border-radius: 50%;
-      transition: all 0.3s ease;
-    }
-
-    .search-btn:hover {
-      background: var(--primary-color);
-      color: white;
-    }
-
-    /* Drawer */
-    #drawer {  
-      position: fixed;  
-      top: 0;  
-      left: -320px;  
-      width: 300px;  
-      height: 100%;  
-      background: var(--bg-secondary);  
-      z-index: 2000;  
-      padding: 20px;  
-      box-shadow: 2px 0 20px rgba(0, 0, 0, 0.3);  
-      transition: left 0.3s ease;
-      overflow-y: auto;
-    }  
-
-    #drawer.open {  
-      left: 0;  
-    }  
-
-    .drawer-header {
-      text-align: center;
-      margin-bottom: 25px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .drawer-logo {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      margin-bottom: 10px;
-      border: 3px solid var(--primary-color);
-    }
-
-    .drawer-title {
-      color: var(--primary-color);
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-
-    .drawer-subtitle {
-      color: var(--text-muted);
-      font-size: 12px;
-    }
-
-    #drawer a {  
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: var(--text-primary);  
-      text-decoration: none;  
-      margin-bottom: 8px;  
-      padding: 12px 16px;  
-      border-radius: 8px;  
-      transition: all 0.3s ease;  
-      font-weight: 500;  
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-    }  
-
-    #drawer a:hover {  
-      background: var(--primary-color);  
-      color: white;
-      transform: translateX(5px);
-    }  
-
-    #drawerClose {  
-      background: none;  
-      color: var(--text-secondary);  
+      padding: 8px 15px;  
       border: none;  
-      font-size: 24px;  
-      position: absolute;  
-      top: 15px;  
-      right: 15px;  
-      cursor: pointer;
-      padding: 8px;
-      border-radius: 50%;
-      transition: all 0.3s ease;
-    }  
-
-    #drawerClose:hover {
-      background: var(--error-color);
-      color: white;
-    }
-
-    #drawerOverlay {  
-      display: none;  
-      position: fixed;  
-      top: 0;  
-      left: 0;  
-      height: 100%;  
-      width: 100%;  
-      background: rgba(0,0,0,0.5);  
-      z-index: 1500;  
-      backdrop-filter: blur(2px);
-    }  
-
-    #drawerOverlay.show {  
-      display: block;  
-    }  
-
-    /* Notice Bar */
-    .notice {  
-      background: linear-gradient(45deg, var(--warning-color), #ffc107);  
-      color: #000;  
-      padding: 12px;  
-      font-weight: 600;  
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }  
-
-    .notice-content {
-      animation: marquee 30s linear infinite;
-      white-space: nowrap;
-    }
-
-    @keyframes marquee {
-      0% { transform: translateX(100%); }
-      100% { transform: translateX(-100%); }
-    }
-
-    /* Sub Tabs */
-    .sub-tab-btns {  
-      padding: 12px;  
+      outline: none;  
+      width: 70%;  
+      max-width: 300px;  
+      background: #333;  
+      color: #fff;  
       text-align: center;  
-      background: var(--bg-secondary);
-      border-bottom: 1px solid var(--border-color);
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      flex-wrap: wrap;
     }  
-
+    .notice {  
+      background: yellow;  
+      color: #000;  
+      padding: 10px;  
+      font-weight: bold;  
+      text-align: center;  
+    }  
+  
+    /* সাব-ট্যাব স্টাইল */  
+    .sub-tab-btns {  
+      padding: 8px;  
+      text-align: center;  
+      background: #222;  
+    }  
     .sub-tab-btns button {  
-      padding: 8px 16px;  
-      border: 2px solid var(--border-color);  
-      border-radius: 20px;  
-      background: var(--bg-card);  
-      color: var(--text-primary);  
+      margin: 0 6px;  
+      padding: 6px 14px;  
+      border: none;  
+      border-radius: 5px;  
+      background: #333;  
+      color: #fff;  
       cursor: pointer;  
       font-weight: 600;  
       font-size: 14px;  
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
+      transition: background 0.3s ease;  
     }  
-
     .sub-tab-btns button:hover {  
-      border-color: var(--primary-color);
-      transform: translateY(-2px);
+      background: #0af;  
     }  
-
     .sub-tab-btns .active {  
-      background: var(--primary-color);  
-      color: white;
-      border-color: var(--primary-color);
-      box-shadow: 0 4px 12px rgba(0, 175, 255, 0.3);
+      background: #0af;  
     }  
-
-    .tab-count {
-      background: rgba(255,255,255,0.2);
-      padding: 2px 6px;
-      border-radius: 10px;
-      font-size: 11px;
-      margin-left: 6px;
-    }
-
-    /* Bottom Tabs */
+  
+    /* নিচের বড় ট্যাব স্টাইল */  
     .bottom-tab-btns {  
       position: fixed;  
       bottom: 0;  
       width: 100%;  
-      background: var(--bg-secondary);  
+      background: #222;  
       display: flex;  
       justify-content: space-around;  
-      padding: 8px 0;  
-      box-shadow: 0 -2px 20px rgba(0,0,0,0.2);  
-      z-index: 1000;
-      border-top: 1px solid var(--border-color);
+      padding: 10px 0;  
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.8);  
+      z-index: 1000;  
     }  
-
     .bottom-tab-btns button {  
-      background: none;  
+      background: #333;  
       border: none;  
-      color: var(--text-secondary);  
-      padding: 8px 12px;  
-      font-size: 12px;  
-      font-weight: 600;  
-      border-radius: 12px;  
+      color: #fff;  
+      padding: 12px 20px;  
+      font-size: 16px;  
+      font-weight: 700;  
+      border-radius: 8px;  
       cursor: pointer;  
       flex: 1;  
-      margin: 0 4px;  
-      transition: all 0.3s ease;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
+      margin: 0 8px;  
+      transition: background 0.3s ease;  
     }  
-
     .bottom-tab-btns button.active {  
-      background: var(--primary-color);  
-      color: white;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 175, 255, 0.3);
+      background: #0af;  
+      color: #fff;  
     }  
-
     .bottom-tab-btns button:hover:not(.active) {  
-      background: var(--border-color);
-      color: var(--text-primary);
+      background: #555;  
     }  
-
-    .tab-icon {
-      width: 20px;
-      height: 20px;
-    }
-
-    /* Match List */
+  
     #match-list {  
-      padding: 15px 10px 80px;
-      max-width: 800px;
-      margin: 0 auto;
+      padding: 10px 10px 70px; /* নিচের ট্যাব স্পেস ফাঁকা রাখলাম */  
     }  
-
     .match {  
-      background: var(--bg-card);  
+      background: #1a1a1a;  
       border-radius: 12px;  
-      padding: 16px;  
-      margin-bottom: 12px;  
-      box-shadow: var(--shadow);  
-      transition: all 0.3s ease;
-      border: 1px solid var(--border-color);
-      position: relative;
-      overflow: hidden;
+      padding: 15px;  
+      margin-bottom: 15px;  
+      box-shadow: 0 2px 5px rgba(0,0,0,0.5);  
+      transition: transform 0.3s ease, box-shadow 0.3s ease;  
     }  
-
-    .match::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
     .match:hover {  
-      box-shadow: 0 8px 25px rgba(0, 175, 255, 0.2);  
-      transform: translateY(-4px);
-      border-color: var(--primary-color);
+      box-shadow: 0 0 15px #0af;  
+      transform: scale(1.03);  
     }  
-
-    .match:hover::before {
-      opacity: 1;
-    }
-
-    .match-header {
-      text-align: center;
-            font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 12px;
-      background: var(--bg-primary);
-      padding: 6px 10px;
-      border-radius: 6px;
-      color: var(--primary-color);
-    }
-
     .teams {  
       display: flex;  
       align-items: center;  
-      justify-content: space-between;  
-      margin-bottom: 12px;
-      padding: 0 10px;
+      justify-content: center;  
+      font-size: 16px;  
+      font-weight: bold;  
+      margin-bottom: 8px;  
     }  
-
-    .team {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      flex: 1;
-      max-width: 100px;
-    }
-
-    .team-logo {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: 2px solid var(--border-color);
-      transition: all 0.3s ease;
-      margin-bottom: 6px;
-    }
-
-    .match:hover .team-logo {
-      border-color: var(--primary-color);
-      transform: scale(1.05);
-    }
-
-    .team-name {
-      font-size: 12px;
-      font-weight: bold;
-      text-align: center;
-      color: var(--text-primary);
-    }
-
-    .vs-divider {
-      font-weight: bold;
-      color: var(--primary-color);
-      font-size: 14px;
-      margin: 0 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background: var(--bg-primary);
-      border: 2px solid var(--primary-color);
-    }
-
-    .match-info {
-      text-align: center;
-      margin-bottom: 12px;
-    }
-
+    .teams img {  
+      height: 30px;  
+      width: 30px;  
+      border-radius: 50%;  
+      margin: 0 10px;  
+    }  
     .match-time {  
-      font-size: 12px;  
-      color: var(--text-secondary);  
-      margin-bottom: 4px;
-    }  
-
-    .countdown, .started {  
       font-size: 14px;  
-      font-weight: 600;
-      color: var(--success-color);  
-      margin-bottom: 6px;
+      text-align: center;  
+      margin-bottom: 8px;  
+      color: #bbb;  
     }  
-
-    .live-animation-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 8px 0;
-    }
-
-    .match-status {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-
+    .countdown, .started {  
+      font-size: 15px;  
+      text-align: center;  
+      color: #0f0;  
+      margin-bottom: 10px;  
+    }  
     .btns {  
-      display: flex;
-      justify-content: center;
-      gap: 6px;
-      flex-wrap: wrap;
+      text-align: center;  
+      margin-top: 10px;  
     }  
-
     .btns a {  
-      background: var(--secondary-color);  
-      color: white;  
+      background: #08f;  
+      color: #fff;  
       padding: 6px 12px;  
       text-decoration: none;  
-      border-radius: 6px;  
+      border-radius: 5px;  
+      margin: 0 5px;  
+      display: inline-block;  
       font-weight: 600;  
-      font-size: 12px;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
+      font-size: 14px;  
     }  
-
-    .btns a:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 136, 255, 0.4);
-    }
-
-    .btns a::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      transition: left 0.5s ease;
-    }
-
-    .btns a:hover::before {
-      left: 100%;
-    }
-
-    .server-quality {
-      font-size: 9px;
-      background: var(--success-color);
-      color: white;
-      padding: 2px 4px;
-      border-radius: 3px;
-      margin-left: 4px;
-    }
-
-    /* Empty State */
-    .empty-state {
-      max-width: 400px;
-      margin: 60px auto;
-      padding: 40px 20px;
-      background: var(--bg-card);
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-      text-align: center;
-      border: 1px solid var(--border-color);
-    }
-
-    .empty-icon {
-      font-size: 4rem;
-      margin-bottom: 16px;
-      opacity: 0.7;
-    }
-
-    .empty-title {
-      font-size: 1.2rem;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: var(--text-primary);
-    }
-
-    .empty-subtitle {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-    }
-
-    /* TV & FM Sections */
+    .liveBlink {  
+      display: inline-block;  
+      padding: 6px 10px;  
+      font-weight: 900;  
+      font-size: 10px;  
+      color: white;  
+      background: linear-gradient(45deg, #ff003c, #ff7700, #ff003c);  
+      background-size: 200% 200%;  
+      border-radius: 25px;  
+      animation: gradientPulse 3s ease infinite, blinkOpacity 1.5s infinite;  
+      box-shadow: 0 0 10px #ff003c, 0 0 20px #ff7700;  
+      user-select: none;  
+      text-transform: uppercase;  
+    }  
+    @keyframes blinkOpacity {  
+      0%, 100% { opacity: 1; }  
+      50% { opacity: 0.3; }  
+    }  
+    @keyframes gradientPulse {  
+      0% { background-position: 0% 50%; }  
+      50% { background-position: 100% 50%; }  
+      100% { background-position: 0% 50%; }  
+    }  
+  
+    /* TV & FM আলাদা সেকশন */  
     #tv-section, #fm-section {  
-      padding: 20px;
-      max-width: 800px;
-      margin: 0 auto;
-      padding-bottom: 80px;
-    }  
-
-    .section-header {
-      text-align: center;
-      margin-bottom: 30px;
+      padding: 10px;  
+      font-size: 16px;  
+      color: #ccc;  
+      text-align: center;  
     }
 
-    .section-title {
-      font-size: 2rem;
-      font-weight: bold;
-      color: var(--primary-color);
-      margin-bottom: 8px;
-    }
-
-    .section-subtitle {
-      color: var(--text-secondary);
-      font-size: 1rem;
-    }
-
-    .channel-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 16px;
-      margin-top: 20px;
-    }
-
-    .channel-card {
-      background: var(--bg-card);
-      border-radius: 12px;
-      padding: 20px;
-      border: 1px solid var(--border-color);
-      transition: all 0.3s ease;
-      text-align: center;
-    }
-
-    .channel-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 25px rgba(0, 175, 255, 0.2);
-      border-color: var(--primary-color);
-    }
-
-    .channel-logo {
-      width: 60px;
-      height: 60px;
-      border-radius: 12px;
-      margin: 0 auto 12px;
-      background: var(--bg-primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-    }
-
-    .channel-name {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: var(--text-primary);
-    }
-
-    .channel-description {
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-bottom: 16px;
-    }
-
-    .channel-btn {
-      background: var(--primary-color);
-      color: white;
-      padding: 8px 16px;
-      border: none;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      width: 100%;
-    }
-
-    .channel-btn:hover {
-      background: var(--secondary-color);
-      transform: translateY(-2px);
-    }
-
-    /* Notifications */
-    .notification-panel {
-      position: fixed;
-      top: 70px;
-      right: -350px;
-      width: 320px;
-      height: calc(100vh - 70px);
-      background: var(--bg-secondary);
-      border-left: 1px solid var(--border-color);
-      z-index: 1500;
-      transition: right 0.3s ease;
-      overflow-y: auto;
-      box-shadow: -2px 0 20px rgba(0,0,0,0.1);
-    }
-
-    .notification-panel.open {
-      right: 0;
-    }
-
-    .notification-header {
-      padding: 20px;
-      border-bottom: 1px solid var(--border-color);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .notification-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-
-    .notification-close {
-      background: none;
-      border: none;
-      font-size: 20px;
-      color: var(--text-secondary);
-      cursor: pointer;
-      padding: 4px;
-      border-radius: 4px;
-      transition: all 0.3s ease;
-    }
-
-    .notification-close:hover {
-      background: var(--error-color);
-      color: white;
-    }
-
-    .notification-item {
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--border-color);
-      transition: background 0.3s ease;
-    }
-
-    .notification-item:hover {
-      background: var(--bg-card);
-    }
-
-    .notification-item.unread {
-      background: rgba(0, 175, 255, 0.05);
-      border-left: 3px solid var(--primary-color);
-    }
-
-    .notification-content {
-      font-size: 14px;
-      color: var(--text-primary);
-      margin-bottom: 4px;
-    }
-
-    .notification-time {
-      font-size: 12px;
-      color: var(--text-secondary);
-    }
-
-    /* Popups */
-    .popup-overlay {
+    /* Built-in Video Player Styles */
+    .video-player-modal {
+      display: none;
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.7);
+      background: rgba(0, 0, 0, 0.95);
       z-index: 9999;
-      display: flex;
+      justify-content: center;
       align-items: center;
-      justify-content: center;
-      backdrop-filter: blur(4px);
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s ease;
     }
 
-    .popup-overlay.show {
-      opacity: 1;
-      visibility: visible;
+    .video-player-container {
+      position: relative;
+      width: 95%;
+      max-width: 800px;
+      background: #000;
+      border-radius: 8px;
+      overflow: hidden;
     }
 
-    .popup-content {
-      background: var(--bg-secondary);
-      padding: 30px;
-      border-radius: 16px;
-      max-width: 90%;
-      width: 400px;
-      text-align: center;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-      border: 1px solid var(--border-color);
-      transform: scale(0.8);
-      transition: transform 0.3s ease;
-    }
-
-    .popup-overlay.show .popup-content {
-      transform: scale(1);
-    }
-
-    .popup-icon {
-      font-size: 3rem;
-      margin-bottom: 16px;
-    }
-
-    .popup-title {
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: var(--primary-color);
-      margin-bottom: 12px;
-    }
-
-    .popup-text {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      line-height: 1.5;
-      margin-bottom: 24px;
-    }
-
-    .popup-buttons {
+    .video-player-header {
+      background: #222;
+      padding: 10px 15px;
       display: flex;
-      gap: 12px;
-      justify-content: center;
+      justify-content: space-between;
+      align-items: center;
+      color: #fff;
     }
 
-    .popup-btn {
-      padding: 12px 24px;
+    .close-player {
+      background: #ff4444;
       border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-decoration: none;
-      display: inline-block;
-    }
-
-    .popup-btn.primary {
-      background: var(--primary-color);
       color: white;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
     }
 
-    .popup-btn.primary:hover {
-      background: var(--secondary-color);
-      transform: translateY(-2px);
+    .video-player {
+      width: 100%;
+      height: 300px;
+      background: #000;
     }
 
-    .popup-btn.secondary {
-      background: var(--border-color);
-      color: var(--text-secondary);
-    }
-
-    .popup-btn.secondary:hover {
-      background: var(--text-secondary);
-      color: var(--bg-primary);
-    }
-
-    /* Toast Notifications */
-    .toast {
-      position: fixed;
-      bottom: 100px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--bg-secondary);
-      color: var(--text-primary);
-      padding: 12px 20px;
-      border-radius: 8px;
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border-color);
-      z-index: 10000;
-      opacity: 0;
-      transform: translateX(-50%) translateY(20px);
-      transition: all 0.3s ease;
-    }
-
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    .toast.success {
-      border-left: 4px solid var(--success-color);
-    }
-
-    .toast.error {
-      border-left: 4px solid var(--error-color);
-    }
-
-    .toast.warning {
-      border-left: 4px solid var(--warning-color);
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-      .search-container {
-        margin: 0 10px;
-      }
-
-      .teams {
-        padding: 0 5px;
-      }
-
-      .team {
-        max-width: 80px;
-      }
-
-      .team-logo {
-        width: 35px;
-        height: 35px;
-      }
-
-      .team-name {
-        font-size: 11px;
-      }
-
-      .vs-divider {
-        width: 25px;
-        height: 25px;
-        font-size: 12px;
-        margin: 0 8px;
-      }
-
-      .match {
-        padding: 12px;
-        margin-bottom: 10px;
-      }
-
-      .btns a {
-        padding: 5px 10px;
-        font-size: 11px;
-      }
-
-      .notification-panel {
-        width: 100%;
-        right: -100%;
-      }
-
-      .popup-content {
-        width: 95%;
-        padding: 20px;
-      }
-
-      .channel-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .drawer-header {
-        margin-bottom: 20px;
-        padding-bottom: 15px;
-      }
-
-      .drawer-logo {
-        width: 60px;
-        height: 60px;
+    @media (min-width: 768px) {
+      .video-player {
+        height: 450px;
       }
     }
 
-    @media (max-width: 480px) {
-      nav {
-        padding: 8px 15px;
-      }
-
-      .logo {
-        font-size: 16px;
-      }
-
-      .sub-tab-btns {
-        padding: 8px;
-        gap: 4px;
-      }
-
-      .sub-tab-btns button {
-        padding: 6px 12px;
-        font-size: 12px;
-      }
-
-      .match-header {
-        font-size: 12px;
-        margin-bottom: 10px;
-      }
-
-      .teams {
-        margin-bottom: 10px;
-      }
-
-      .team-name {
-        font-size: 10px;
-      }
-
-      .btns {
-        gap: 4px;
-      }
-
-      .btns a {
-        padding: 4px 8px;
-        font-size: 10px;
-      }
+    .player-controls {
+      background: #333;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
-    /* Animations */
-    @keyframes slideInUp {
-      from {
-        opacity: 0        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .quality-btn {
+      background: #555;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
     }
 
-    @keyframes slideInLeft {
-      from {
-        opacity: 0;
-        transform: translateX(-30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    .match {
-      animation: slideInUp 0.5s ease forwards;
-    }
-
-    .match:nth-child(even) {
-      animation-delay: 0.1s;
-    }
-
-    .match:nth-child(odd) {
-      animation-delay: 0.2s;
-    }
-
-    /* Scrollbar Styling */
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: var(--bg-primary);
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: var(--border-color);
-      border-radius: 3px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--primary-color);
+    .quality-btn.active {
+      background: #0af;
     }
   </style>  
 </head>  
 <body>  
 
-<!-- Loading Screen -->
-<div class="loading-screen" id="loadingScreen">
-  <div class="loading-animation" id="loadingAnimation"></div>
-  <div class="loading-text">CricStreamZone</div>
+<!-- Built-in Video Player Modal -->
+<div id="videoPlayerModal" class="video-player-modal">
+  <div class="video-player-container">
+    <div class="video-player-header">
+      <span id="playerTitle">Live Stream</span>
+      <button class="close-player" onclick="closeVideoPlayer()">✕ Close</button>
+    </div>
+    <video id="mainVideoPlayer" class="video-player" controls autoplay>
+      <source id="videoSource" src="" type="application/x-mpegURL">
+      <source id="videoSourceMp4" src="" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <div class="player-controls">
+      <button class="quality-btn" onclick="changeQuality('auto')">Auto</button>
+      <button class="quality-btn" onclick="changeQuality('720p')">720p</button>
+      <button class="quality-btn" onclick="changeQuality('480p')">480p</button>
+      <button class="quality-btn" onclick="changeQuality('360p')">360p</button>
+    </div>
+  </div>
 </div>
 
 <!-- Drawer / Side Menu -->  
 <div id="drawer">  
   <button id="drawerClose" onclick="toggleDrawer()">✕</button>  
   
-  <div class="drawer-header">
-    <img src="https://i.postimg.cc/3rPWWckN/icon-192.png" alt="CricStreamZone Logo" class="drawer-logo" />
-    <div class="drawer-title">CricStreamZone</div>
-    <div class="drawer-subtitle">All Sports Live Streaming</div>
-  </div>
+  <!-- Logo Section with Image -->
+<div style="text-align: center; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid #333;">
+  <img src="https://i.postimg.cc/3rPWWckN/icon-192.png" alt="CricStreamZone Logo" style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 10px; border: 3px solid #0af;" />
+  <div style="color: #0af; font-size: 18px; font-weight: bold;">CricStreamZone</div>
+  <div style="color: #888; font-size: 12px;">All Sports Live Streaming</div>
+</div>
   
-  <a href="https://t.me/CricStreamZone" target="_blank">
-    <span>📣</span> Join Telegram
-  </a>  
-  <a href="https://play.google.com/store/apps/details?id=com.genuine.leone" target="_blank">
-    <span>📲</span> Download NS Player
-  </a>  
-  <a href="#" onclick="showCategory('live'); toggleDrawer();">
-    <span>🏏</span> Live Matches
-  </a>  
-  <a href="#" onclick="showCategory('tv'); toggleDrawer();">
-    <span>📺</span> Live TV
-  </a>  
-  <a href="#" onclick="showCategory('fm'); toggleDrawer();">
-    <span>📻</span> FM Radio
-  </a>
-  <a href="#" onclick="showSettings(); toggleDrawer();">
-    <span>⚙️</span> Settings
-  </a>
+  <h3></h3>  
+  <a href="https://t.me/CricStreamZone" target="_blank">📣 Join Telegram</a>  
+  <a href="#" onclick="showBuiltInPlayer(); toggleDrawer();">📲 Built-in Player</a>  
+  <a href="#" onclick="showCategory('live'); toggleDrawer();">🏏 Live Matches</a>  
+  <a href="#" onclick="showCategory('tv'); toggleDrawer();">📺 Live TV</a>  
+  <a href="#" onclick="showCategory('fm'); toggleDrawer();">📻 FM Radio</a>  
 </div>  
 <div id="drawerOverlay" onclick="toggleDrawer()"></div>
 
-<!-- Navigation -->
 <nav>  
-  <div class="nav-left">
+  <div style="display: flex; align-items: center;">
     <button onclick="toggleDrawer()" class="menu-toggle">☰</button>
     <div class="logo">CricStreamZone</div>
   </div>
-  
   <div class="search-container">  
-    <div class="search-wrapper">
-      <input id="search" type="text" placeholder="Search matches or teams..." />  
-      <button class="search-btn" onclick="performSearch()">🔍</button>
-    </div>
-  </div>
-
-  <div class="nav-right">
-    <button class="favorites-btn" onclick="showFavorites()" title="Favorites">
-      ❤️
-    </button>
-    <button class="notification-btn" onclick="toggleNotifications()">
-      🔔
-      <span class="notification-badge" id="notificationBadge">3</span>
-    </button>
-    <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">🌙</button>
+    <input id="search" type="text" placeholder="Search matches or teams" />  
   </div>
 </nav>  
-
-<!-- Notice Bar -->
+  
 <div class="notice">  
-  <div class="notice-content">
-    Welcome To CricStreamZone ! ⚠️ Attention All Users ! For flawless live sports streaming on your mobile device ! please install the NS Player app now ! Without NS Player, videos may not play properly or could stop unexpectedly ! 📲 Don't miss a single moment — install NS Player today and enjoy uninterrupted live matches !
-  </div>
+  <marquee scrollamount="5">Welcome To CricStreamZone ! ⚠️ Built-in Player Available ! No need to install external apps ! Our integrated video player supports all stream formats including HLS, MP4, and more ! 📲 Enjoy seamless streaming directly in your browser ! Join our Telegram channel for updates: CricStreamZone Telegram ! </marquee>  
 </div>  
-
-<!-- Sub Tabs -->
+  
+<!-- সাব-ট্যাব শুধুমাত্র Live Category তে দেখাবে -->  
 <div id="subTabs" class="sub-tab-btns" style="display:none;">  
-  <button id="subLive" class="active">
-    🔴 Live <span class="tab-count" id="countLive"></span>
-  </button>  
-  <button id="subToday">
-    📅 Today <span class="tab-count" id="countToday"></span>
-  </button>  
-  <button id="subUpcoming">
-    ⏰ Upcoming <span class="tab-count" id="countUpcoming"></span>
-  </button>  
+  <button id="subLive" class="active">Live <span id="countLive"></span></button>  
+  <button id="subToday">Today <span id="countToday"></span></button>  
+  <button id="subUpcoming">Upcoming <span id="countUpcoming"></span></button>  
 </div>  
-
-<!-- Main Content -->
+  
 <div id="match-list"></div>  
-
-<!-- TV Section -->
+  
+<!-- TV এবং FM সেকশন -->  
 <div id="tv-section" style="display:none;">  
-  <div class="section-header">
-    <div class="section-title">📺 Live TV Channels</div>
-    <div class="section-subtitle">Watch your favorite sports channels live</div>
-  </div>
-  
-  <div class="channel-grid">
-    <div class="channel-card">
-      <div class="channel-logo">🏏</div>
-      <div class="channel-name">Star Sports 1</div>
-      <div class="channel-description">Premium cricket coverage</div>
-      <button class="channel-btn" onclick="openChannel('star-sports-1')">Watch Live</button>
-    </div>
-    
-    <div class="channel-card">
-      <div class="channel-logo">🎾</div>
-      <div class="channel-name">Sony Sports</div>
-      <div class="channel-description">Multi-sport entertainment</div>
-      <button class="channel-btn" onclick="openChannel('sony-sports')">Watch Live</button>
-    </div>
-    
-    <div class="channel-card">
-      <div class="channel-logo">⚽</div>
-      <div class="channel-name">ESPN</div>
-      <div class="channel-description">Global sports network</div>
-      <button class="channel-btn" onclick="openChannel('espn')">Watch Live</button>
-    </div>
-    
-    <div class="channel-card">
-      <div class="channel-logo">🏀</div>
-      <div class="channel-name">Fox Sports</div>
-      <div class="channel-description">American sports coverage</div>
-      <button class="channel-btn" onclick="openChannel('fox-sports')">Watch Live</button>
-    </div>
-  </div>
+  <h2>Live TV Channels</h2>  
+  <p>TV Channel 1 - Link, TV Channel 2 - Link ... (এখানে TV এর লিংক দেখাবে)</p>  
 </div>  
-
-<!-- FM Section -->
-<div id="fm-section" style="display:none;">  
-  <div class="section-header">
-    <div class="section-title">📻 FM Radio Stations</div>
-    <div class="section-subtitle">Listen to live sports commentary</div>
-  </div>
   
-  <div class="channel-grid">
-    <div class="channel-card">
-      <div class="channel-logo">📻</div>
-      <div class="channel-name">BBC Radio 5</div>
-      <div class="channel-description">Sports commentary & news</div>
-      <button class="channel-btn" onclick="openRadio('bbc-radio-5')">Listen Live</button>
-    </div>
-    
-    <div class="channel-card">
-      <div class="channel-logo">🎙️</div>
-      <div class="channel-name">ESPN Radio</div>
-      <div class="channel-description">24/7 sports talk</div>
-      <button class="channel-btn" onclick="openRadio('espn-radio')">Listen Live</button>
-    </div>
-    
-    <div class="channel-card">
-      <div class="channel-logo">📢</div>
-      <div class="channel-name">Sports FM</div>
-      <div class="channel-description">Local sports coverage</div>
-      <button class="channel-btn" onclick="openRadio('sports-fm')">Listen Live</button>
-    </div>
-    
-    <div class="channel-card">
-      <div class="channel-logo">🔊</div>
-      <div class="channel-name">Cricket FM</div>
-      <div class="channel-description">Cricket-focused radio</div>
-      <button class="channel-btn" onclick="openRadio('cricket-fm')">Listen Live</button>
-    </div>
-  </div>
-</div>
-
-<!-- Bottom Tabs -->
+<div id="fm-section" style="display:none;">  
+  <h2>FM Radio Stations</h2>  
+  <p>FM Station 1 - Link, FM Station 2 - Link ... (এখানে FM এর লিংক দেখাবে)</p>  
+</div>  
+  
+<!-- নিচের বড় ৩টা ট্যাব -->  
 <div class="bottom-tab-btns">  
   <button id="bottomLive" class="active">  
-    <img src="https://i.postimg.cc/BvWg87Rd/videocam-24dp-E3-E3-E3-FILL0-wght400-GRAD0-opsz24.png" alt="Live Icon" class="tab-icon" />  
+    <img src="https://i.postimg.cc/BvWg87Rd/videocam-24dp-E3-E3-E3-FILL0-wght400-GRAD0-opsz24.png" alt="Live Icon" style="vertical-align: middle; margin-right: 6px;" />  
     Live  
   </button>  
-  <button id="bottomTV">  
-    <img src="https://i.postimg.cc/K8JDvvxs/live-tv-24dp-E3-E3-E3-FILL0-wght400-GRAD0-opsz24.png" alt="TV Icon" class="tab-icon" />  
+    <button id="bottomTV">  
+    <img src="https://i.postimg.cc/K8JDvvxs/live-tv-24dp-E3-E3-E3-FILL0-wght400-GRAD0-opsz24.png" alt="TV Icon" style="vertical-align: middle; margin-right: 6px;" />  
     TV  
   </button>  
   <button id="bottomFM">  
-    <img src="https://i.postimg.cc/YC472jwd/radio-24dp-E3-E3-E3-FILL0-wght400-GRAD0-opsz24.png" alt="FM Icon" class="tab-icon" />  
+    <img src="https://i.postimg.cc/YC472jwd/radio-24dp-E3-E3-E3-FILL0-wght400-GRAD0-opsz24.png" alt="FM Icon" style="vertical-align: middle; margin-right: 6px;" />  
     FM  
   </button>  
 </div>  
 
-<!-- Notification Panel -->
-<div class="notification-panel" id="notificationPanel">
-  <div class="notification-header">
-    <div class="notification-title">Notifications</div>
-    <button class="notification-close" onclick="toggleNotifications()">✕</button>
-  </div>
-  
-  <div class="notification-item unread">
-    <div class="notification-content"></div>
-    <div class="notification-time"></div>
-  </div>
-  
-  <div class="notification-item unread">
-    <div class="notification-content">📺 New server added for better streaming quality</div>
-    <div class="notification-time">1 hour ago</div>
-  </div>
-  
-  <div class="notification-item">
-    <div class="notification-content">⚡ App updated with new features</div>
-    <div class="notification-time">3 hours ago</div>
-  </div>
-  
-  <div class="notification-item">
-    <div class="notification-content">🎉 Welcome to CricStreamZone!</div>
-    <div class="notification-time">1 day ago</div>
-  </div>
+<!-- Telegram Join Popup -->  
+<div id="telegramPopup" style="display:none;">  
+  <div style="position:fixed; top:0; left:0; width:100%; height:100%; background:#000000aa; z-index:9999; display:flex; align-items:center; justify-content:center;">  
+    <div style="background:#222; padding:20px 25px; border-radius:12px; max-width:90%; width:340px; text-align:center; box-shadow:0 0 10px #000;">  
+      <h3 style="color:#0af; margin-bottom:10px;">📣 Join Our Telegram</h3>  
+      <p style="color:#ccc; font-size:14px;">🔔 For live match updates, instant scores, and exclusive stream links —  
+Join our official Telegram channel now!  
+📲 Our built-in player supports all formats for smooth streaming.</p>  
+      <div style="margin-top:15px;">  
+        <a href="https://t.me/CricStreamZone" target="_blank" style="background:#08f; color:#fff; padding:10px 18px; text-decoration:none; border-radius:8px; display:inline-block; font-weight:600;">Join Now</a>  
+        <button onclick="closeTelegramPopup()" style="margin-left:10px; background:#444; color:#ccc; padding:10px 18px; border:none; border-radius:8px; cursor:pointer;">Later</button>  
+      </div>  
+    </div>  
+  </div>  
 </div>
 
-<!-- Telegram Popup -->  
-<div class="popup-overlay" id="telegramPopup">  
-  <div class="popup-content">
-    <div class="popup-icon">📣</div>
-    <div class="popup-title">Join Our Telegram</div>
-    <div class="popup-text">
-      🔔 For live match updates, instant scores, and exclusive stream links — Join our official Telegram channel now!<br>
-      📲 Download the NS Player app for smooth, uninterrupted streaming.
-    </div>
-    <div class="popup-buttons">
-      <a href="https://t.me/CricStreamZone" target="_blank" class="popup-btn primary">Join Now</a>  
-      <button onclick="closeTelegramPopup()" class="popup-btn secondary">Later</button>  
-    </div>
-  </div>
-</div>
-
-<!-- Update Available Popup -->
-<div class="popup-overlay" id="updatePopup">
-  <div class="popup-content">
-    <div class="popup-icon">🆕</div>
-    <div class="popup-title">Update Available</div>
-    <div class="popup-text">
-      A new version of CricStreamZone is available with improved features and bug fixes.
-    </div>
-    <div class="popup-buttons">
-      <button onclick="updateApp()" class="popup-btn primary">Update Now</button>
-      <button onclick="closeUpdatePopup()" class="popup-btn secondary">Later</button>
-    </div>
-  </div>
-</div>
+<!-- HLS.js Library for HLS support -->
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
 <script>  
-  // Global Variables
-  const matchesApi = "https://script.google.com/macros/s/AKfycbxzx4xcwEGidoxEd7BQshkR9FKHjK5o0p8ukNY4NsKNR0EsShY7eV3MUxA2iXz1V8bmHg/exec";  
-  
-  let matches = [];  
-  let intervals = [];  
-  let currentSubTab = 'live';
-  let favorites = JSON.parse(localStorage.getItem('cricstream_favorites') || '[]');
-  let currentTheme = localStorage.getItem('cricstream_theme') || 'dark';
-  let notifications = JSON.parse(localStorage.getItem('cricstream_notifications') || '[]');
-  let notificationCount = 3;
+  // Built-in Video Player Functions
+  let currentHls = null;
+  let currentStreamUrl = '';
 
-  // Initialize App
-  document.addEventListener('DOMContentLoaded', function() {
-    initializeApp();
-  });
+  function openVideoPlayer(streamUrl, title = 'Live Stream') {
+    currentStreamUrl = streamUrl;
+    document.getElementById('playerTitle').textContent = title;
+    document.getElementById('videoPlayerModal').style.display = 'flex';
+    
+    const video = document.getElementById('mainVideoPlayer');
+    const videoSource = document.getElementById('videoSource');
+    const videoSourceMp4 = document.getElementById('videoSourceMp4');
+    
+    // Clear previous sources
+    video.pause();
+    video.removeAttribute('src');
+    video.load();
+    
+    // Destroy previous HLS instance
+    if (currentHls) {
+      currentHls.destroy();
+      currentHls = null;
+    }
+    
+    // Check if the stream is HLS (.m3u8)
+    if (streamUrl.includes('.m3u8') || streamUrl.includes('m3u8')) {
+      if (Hls.isSupported()) {
+        currentHls = new Hls({
+          enableWorker: true,
+          lowLatencyMode: true,
+          backBufferLength: 90
+        });
+        
+        currentHls.loadSource(streamUrl);
+        currentHls.attachMedia(video);
+        
+        currentHls.on(Hls.Events.MANIFEST_PARSED, function() {
+          video.play().catch(e => console.log('Autoplay prevented:', e));
+        });
+        
+        currentHls.on(Hls.Events.ERROR, function(event, data) {
+          console.error('HLS Error:', data);
+          if (data.fatal) {
+            fallbackToNativePlayer(streamUrl, video);
+          }
+        });
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        // Native HLS support (Safari)
+        videoSource.src = streamUrl;
+        video.load();
+        video.play().catch(e => console.log('Autoplay prevented:', e));
+      } else {
+        fallbackToNativePlayer(streamUrl, video);
+      }
+    } else {
+      // Regular MP4 or other formats
+      videoSourceMp4.src = streamUrl;
+      video.load();
+      video.play().catch(e => console.log('Autoplay prevented:', e));
+    }
+  }
 
-  function initializeApp() {
-    // Show loading screen
-    showLoadingScreen();
-    
-    // Set theme
-    setTheme(currentTheme);
-    
-    // Load Lottie animation for loading
-    bodymovin.loadAnimation({
-      container: document.getElementById('loadingAnimation'),
-      renderer: 'svg',
-      loop: true,
-      autoplay: true,
-      path: 'https://raw.githubusercontent.com/Hasanmahmud000/HasanTv/refs/heads/main/live-icon.json'
+  function fallbackToNativePlayer(streamUrl, video) {
+    // Fallback to native video player
+    video.src = streamUrl;
+    video.load();
+    video.play().catch(e => {
+      console.log('Fallback autoplay prevented:', e);
+      // Show user-friendly message
+      alert('Please click play button to start the stream');
     });
-
-    // Load matches data
-    loadMatches();
-    
-    // Setup event listeners
-    setupEventListeners();
-    
-    // Show telegram popup after delay
-    setTimeout(showTelegramPopup, 5000);
-    
-    // Hide loading screen after 2 seconds
-    setTimeout(hideLoadingScreen, 2000);
   }
 
-  function showLoadingScreen() {
-    document.getElementById('loadingScreen').classList.remove('hidden');
-  }
-
-  function hideLoadingScreen() {
-    document.getElementById('loadingScreen').classList.add('hidden');
-  }
-
-  function setupEventListeners() {
-    // Bottom tab listeners
-    document.getElementById('bottomLive').addEventListener('click', () => showCategory('live'));  
-    document.getElementById('bottomTV').addEventListener('click', () => showCategory('tv'));  
-    document.getElementById('bottomFM').addEventListener('click', () => showCategory('fm'));  
+  function closeVideoPlayer() {
+    const video = document.getElementById('mainVideoPlayer');
+    video.pause();
+    video.removeAttribute('src');
+    video.load();
     
-    // Sub tab listeners
-    document.getElementById('subLive').addEventListener('click', () => switchSubTab('live'));  
-    document.getElementById('subToday').addEventListener('click', () => switchSubTab('today'));  
-    document.getElementById('subUpcoming').addEventListener('click', () => switchSubTab('upcoming'));  
+    if (currentHls) {
+      currentHls.destroy();
+      currentHls = null;
+    }
     
-    // Search listener
-    document.getElementById('search').addEventListener('input', handleSearch);
+    document.getElementById('videoPlayerModal').style.display = 'none';
+  }
+
+  function changeQuality(quality) {
+    // Remove active class from all quality buttons
+    document.querySelectorAll('.quality-btn').forEach(btn => btn.classList.remove('active'));
     
-    // Touch/Swipe listeners
-    setupSwipeListeners();
+    // Add active class to clicked button
+    event.target.classList.add('active');
+    
+    // Here you can implement quality change logic
+    // For now, it just restarts the stream
+    if (currentStreamUrl) {
+      openVideoPlayer(currentStreamUrl, document.getElementById('playerTitle').textContent);
+    }
   }
 
-  // Theme Management
-  function toggleTheme() {
-    currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    setTheme(currentTheme);
-    localStorage.setItem('cricstream_theme', currentTheme);
-    showToast(`Switched to ${currentTheme} theme`, 'success');
+  function showBuiltInPlayer() {
+    const testUrl = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+    openVideoPlayer(testUrl, 'Test Stream - Built-in Player');
   }
 
-  function setTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-        const themeToggle = document.getElementById('themeToggle');
-    themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+  // Enhanced stream link handler
+  function handleStreamLink(streamUrl, title) {
+    // Check if it's a valid stream URL
+    if (!streamUrl || streamUrl === '#') {
+      alert('Stream link not available');
+      return;
+    }
+    
+    // Use built-in player for all streams
+    openVideoPlayer(streamUrl, title);
   }
 
-  // Drawer Management
+  // Drawer toggle function
   function toggleDrawer() {  
     const drawer = document.getElementById('drawer');  
     const overlay = document.getElementById('drawerOverlay');  
@@ -1473,395 +618,28 @@
     overlay.classList.toggle('show');  
   }
 
-  // Notification Management
-  function toggleNotifications() {
-    const panel = document.getElementById('notificationPanel');
-    panel.classList.toggle('open');
-    
-    if (panel.classList.contains('open')) {
-      // Mark notifications as read
-      setTimeout(() => {
-        document.querySelectorAll('.notification-item.unread').forEach(item => {
-          item.classList.remove('unread');
-        });
-        updateNotificationBadge(0);
-      }, 1000);
-    }
-  }
-
-  function updateNotificationBadge(count) {
-    const badge = document.getElementById('notificationBadge');
-    if (count > 0) {
-      badge.textContent = count;
-      badge.style.display = 'flex';
-    } else {
-      badge.style.display = 'none';
-    }
-    notificationCount = count;
-  }
-
-  // Toast Notifications
-  function showToast(message, type = 'success') {
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-    toast.textContent = message;
-    document.body.appendChild(toast);
-    
-    setTimeout(() => toast.classList.add('show'), 100);
-    setTimeout(() => {
-      toast.classList.remove('show');
-      setTimeout(() => document.body.removeChild(toast), 300);
-    }, 3000);
-  }
-
-  // Favorites Management
-  function toggleFavorite(matchId) {
-    const index = favorites.indexOf(matchId);
-    if (index > -1) {
-      favorites.splice(index, 1);
-      showToast('Removed from favorites', 'warning');
-    } else {
-      favorites.push(matchId);
-      showToast('Added to favorites', 'success');
-    }
-    localStorage.setItem('cricstream_favorites', JSON.stringify(favorites));
-    
-    // Update UI
-    const btn = document.querySelector(`[data-match-id="${matchId}"] .favorite-btn`);
-    if (btn) {
-      btn.classList.toggle('active');
-    }
-  }
-
-  function showFavorites() {
-    const favoriteMatches = matches.filter(m => favorites.includes(m.id || m.Match));
-    if (favoriteMatches.length === 0) {
-      showEmptyState('❤️', 'No Favorites Yet', 'Add matches to your favorites to see them here');
-      return;
-    }
-    renderCustomMatches(favoriteMatches, 'Your Favorite Matches');
-  }
-
-  // Search Functionality
-  function handleSearch() {
-    if (document.getElementById('subTabs').style.display === 'block') {
-      renderMatches(currentSubTab);
-    }
-  }
-
-  function performSearch() {
-    const query = document.getElementById('search').value.trim();
-    if (query) {
-      showToast(`Searching for "${query}"...`, 'success');
-      handleSearch();
-    }
-  }
-
-  // Category Management
-  function showCategory(category) {  
-    // Update active tab
-    document.querySelectorAll('.bottom-tab-btns button').forEach(btn => {
-      btn.classList.remove('active');
-    });
-    document.getElementById('bottom' + category.charAt(0).toUpperCase() + category.slice(1)).classList.add('active');  
-  
-    // Clear search
-    document.getElementById('search').value = '';  
-  
-    // Hide all sections
-    document.getElementById('subTabs').style.display = 'none';  
-    document.getElementById('match-list').style.display = 'none';  
-    document.getElementById('tv-section').style.display = 'none';  
-    document.getElementById('fm-section').style.display = 'none';  
-  
-    if (category === 'live') {  
-      document.getElementById('subTabs').style.display = 'flex';  
-      document.getElementById('match-list').style.display = 'block';  
-      currentSubTab = 'live';  
-      setActiveSubTab(currentSubTab);  
-      renderMatches(currentSubTab);  
-    } else if (category === 'tv') {  
-      document.getElementById('tv-section').style.display = 'block';  
-    } else if (category === 'fm') {  
-      document.getElementById('fm-section').style.display = 'block';  
-    }  
+  // Telegram popup functions
+  function closeTelegramPopup() {  
+    document.getElementById('telegramPopup').style.display = 'none';  
+    localStorage.setItem('hideTelegramPopup', 'true');  
   }  
-
-  function switchSubTab(subTab) {
-    currentSubTab = subTab;
-    setActiveSubTab(currentSubTab);
-    renderMatches(currentSubTab);
-  }
-
-  function setActiveSubTab(subTab) {  
-    document.querySelectorAll('.sub-tab-btns button').forEach(btn => {
-      btn.classList.remove('active');
-    });
-    document.getElementById('sub' + subTab.charAt(0).toUpperCase() + subTab.slice(1)).classList.add('active');  
-  }  
-
-  // Match Loading and Rendering
-  function loadMatches() {
-    fetch(matchesApi)  
-    .then(res => res.json())  
-    .then(data => {  
-      matches = data.matches || [];  
-      
-      // Add unique IDs if not present
-      matches.forEach((match, index) => {
-        if (!match.id) {
-          match.id = `match_${index}_${Date.now()}`;
-        }
-      });
-
-      updateMatchCounts();
-      showCategory('live');  
-    })  
-    .catch(e => {  
-      console.error('Error fetching matches:', e);  
-      showEmptyState('❌', 'Failed to Load', 'Unable to fetch match data. Please check your connection.');
-    });
-  }
-
-  function updateMatchCounts() {
-    const now = new Date();  
-    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());  
-    const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);  
   
-    const liveCount = matches.filter(m => new Date(m.MatchTime) <= now).length;  
-    const todayCount = matches.filter(m => {  
-      const ct = new Date(m.MatchTime);  
-      return ct >= todayStart && ct < todayEnd && ct > now;  
-    }).length;  
-    const upcomingCount = matches.filter(m => new Date(m.MatchTime) > todayEnd).length;  
+  window.addEventListener('load', () => {  
+    const alreadyClosed = localStorage.getItem('hideTelegramPopup');  
+    if (!alreadyClosed) {  
+      setTimeout(() => {  
+        document.getElementById('telegramPopup').style.display = 'block';  
+      }, 5000); // ৫ সেকেন্ড পরে দেখাবে  
+    }  
+  });
+
+  // API url (আপনার গুগল অ্যাপস স্ক্রিপ্ট / API url দিন এখানে)  
+  const matchesApi = "https://script.google.com/macros/s/AKfycbxzx4xcwEGidoxEd7BQshkR9FKHjK5o0p8ukNY4NsKNR0EsShY7eV3MUxA2iXz1V8bmHg/exec";  
   
-    document.getElementById("countLive").innerText = `(${liveCount})`;  
-    document.getElementById("countToday").innerText = `(${todayCount})`;  
-    document.getElementById("countUpcoming").innerText = `(${upcomingCount})`;  
-  }
-
-  function renderMatches(type = 'live') {  
-    clearIntervals();  
-    const now = new Date();  
-    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());  
-    const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);  
-    
-    const list = document.getElementById('match-list');  
-    list.innerHTML = "";  
-    const filter = document.getElementById('search').value.toLowerCase();  
-    
-    let filteredMatches = matches.filter(m => {  
-      const ct = new Date(m.MatchTime);  
-      const isLive = now >= ct;  
-      
-      if (type === 'live' && !isLive) return false;  
-      else if (type === 'today') {  
-        if (ct < todayStart || ct >= todayEnd || isLive) return false;  
-      }  
-      else if (type === 'upcoming') {  
-        if (ct < now || (ct >= todayStart && ct < todayEnd)) return false;  
-      }  
-      
-      if (filter && !(m.Match.toLowerCase().includes(filter) || m.Team1.toLowerCase().includes(filter) || m.Team2.toLowerCase().includes(filter))) return false;  
-      
-      return true;  
-    });  
-    
-    // Sort by time
-    filteredMatches.sort((a, b) => new Date(a.MatchTime) - new Date(b.MatchTime));  
-    
-    if (filteredMatches.length === 0) {  
-      let emoji = '😴', title = 'No matches available', subtitle = 'Check back later for updates';  
-      if (type === 'live') {
-        emoji = '📴'; title = 'No live matches'; subtitle = 'No matches are currently being played';
-      } else if (type === 'upcoming') {
-        emoji = '🕒'; title = 'No upcoming matches'; subtitle = 'All scheduled matches are displayed in other tabs';
-      } else if (type === 'today') {
-        emoji = '📅'; title = 'No matches today'; subtitle = 'No matches scheduled for today';
-      }
-      
-      showEmptyState(emoji, title, subtitle);
-      return;  
-    }  
-    
-    filteredMatches.forEach((m, i) => {  
-      const matchElement = createMatchElement(m, i, type);
-      list.appendChild(matchElement);
-    });  
-  }
-
-  function createMatchElement(match, index, type) {
-    const ct = new Date(match.MatchTime);  
-    const isLive = new Date() >= ct;  
-    
-    const div = document.createElement('div');  
-    div.className = "match";
-    div.setAttribute('data-match-id', match.id);
-    
-    // Generate timer HTML
-    const timerHtml = generateTimerHtml(match, index, type, isLive);
-    
-    // Generate servers HTML
-    const serversHtml = generateServersHtml(match);
-    
-    div.innerHTML = `
-      <div class="match-header">${match.Match}</div>
-      
-      <div class="teams">
-        <div class="team">
-          <img src="${match.Team1Logo}" alt="${match.Team1}" class="team-logo" loading="lazy" 
-               onerror="this.src='https://via.placeholder.com/40x40/333/fff?text=${match.Team1.charAt(0)}'" />
-          <div class="team-name">${match.Team1}</div>
-        </div>
-        
-        <div class="vs-divider">VS</div>
-        
-        <div class="team">
-          <img src="${match.Team2Logo}" alt="${match.Team2}" class="team-logo" loading="lazy"
-               onerror="this.src='https://via.placeholder.com/40x40/333/fff?text=${match.Team2.charAt(0)}'" />
-          <div class="team-name">${match.Team2}</div>
-        </div>
-      </div>
-      
-      <div class="match-info">
-        ${timerHtml}
-      </div>
-      
-      <div class="btns">
-        ${serversHtml}
-      </div>
-    `;
-    
-    // Setup timers
-    setupMatchTimer(match, index, type, isLive);
-    
-    // Setup live animation if live
-    if (isLive) {
-      setTimeout(() => {
-        const animContainer = div.querySelector(`#liveAnim${index}`);
-        if (animContainer) {
-          bodymovin.loadAnimation({  
-            container: animContainer,  
-            renderer: 'svg',  
-            loop: true,  
-            autoplay: true,  
-            path: 'https://raw.githubusercontent.com/Hasanmahmud000/HasanTv/refs/heads/main/live-icon.json'  
-          });  
-        }
-      }, 100);
-    }
-    
-    return div;
-  }
-
-  function generateTimerHtml(match, index, type, isLive) {
-    const ct = new Date(match.MatchTime);
-    
-    if (isLive) {
-      const diffLive = new Date() - ct;
-      return `
-        <div class="live-animation-container">
-          <div id="liveAnim${index}" style="width: 40px; height: 40px;"></div>
-        </div>
-        <div class="countdown" id="cd${type}${index}">Started ${formatCountUp(diffLive)}</div>
-      `;
-    } else {
-      const dateStr = ct.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });  
-      const timeStr = ct.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-      const timeLeft = getCountdown(match.MatchTime);
-      
-      return `
-        <div class="match-time">📅 ${dateStr}</div>  
-        <div class="match-time">🕐 ${timeStr}</div>  
-        <div class="countdown" id="cd${type}${index}">⏳ ${formatCountdown(timeLeft)}</div>
-        ${timeLeft <= 15 * 60 * 1000 ? '<div style="color: #ff9800; font-weight: bold; margin-top: 8px;">⏰ Starting Soon!</div>' : ''}
-      `;
-    }
-  }
-
-  function generateServersHtml(match) {
-    if (!match.servers || match.servers.length === 0) {
-      return '<span style="color: var(--text-muted); font-size: 12px;">📡 Servers will be available before match starts</span>';
-    }
-    
-    const serverColors = ['#00bcd4', '#009688', '#3f51b5', '#ff5722', '#9c27b0', '#4caf50', '#ff9800', '#e91e63'];
-    
-    return match.servers.map((server, index) => {
-      const bgColor = serverColors[index % serverColors.length];
-      const quality = ['HD', 'FHD', '4K', 'SD'][Math.floor(Math.random() * 4)];
-      
-      return `
-        <a href="${server.link}" target="_blank" rel="noopener noreferrer" 
-           style="background:${bgColor}; padding:6px 12px; border-radius:6px; color:#fff; text-decoration:none; font-size:12px; margin:4px; position: relative; overflow: hidden;"
-           onclick="trackServerClick('${server.name}', '${match.Match}')">
-          ${server.name}
-          <span class="server-quality">${quality}</span>
-        </a>
-      `;
-    }).join('');
-  }
-
-  function setupMatchTimer(match, index, type, isLive) {
-    if (!isLive) {  
-      const interval = setInterval(() => {  
-        const cdEl = document.querySelector(`#cd${type}${index}`);  
-        if (cdEl) {  
-          const remain = getCountdown(match.MatchTime);  
-          if (remain > 0) {
-            cdEl.innerHTML = `⏳ ${formatCountdown(remain)}`;
-          } else {
-            cdEl.innerHTML = "🔴 Starting now!";
-            clearInterval(interval);
-            // Refresh the match list after 30 seconds to show as live
-            setTimeout(() => renderMatches(currentSubTab), 30000);
-          }
-        } else {
-          clearInterval(interval);
-        }
-      }, 1000);
-      intervals.push(interval);
-    } else {  
-      const interval = setInterval(() => {  
-        const cdEl = document.querySelector(`#cd${type}${index}`);  
-        if (cdEl) {  
-          const diffLive = new Date() - new Date(match.MatchTime);  
-          cdEl.innerHTML = `Started ${formatCountUp(diffLive)}`;
-        } else {
-          clearInterval(interval);
-        }
-      }, 1000);
-      intervals.push(interval);
-    }  
-  }
-
-  function renderCustomMatches(matchList, title) {
-    clearIntervals();
-    const list = document.getElementById('match-list');
-    list.innerHTML = `<h2 style="text-align: center; color: var(--primary-color); margin-bottom: 20px;">${title}</h2>`;
-    
-    if (matchList.length === 0) {
-      showEmptyState('❤️', 'No Favorites Yet', 'Add matches to your favorites to see them here');
-      return;
-    }
-    
-    matchList.forEach((match, index) => {
-      const matchElement = createMatchElement(match, index, 'favorite');
-      list.appendChild(matchElement);
-    });
-  }
-
-  function showEmptyState(emoji, title, subtitle) {
-    const list = document.getElementById('match-list');
-    list.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-icon">${emoji}</div>
-        <div class="empty-title">${title}</div>
-        <div class="empty-subtitle">${subtitle}</div>
-      </div>
-    `;
-  }
-
-  // Utility Functions
+  let matches = [];  
+  let intervals = [];  
+  let currentSubTab = 'live'; // Live Category এর জন্য সাব-ট্যাব  
+  
   function clearIntervals() {  
     intervals.forEach(i => clearInterval(i));  
     intervals = [];  
@@ -1869,164 +647,348 @@
   
   function getNow() { return new Date(); }  
   function getCountdown(t) { return Math.max(0, new Date(t) - getNow()); }  
-  
   function formatCountdown(ms) {  
     let s = Math.floor(ms / 1000), m = Math.floor(s / 60), h = Math.floor(m / 60), d = Math.floor(h / 24);  
     h %= 24; m %= 60; s %= 60;  
-    return `${d}d ${h}h ${m}m ${s}s`;  
+    return `${d}d ${h}h ${m}m ${s}s left`;  
   }  
-  
   function formatCountUp(ms) {  
     let s = Math.floor(ms / 1000), m = Math.floor(s / 60), h = Math.floor(m / 60);  
     s %= 60; m %= 60;  
-    return `${h > 0 ? h + 'h ' : ''}${m}m ${s}s`;  
+    return `${h > 0 ? h + 'h ' : ''}${m}m ${s}s ago`;  
   }  
-
-  // Channel/Radio Functions
-  function openChannel(channelId) {
-    showToast(`Opening ${channelId}...`, 'success');
-    // Here you would implement actual channel opening logic
-    console.log('Opening TV channel:', channelId);
-  }
-
-  function openRadio(radioId) {
-    showToast(`Tuning to ${radioId}...`, 'success');
-    // Here you would implement actual radio opening logic
-    console.log('Opening radio station:', radioId);
-  }
-
-  // Analytics
-  function trackServerClick(serverName, matchName) {
-    console.log('Server clicked:', serverName, 'for match:', matchName);
-    showToast(`Opening ${serverName}...`, 'success');
-  }
-
-  // Swipe Functionality
-  function setupSwipeListeners() {
-    let touchStartX = 0, touchEndX = 0, touchStartY = 0, touchEndY = 0;
-
-    function handleSwipe() {
-      const deltaX = touchEndX - touchStartX;
-      const deltaY = touchEndY - touchStartY;
-      
-      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
-        if (document.getElementById('subTabs').style.display === 'flex') {
-          const subTabs = ['live', 'today', 'upcoming'];
-          const currentIndex = subTabs.indexOf(currentSubTab);
-          
-          if (deltaX > 0 && currentIndex > 0) {
-            // Swipe right - previous tab
-            switchSubTab(subTabs[currentIndex - 1]);
-          } else if (deltaX < 0 && currentIndex < subTabs.length - 1) {
-            // Swipe left - next tab
-            switchSubTab(subTabs[currentIndex + 1]);
-          }
-        }
-      }
-    }
-
-    document.addEventListener('touchstart', function(e) {
-      touchStartX = e.changedTouches[0].screenX;
-      touchStartY = e.changedTouches[0].screenY;
-    }, { passive: true });
-
-    document.addEventListener('touchend', function(e) {
-      touchEndX = e.changedTouches[0].screenX;
-      touchEndY = e.changedTouches[0].screenY;
-      handleSwipe();
-    }, { passive: true });
-  }
-
-  // Popup Management
-  function showTelegramPopup() {
-    const alreadyClosed = localStorage.getItem('hideTelegramPopup');  
-    if (!alreadyClosed) {  
-      document.getElementById('telegramPopup').classList.add('show');
-    }  
-  }
-
-  function closeTelegramPopup() {  
-    document.getElementById('telegramPopup').classList.remove('show');
-    localStorage.setItem('hideTelegramPopup', 'true');  
+  
+  function renderMatches(type = 'live') {  
+  clearIntervals();  
+  const now = getNow();  
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());  
+  const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);  
+  
+  const list = document.getElementById('match-list');  
+  list.innerHTML = "";  
+  const filter = document.getElementById('search').value.toLowerCase();  
+  
+  let filteredMatches = matches.filter(m => {  
+  const ct = new Date(m.MatchTime);  
+  const isLive = now >= ct;  
+  
+  if (type === 'live' && !isLive) return false;  
+  
+  else if (type === 'today') {  
+    if (ct < todayStart || ct >= todayEnd || isLive) return false;  
   }  
+  
+  else if (type === 'upcoming') {  
+    if (ct < now || (ct >= todayStart && ct < todayEnd)) return false;  
+  }  
+  
+  if (filter && !(m.Match.toLowerCase().includes(filter) || m.Team1.toLowerCase().includes(filter) || m.Team2.toLowerCase().includes(filter))) return false;  
+  
+  return true;  
+});  
+  
+// 🔀 এইখানে টাইম অনুযায়ী ছোট থেকে বড় সাজানো হচ্ছে  
+filteredMatches.sort((a, b) => new Date(a.MatchTime) - new Date(b.MatchTime));  
+  
+  if (filteredMatches.length === 0) {  
+  let emojiMessage = '😴 No matches available right now.';  
+  if (type === 'live') emojiMessage = '📴 No live matches at the moment.';  
+  else if (type === 'upcoming') emojiMessage = '🕒 No upcoming matches found.';  
+  else if (type === 'today') emojiMessage = '📅 No matches scheduled for today.';  
+  
+  list.innerHTML = `  
+    <div style="  
+      max-width: 420px;  
+      margin: 40px auto;  
+      padding: 30px 20px;  
+      background: #1e1e1e;  
+      border-radius: 14px;  
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);  
+      color: #ccc;  
+      font-family: 'Segoe UI', sans-serif;  
+      font-size: 1.25rem;  
+      font-weight: 500;  
+      text-align: center;  
+      user-select: none;  
+      display: flex;  
+      align-items: center;  
+      justify-content: center;  
+      gap: 14px;  
+    ">  
+      <span style="font-size: 2.5rem;">${emojiMessage.match(/^(\p{Emoji_Presentation}|\p{Extended_Pictographic})+/u)[0]}</span>  
+      <span>${emojiMessage.replace(/^(\p{Emoji_Presentation}|\p{Extended_Pictographic})+\s*/, '')}</span>  
+    </div>  
+  `;  
+  return;  
+}  
+  
+  filteredMatches.forEach((m, i) => {  
+  const ct = new Date(m.MatchTime);  
+  const isLive = now >= ct;  
+  
+  const div = document.createElement('div');  
+  div.className = "match";  
+  
+    let timerHtml = '';  
+  if (isLive) {  
+    const diffLive = getNow() - ct;  
+    timerHtml = `  
+      <div style="text-align: center; margin: 10px 0;">  
+        <div id="liveAnim${i}" style="width: 60px; height: 60px; margin: 0 auto;"></div>  
+        <div class="countdown" id="cd${type}${i}">Started ${formatCountUp(diffLive)}</div>  
+      </div>  
+    `;  
+  } else {  
+    const dateStr = ct.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });  
+    const timeStr = ct.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });  
+    timerHtml = `  
+      <div class="match-time"> ${dateStr}</div>  
+      <div class="match-time"> ${timeStr}</div>  
+      <div class="countdown" id="cd${type}${i}">⏳ ${formatCountdown(getCountdown(m.MatchTime))}</div>  
+      ${getCountdown(m.MatchTime) <= 15 * 60 * 1000 ? `<div class="coming-soon-anim">⏳ Coming Soon...</div>` : ''}  
+    `;  
+  }  
+  
+  div.innerHTML = `
+  <div style="background: #1a1a28; border-radius: 12px; padding: 16px; max-width: 360px; margin: auto; color: #fff; font-family: 'Segoe UI', sans-serif;">
 
-  function showUpdatePopup() {
-    document.getElementById('updatePopup').classList.add('show');
-  }
+    <!-- Match Title -->
+    <div style="text-align:center; font-size:15px; font-weight:600; margin-bottom:14px; background:#000; padding:6px 10px; border-radius:8px;">
+      ${m.Match}
+    </div>
 
-  function closeUpdatePopup() {
-    document.getElementById('updatePopup').classList.remove('show');
-  }
-
-  function updateApp() {
-    showToast('Updating app...', 'success');
-    closeUpdatePopup();
-    // Implement actual update logic here
-    setTimeout(() => {
-      showToast('App updated successfully!', 'success');
-    }, 2000);
-  }
-
-  // Settings
-  function showSettings() {
-    const settingsHtml = `
-      <div class="empty-state">
-        <div class="empty-icon">⚙️</div>
-        <div class="empty-title">Settings</div>
-        <div class="empty-subtitle">
-          <div style="margin: 20px 0;">
-            <button onclick="toggleTheme()" class="popup-btn primary" style="margin: 5px;">
-              Switch to ${currentTheme === 'dark' ? 'Light' : 'Dark'} Theme
-            </button>
-            <br>
-            <button onclick="clearFavorites()" class="popup-btn secondary" style="margin: 5px;">
-              Clear Favorites
-            </button>
-            <br>
-            <button onclick="clearCache()" class="popup-btn secondary" style="margin: 5px;">
-              Clear Cache
-            </button>
-          </div>
-        </div>
+    <!-- Teams Row -->
+    <div style="display: flex; justify-content: space-around; align-items: center; margin-bottom: 14px;">
+      <!-- Team 1 -->
+      <div style="display: flex; flex-direction: column; align-items: center; min-width: 90px;">
+        <img src="${m.Team1Logo}" alt="${m.Team1} logo" style="width:40px; height:40px; border-radius:50%;" loading="lazy" />
+        <span style="font-size:15px; font-weight:bold; text-align:center; margin-top:6px;">${m.Team1}</span>
       </div>
-    `;
-    
-    document.getElementById('match-list').innerHTML = settingsHtml;
-    document.getElementById('subTabs').style.display = 'none';
-    document.getElementById('match-list').style.display = 'block';
-    document.getElementById('tv-section').style.display = 'none';
-    document.getElementById('fm-section').style.display = 'none';
-  }
 
-  function clearFavorites() {
-    favorites = [];
-    localStorage.removeItem('cricstream_favorites');
-    showToast('Favorites cleared', 'warning');
-  }
+      <!-- VS Center -->
+      <div style="font-weight: bold; color: #0af; font-size:16px;">VS</div>
 
-  function clearCache() {
-    localStorage.clear();
-    showToast('Cache cleared', 'warning');
-    setTimeout(() => location.reload(), 1000);
-  }
+      <!-- Team 2 -->
+      <div style="display: flex; flex-direction: column; align-items: center; min-width: 90px;">
+        <img src="${m.Team2Logo}" alt="${m.Team2} logo" style="width:40px; height:40px; border-radius:50%;" loading="lazy" />
+        <span style="font-size:15px; font-weight:bold; text-align:center; margin-top:6px;">${m.Team2}</span>
+      </div>
+    </div>
+
+    <!-- Timer -->
+    <div style="text-align:center; font-size:16px; color:#ccc; font-weight:500; margin-bottom:16px;">
+      ${timerHtml || '00:00:00'}
+    </div>
+
+    <!-- Server Buttons with Built-in Player -->
+    <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+      ${m.servers && m.servers.length > 0 ? 
+  m.servers.map((server, index) => {
+    const colors = ['#00bcd4', '#009688', '#3f51b5', '#ff5722', '#9c27b0', '#4caf50', '#ff9800'];
+    const bgColor = colors[index % colors.length];
+    return `<button onclick="handleStreamLink('${server.link}', '${m.Match} - ${server.name}')" style="background:${bgColor}; padding:6px 12px; border-radius:6px; color:#fff; border:none; cursor:pointer; font-size:14px; margin:2px;">${server.name}</button>`;
+  }).join('') 
+  : '<span style="color:#888; font-size:12px;">No servers available</span>'
+}
+    </div>
+  </div>
+`;
+  
+  list.appendChild(div);  
+  
+  // ⬇️ এইখানে Lottie animation শুরু হবে live এর জন্য  
+  if (isLive) {  
+    setTimeout(() => {  
+      bodymovin.loadAnimation({  
+        container: document.getElementById('liveAnim' + i),  
+        renderer: 'svg',  
+        loop: true,  
+        autoplay: true,  
+        path: 'https://raw.githubusercontent.com/Hasanmahmud000/HasanTv/refs/heads/main/live-icon.json'  
+      });  
+    }, 0);  
+  }  
+  
+    if (!isLive) {  
+      intervals.push(setInterval(() => {  
+        const cdEl = div.querySelector(`#cd${type}${i}`);  
+        if (cdEl) {  
+          const remain = getCountdown(m.MatchTime);  
+          cdEl.innerText = remain > 0 ? formatCountdown(remain) : "Starting soon";  
+        }  
+      }, 1000));  
+    } else {  
+      intervals.push(setInterval(() => {  
+        const cdEl = div.querySelector(`#cd${type}${i}`);  
+        if (cdEl) {  
+          const diffLive = getNow() - ct;  
+          cdEl.innerText = `Started ${formatCountUp(diffLive)}`;  
+        }  
+      }, 1000));  
+    }  
+  });  
+}  
+  
+  // নিচের বড় ট্যাব হ্যান্ডলার  
+  function showCategory(category) {  
+    // প্রথমে সব ট্যাব হালকা করে দেব  
+    document.getElementById('bottomLive').classList.remove('active');  
+    document.getElementById('bottomTV').classList.remove('active');  
+    document.getElementById('bottomFM').classList.remove('active');  
+  
+    // তারপর সিলেক্টেড ট্যাবে active যোগ করব  
+    document.getElementById('bottom' + category.charAt(0).toUpperCase() + category.slice(1)).classList.add('active');  
+  
+    // সার্চ ইনপুট ফাঁকা করব  
+    document.getElementById('search').value = '';  
+  
+    // সব সেকশন লুকিয়ে দিব  
+    document.getElementById('subTabs').style.display = 'none';  
+    document.getElementById('match-list').style.display = 'none';  
+    document.getElementById('tv-section').style.display = 'none';  
+    document.getElementById('fm-section').style.display = 'none';  
+  
+    if(category === 'live') {  
+      // Live Category এ উপরের সাব-ট্যাব দেখাবো  
+      document.getElementById('subTabs').style.display = 'block';  
+      document.getElementById('match-list').style.display = 'block';  
+      // প্রথমে সাব-ট্যাবে active সেট করে রেন্ডার করবো  
+      currentSubTab = 'live';  
+      setActiveSubTab(currentSubTab);  
+      renderMatches(currentSubTab);  
+    } else if(category === 'tv') {  
+      document.getElementById('tv-section').style.display = 'block';  
+    } else if(category === 'fm') {  
+      document.getElementById('fm-section').style.display = 'block';  
+    }  
+  }  
+  
+  // সাব-ট্যাব হ্যান্ডলার  
+  function setActiveSubTab(subTab) {  
+  document.getElementById('subLive').classList.remove('active');  
+  document.getElementById('subToday').classList.remove('active');   // নতুন Today এর জন্য  
+  document.getElementById('subUpcoming').classList.remove('active');  
+  
+  document.getElementById('sub' + subTab.charAt(0).toUpperCase() + subTab.slice(1)).classList.add('active');  
+}  
+  
+    document.getElementById('bottomLive').addEventListener('click', () => showCategory('live'));  
+  document.getElementById('bottomTV').addEventListener('click', () => showCategory('tv'));  
+  document.getElementById('bottomFM').addEventListener('click', () => showCategory('fm'));  
+  
+  // Sub Tab buttons click  
+document.getElementById('subLive').addEventListener('click', () => {  
+  currentSubTab = 'live';  
+  setActiveSubTab(currentSubTab);  
+  renderMatches(currentSubTab);  
+});  
+  
+document.getElementById('subUpcoming').addEventListener('click', () => {  
+  currentSubTab = 'upcoming';  
+  setActiveSubTab(currentSubTab);  
+  renderMatches(currentSubTab);  
+});  
+  
+// ✅ এই লাইনটা নিচে বসাও  
+document.getElementById('subToday').addEventListener('click', () => {  
+  currentSubTab = 'today';  
+  setActiveSubTab(currentSubTab);  
+  renderMatches(currentSubTab);  
+});  
+  
+  document.getElementById('search').addEventListener('input', () => {  
+    if(document.getElementById('subTabs').style.display === 'block'){  
+      renderMatches(currentSubTab);  
+    }  
+  });  
+  
+  // প্রথমে ডাটা লোড করে Live Category দেখাবে  
+  fetch(matchesApi)  
+  .then(res => res.json())  
+  .then(data => {  
+    matches = data.matches || [];  
+  
+    const now = new Date();  
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());  
+    const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);  
+  
+    // 🔹 সংখ্যাগুলো বের করো  
+    const liveCount = matches.filter(m => new Date(m.MatchTime) <= now).length;  
+    const todayCount = matches.filter(m => {  
+      const ct = new Date(m.MatchTime);  
+      return ct >= todayStart && ct < todayEnd && ct > now;  
+    }).length;  
+    const upcomingCount = matches.filter(m => new Date(m.MatchTime) > todayEnd).length;  
+  
+    // 🔹 UI তে সংখ্যা বসাও  
+    document.getElementById("countLive").innerText = `(${liveCount})`;  
+    document.getElementById("countToday").innerText = `(${todayCount})`;  
+    document.getElementById("countUpcoming").innerText = `(${upcomingCount})`;  
+  
+    // 🔹 ম্যাচগুলোকে ফিল্টার করে সাজাও  
+    const todayMatches = matches.filter(m => {  
+      const ct = new Date(m.MatchTime);  
+      return ct >= todayStart && ct < todayEnd && ct > now;  
+    });  
+  
+    const upcomingMatches = matches.filter(m => {  
+      const ct = new Date(m.MatchTime);  
+      return ct > todayEnd;  
+    });  
+  
+    const liveMatches = matches.filter(m => new Date(m.MatchTime) <= now);  
+  
+    matches = [  
+      ...liveMatches.map(m => ({ ...m, isLive: true })),  
+      ...todayMatches.map(m => ({ ...m, isToday: true })),  
+      ...upcomingMatches.map(m => ({ ...m, isUpcoming: true })),  
+    ];  
+  
+    showCategory('live');  
+  })  
+    .catch(e => {  
+      console.error('Error fetching matches:', e);  
+      document.getElementById('match-list').innerHTML = '<p style="text-align:center; color:#f00;">Failed to load match data.</p>';  
+    });
 
   // Service Worker for PWA
   if ('serviceWorker' in navigator) {  
     navigator.serviceWorker.register('sw.js').then(registration => {  
-      console.log('SW registered:', registration);
-      
-      function showUpdateNotification() {  
-        showUpdatePopup();
+  
+      function showUpdatePopup() {  
+        const box = document.createElement('div');  
+        box.innerHTML = "🆕 New version available — <b>Tap to update</b>";  
+        box.style.cssText = `  
+          position: fixed;  
+          bottom: 20px;  
+          left: 50%;  
+          transform: translateX(-50%);  
+          background: #0af;  
+          color: white;  
+          padding: 12px 16px;  
+          border-radius: 30px;  
+          font-weight: bold;  
+          box-shadow: 0 4px 8px rgba(0,0,0,0.3);  
+          z-index: 9999;  
+          cursor: pointer;  
+        `;  
+        box.onclick = () => {  
+          box.remove();  
+          if (registration.waiting) {  
+            registration.waiting.postMessage({ action: "skipWaiting" });  
+          }  
+        };  
+        document.body.appendChild(box);  
       }  
   
       function listenForWaitingSW(reg) {  
         if (!reg) return;  
-        if (reg.waiting) return showUpdateNotification();  
+        if (reg.waiting) return showUpdatePopup();  
   
         if (reg.installing) {  
           reg.installing.addEventListener("statechange", function () {  
             if (this.state === "installed" && navigator.serviceWorker.controller) {  
-              showUpdateNotification();  
+              showUpdatePopup();  
             }  
           });  
         }  
@@ -2035,7 +997,7 @@
           if (reg.installing) {  
             reg.installing.addEventListener("statechange", function () {  
               if (this.state === "installed" && navigator.serviceWorker.controller) {  
-                showUpdateNotification();  
+                showUpdatePopup();  
               }  
             });  
           }  
@@ -2043,74 +1005,289 @@
       }  
   
       listenForWaitingSW(registration);  
-    }).catch(err => {
-      console.log('SW registration failed:', err);
     });  
   
-    navigator.serviceWorker.addEventListener("controllerchange", () => {  
+        navigator.serviceWorker.addEventListener("controllerchange", () => {  
       window.location.reload();  
     });  
   }  
 
-  // Keyboard shortcuts
+  // Touch/Swipe functionality for sub-tabs
+  let touchStartX = 0;
+  let touchEndX = 0;
+  let touchStartY = 0;
+  let touchEndY = 0;
+
+  function handleSwipe() {
+    const deltaX = touchEndX - touchStartX;
+    const deltaY = touchEndY - touchStartY;
+    
+    // Check if horizontal swipe is more significant than vertical
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
+      // Only work when sub-tabs are visible (Live category)
+      if (document.getElementById('subTabs').style.display === 'block') {
+        const subTabs = ['live', 'today', 'upcoming'];
+        const currentIndex = subTabs.indexOf(currentSubTab);
+        
+                if (deltaX > 0) {
+          // Swipe right - go to previous tab
+          if (currentIndex > 0) {
+            const newTab = subTabs[currentIndex - 1];
+            currentSubTab = newTab;
+            setActiveSubTab(currentSubTab);
+            renderMatches(currentSubTab);
+          }
+        } else {
+          // Swipe left - go to next tab
+          if (currentIndex < subTabs.length - 1) {
+            const newTab = subTabs[currentIndex + 1];
+            currentSubTab = newTab;
+            setActiveSubTab(currentSubTab);
+            renderMatches(currentSubTab);
+          }
+        }
+      }
+    }
+  }
+
+  // Touch event listeners
+  document.addEventListener('touchstart', function(e) {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+  }, { passive: true });
+
+  document.addEventListener('touchend', function(e) {
+    touchEndX = e.changedTouches[0].screenX;
+    touchEndY = e.changedTouches[0].screenY;
+    handleSwipe();
+  }, { passive: true });
+
+  // Mouse event listeners for desktop
+  let mouseStartX = 0;
+  let mouseStartY = 0;
+  let isMouseDown = false;
+
+  document.addEventListener('mousedown', function(e) {
+    mouseStartX = e.clientX;
+    mouseStartY = e.clientY;
+    isMouseDown = true;
+  });
+
+  document.addEventListener('mouseup', function(e) {
+    if (isMouseDown) {
+      const deltaX = e.clientX - mouseStartX;
+      const deltaY = e.clientY - mouseStartY;
+      
+      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
+        if (document.getElementById('subTabs').style.display === 'block') {
+          const subTabs = ['live', 'today', 'upcoming'];
+          const currentIndex = subTabs.indexOf(currentSubTab);
+          
+          if (deltaX > 0) {
+            if (currentIndex > 0) {
+              const newTab = subTabs[currentIndex - 1];
+              currentSubTab = newTab;
+              setActiveSubTab(currentSubTab);
+              renderMatches(currentSubTab);
+            }
+          } else {
+            if (currentIndex < subTabs.length - 1) {
+              const newTab = subTabs[currentIndex + 1];
+              currentSubTab = newTab;
+              setActiveSubTab(currentSubTab);
+              renderMatches(currentSubTab);
+            }
+          }
+        }
+      }
+      isMouseDown = false;
+    }
+  });
+
+  document.addEventListener('mouseleave', function() {
+    isMouseDown = false;
+  });
+
+  // Keyboard shortcuts for video player
   document.addEventListener('keydown', function(e) {
-    if (e.ctrlKey || e.metaKey) {
+    const modal = document.getElementById('videoPlayerModal');
+    const video = document.getElementById('mainVideoPlayer');
+    
+    if (modal.style.display === 'flex') {
       switch(e.key) {
-        case 'k':
-          e.preventDefault();
-          document.getElementById('search').focus();
+        case 'Escape':
+          closeVideoPlayer();
           break;
-        case 'd':
+        case ' ':
           e.preventDefault();
-          toggleTheme();
+          if (video.paused) {
+            video.play();
+          } else {
+            video.pause();
+          }
+          break;
+        case 'f':
+        case 'F':
+          if (video.requestFullscreen) {
+            video.requestFullscreen();
+          } else if (video.webkitRequestFullscreen) {
+            video.webkitRequestFullscreen();
+          } else if (video.msRequestFullscreen) {
+            video.msRequestFullscreen();
+          }
           break;
         case 'm':
+        case 'M':
+          video.muted = !video.muted;
+          break;
+        case 'ArrowLeft':
+          video.currentTime = Math.max(0, video.currentTime - 10);
+          break;
+        case 'ArrowRight':
+          video.currentTime = Math.min(video.duration, video.currentTime + 10);
+          break;
+        case 'ArrowUp':
           e.preventDefault();
-          toggleDrawer();
+          video.volume = Math.min(1, video.volume + 0.1);
+          break;
+        case 'ArrowDown':
+          e.preventDefault();
+          video.volume = Math.max(0, video.volume - 0.1);
           break;
       }
     }
   });
 
-  // Handle online/offline status
-  window.addEventListener('online', () => {
-    showToast('Connection restored', 'success');
-    loadMatches();
+  // Enhanced error handling for video player
+  document.getElementById('mainVideoPlayer').addEventListener('error', function(e) {
+    console.error('Video error:', e);
+    const errorDiv = document.createElement('div');
+    errorDiv.style.cssText = `
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.8);
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      z-index: 10000;
+    `;
+    errorDiv.innerHTML = `
+      <h3>⚠️ Playback Error</h3>
+      <p>Unable to load the stream. This might be due to:</p>
+      <ul style="text-align: left; margin: 10px 0;">
+        <li>Network connectivity issues</li>
+        <li>Stream server is down</li>
+        <li>Unsupported video format</li>
+      </ul>
+      <button onclick="this.parentElement.remove(); closeVideoPlayer();" style="background: #0af; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-top: 10px;">Close Player</button>
+    `;
+    document.querySelector('.video-player-container').appendChild(errorDiv);
   });
 
-  window.addEventListener('offline', () => {
-    showToast('You are offline', 'warning');
-  });
-
-  // Handle visibility change (tab focus)
-  document.addEventListener('visibilitychange', () => {
-    if (!document.hidden && document.getElementById('subTabs').style.display === 'flex') {
-      // Refresh when user comes back to tab
-      loadMatches();
-    }
-  });
-
-  // Performance monitoring
-  window.addEventListener('load', () => {
-    const loadTime = performance.now();
-    console.log(`App loaded in ${loadTime.toFixed(2)}ms`);
+  // Auto-hide controls after inactivity
+  let controlsTimeout;
+  const playerContainer = document.querySelector('.video-player-container');
+  
+  function showControls() {
+    const controls = document.querySelector('.player-controls');
+    const header = document.querySelector('.video-player-header');
+    if (controls) controls.style.opacity = '1';
+    if (header) header.style.opacity = '1';
     
-    if (loadTime > 3000) {
-      console.warn('Slow loading detected');
+    clearTimeout(controlsTimeout);
+    controlsTimeout = setTimeout(() => {
+      if (controls) controls.style.opacity = '0.3';
+      if (header) header.style.opacity = '0.3';
+    }, 3000);
+  }
+
+  if (playerContainer) {
+    playerContainer.addEventListener('mousemove', showControls);
+    playerContainer.addEventListener('touchstart', showControls);
+  }
+
+  // Picture-in-Picture support
+  function togglePiP() {
+    const video = document.getElementById('mainVideoPlayer');
+    if (document.pictureInPictureElement) {
+      document.exitPictureInPicture();
+    } else if (document.pictureInPictureEnabled) {
+      video.requestPictureInPicture().catch(error => {
+        console.log('PiP failed:', error);
+      });
+    }
+  }
+
+  // Add PiP button to controls
+  window.addEventListener('load', () => {
+    if (document.pictureInPictureEnabled) {
+      const pipButton = document.createElement('button');
+      pipButton.className = 'quality-btn';
+      pipButton.textContent = 'PiP';
+      pipButton.onclick = togglePiP;
+      document.querySelector('.player-controls').appendChild(pipButton);
     }
   });
 
-  // Error handling
-  window.addEventListener('error', (e) => {
-    console.error('Global error:', e.error);
-    showToast('Something went wrong. Please refresh the page.', 'error');
+  // Network status monitoring
+  function updateNetworkStatus() {
+    const status = navigator.onLine ? 'online' : 'offline';
+    if (status === 'offline') {
+      const offlineDiv = document.createElement('div');
+      offlineDiv.id = 'offline-indicator';
+      offlineDiv.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: #ff4444;
+        color: white;
+        text-align: center;
+        padding: 10px;
+        z-index: 10000;
+        font-weight: bold;
+      `;
+      offlineDiv.textContent = '📡 No internet connection - Streams may not work';
+      document.body.appendChild(offlineDiv);
+    } else {
+      const offlineDiv = document.getElementById('offline-indicator');
+      if (offlineDiv) {
+        offlineDiv.remove();
+      }
+    }
+  }
+
+  window.addEventListener('online', updateNetworkStatus);
+  window.addEventListener('offline', updateNetworkStatus);
+
+  // Performance optimization - lazy loading for images
+  const imageObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const img = entry.target;
+        img.src = img.dataset.src;
+        img.classList.remove('lazy');
+        observer.unobserve(img);
+      }
+    });
   });
 
-  // Unhandled promise rejections
-  window.addEventListener('unhandledrejection', (e) => {
-    console.error('Unhandled promise rejection:', e.reason);
-    e.preventDefault();
-  });
+  // Apply lazy loading to team logos
+  function applyLazyLoading() {
+    document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+      imageObserver.observe(img);
+    });
+  }
+
+  // Call lazy loading after matches are rendered
+  const originalRenderMatches = renderMatches;
+  renderMatches = function(...args) {
+    originalRenderMatches.apply(this, args);
+    setTimeout(applyLazyLoading, 100);
+  };
 
 </script>  
 
