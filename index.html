@@ -160,6 +160,8 @@
       padding: 8px;  
       text-align: center;  
       background: #222;  
+      overflow-x: auto;
+      white-space: nowrap;
     }  
     .sub-tab-btns button {  
       margin: 0 6px;  
@@ -172,6 +174,7 @@
       font-weight: 600;  
       font-size: 14px;  
       transition: background 0.3s ease;  
+      display: inline-block;
     }  
     .sub-tab-btns button:hover {  
       background: #0af;  
@@ -292,6 +295,23 @@
       50% { background-position: 100% 50%; }  
       100% { background-position: 0% 50%; }  
     }  
+
+    /* Finished match style */
+    .match.finished {
+      opacity: 0.7;
+      background: #2a1a1a;
+      border: 1px solid #444;
+    }
+    .finished-badge {
+      background: #666;
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: bold;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
   
     /* TV & FM আলাদা সেকশন */  
     #tv-section, #fm-section {  
@@ -299,108 +319,10 @@
       font-size: 16px;  
       color: #ccc;  
       text-align: center;  
-    }
-
-    /* Built-in Video Player Styles */
-    .video-player-modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.95);
-      z-index: 9999;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .video-player-container {
-      position: relative;
-      width: 95%;
-      max-width: 800px;
-      background: #000;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-
-    .video-player-header {
-      background: #222;
-      padding: 10px 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: #fff;
-    }
-
-    .close-player {
-      background: #ff4444;
-      border: none;
-      color: white;
-      padding: 5px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    .video-player {
-      width: 100%;
-      height: 300px;
-      background: #000;
-    }
-
-    @media (min-width: 768px) {
-      .video-player {
-        height: 450px;
-      }
-    }
-
-    .player-controls {
-      background: #333;
-      padding: 10px;
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .quality-btn {
-      background: #555;
-      border: none;
-      color: white;
-      padding: 5px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-    }
-
-    .quality-btn.active {
-      background: #0af;
-    }
+    }  
   </style>  
 </head>  
 <body>  
-
-<!-- Built-in Video Player Modal -->
-<div id="videoPlayerModal" class="video-player-modal">
-  <div class="video-player-container">
-    <div class="video-player-header">
-      <span id="playerTitle">Live Stream</span>
-      <button class="close-player" onclick="closeVideoPlayer()">✕ Close</button>
-    </div>
-    <video id="mainVideoPlayer" class="video-player" controls autoplay>
-      <source id="videoSource" src="" type="application/x-mpegURL">
-      <source id="videoSourceMp4" src="" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
-    <div class="player-controls">
-      <button class="quality-btn" onclick="changeQuality('auto')">Auto</button>
-      <button class="quality-btn" onclick="changeQuality('720p')">720p</button>
-      <button class="quality-btn" onclick="changeQuality('480p')">480p</button>
-      <button class="quality-btn" onclick="changeQuality('360p')">360p</button>
-    </div>
-  </div>
-</div>
 
 <!-- Drawer / Side Menu -->  
 <div id="drawer">  
@@ -415,7 +337,7 @@
   
   <h3></h3>  
   <a href="https://t.me/CricStreamZone" target="_blank">📣 Join Telegram</a>  
-  <a href="#" onclick="showBuiltInPlayer(); toggleDrawer();">📲 Built-in Player</a>  
+  <a href="https://play.google.com/store/apps/details?id=com.genuine.leone" target="_blank">📲 Download NS Player</a>  
   <a href="#" onclick="showCategory('live'); toggleDrawer();">🏏 Live Matches</a>  
   <a href="#" onclick="showCategory('tv'); toggleDrawer();">📺 Live TV</a>  
   <a href="#" onclick="showCategory('fm'); toggleDrawer();">📻 FM Radio</a>  
@@ -433,7 +355,8 @@
 </nav>  
   
 <div class="notice">  
-  <marquee scrollamount="5">Welcome To CricStreamZone ! ⚠️ Built-in Player Available ! No need to install external apps ! Our integrated video player supports all stream formats including HLS, MP4, and more ! 📲 Enjoy seamless streaming directly in your browser ! Join our Telegram channel for updates: CricStreamZone Telegram ! </marquee>  
+  <marquee scrollamount="5">Welcome To CricStreamZone ! ⚠️ Attention All Users ! For flawless live sports streaming on your mobile device ! please install the NS Player app now ! Without NS Player, videos may not play properly or could stop unexpectedly ! 📲 Don't miss a single moment — install NS Player today and enjoy uninterrupted live matches ! You can download the app from:  
+Google Play Store or join our Telegram channel for the latest updates and app links:CricStreamZone Telegram ! </marquee>  
 </div>  
   
 <!-- সাব-ট্যাব শুধুমাত্র Live Category তে দেখাবে -->  
@@ -441,6 +364,7 @@
   <button id="subLive" class="active">Live <span id="countLive"></span></button>  
   <button id="subToday">Today <span id="countToday"></span></button>  
   <button id="subUpcoming">Upcoming <span id="countUpcoming"></span></button>  
+  <button id="subFinished">Finished <span id="countFinished"></span></button>  
 </div>  
   
 <div id="match-list"></div>  
@@ -479,7 +403,7 @@
       <h3 style="color:#0af; margin-bottom:10px;">📣 Join Our Telegram</h3>  
       <p style="color:#ccc; font-size:14px;">🔔 For live match updates, instant scores, and exclusive stream links —  
 Join our official Telegram channel now!  
-📲 Our built-in player supports all formats for smooth streaming.</p>  
+📲 Download the NS Player app for smooth, uninterrupted streaming.</p>  
       <div style="margin-top:15px;">  
         <a href="https://t.me/CricStreamZone" target="_blank" style="background:#08f; color:#fff; padding:10px 18px; text-decoration:none; border-radius:8px; display:inline-block; font-weight:600;">Join Now</a>  
         <button onclick="closeTelegramPopup()" style="margin-left:10px; background:#444; color:#ccc; padding:10px 18px; border:none; border-radius:8px; cursor:pointer;">Later</button>  
@@ -488,128 +412,7 @@ Join our official Telegram channel now!
   </div>  
 </div>
 
-<!-- HLS.js Library for HLS support -->
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-
 <script>  
-  // Built-in Video Player Functions
-  let currentHls = null;
-  let currentStreamUrl = '';
-
-  function openVideoPlayer(streamUrl, title = 'Live Stream') {
-    currentStreamUrl = streamUrl;
-    document.getElementById('playerTitle').textContent = title;
-    document.getElementById('videoPlayerModal').style.display = 'flex';
-    
-    const video = document.getElementById('mainVideoPlayer');
-    const videoSource = document.getElementById('videoSource');
-    const videoSourceMp4 = document.getElementById('videoSourceMp4');
-    
-    // Clear previous sources
-    video.pause();
-    video.removeAttribute('src');
-    video.load();
-    
-    // Destroy previous HLS instance
-    if (currentHls) {
-      currentHls.destroy();
-      currentHls = null;
-    }
-    
-    // Check if the stream is HLS (.m3u8)
-    if (streamUrl.includes('.m3u8') || streamUrl.includes('m3u8')) {
-      if (Hls.isSupported()) {
-        currentHls = new Hls({
-          enableWorker: true,
-          lowLatencyMode: true,
-          backBufferLength: 90
-        });
-        
-        currentHls.loadSource(streamUrl);
-        currentHls.attachMedia(video);
-        
-        currentHls.on(Hls.Events.MANIFEST_PARSED, function() {
-          video.play().catch(e => console.log('Autoplay prevented:', e));
-        });
-        
-        currentHls.on(Hls.Events.ERROR, function(event, data) {
-          console.error('HLS Error:', data);
-          if (data.fatal) {
-            fallbackToNativePlayer(streamUrl, video);
-          }
-        });
-      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        // Native HLS support (Safari)
-        videoSource.src = streamUrl;
-        video.load();
-        video.play().catch(e => console.log('Autoplay prevented:', e));
-      } else {
-        fallbackToNativePlayer(streamUrl, video);
-      }
-    } else {
-      // Regular MP4 or other formats
-      videoSourceMp4.src = streamUrl;
-      video.load();
-      video.play().catch(e => console.log('Autoplay prevented:', e));
-    }
-  }
-
-  function fallbackToNativePlayer(streamUrl, video) {
-    // Fallback to native video player
-    video.src = streamUrl;
-    video.load();
-    video.play().catch(e => {
-      console.log('Fallback autoplay prevented:', e);
-      // Show user-friendly message
-      alert('Please click play button to start the stream');
-    });
-  }
-
-  function closeVideoPlayer() {
-    const video = document.getElementById('mainVideoPlayer');
-    video.pause();
-    video.removeAttribute('src');
-    video.load();
-    
-    if (currentHls) {
-      currentHls.destroy();
-      currentHls = null;
-    }
-    
-    document.getElementById('videoPlayerModal').style.display = 'none';
-  }
-
-  function changeQuality(quality) {
-    // Remove active class from all quality buttons
-    document.querySelectorAll('.quality-btn').forEach(btn => btn.classList.remove('active'));
-    
-    // Add active class to clicked button
-    event.target.classList.add('active');
-    
-    // Here you can implement quality change logic
-    // For now, it just restarts the stream
-    if (currentStreamUrl) {
-      openVideoPlayer(currentStreamUrl, document.getElementById('playerTitle').textContent);
-    }
-  }
-
-  function showBuiltInPlayer() {
-    const testUrl = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
-    openVideoPlayer(testUrl, 'Test Stream - Built-in Player');
-  }
-
-  // Enhanced stream link handler
-  function handleStreamLink(streamUrl, title) {
-    // Check if it's a valid stream URL
-    if (!streamUrl || streamUrl === '#') {
-      alert('Stream link not available');
-      return;
-    }
-    
-    // Use built-in player for all streams
-    openVideoPlayer(streamUrl, title);
-  }
-
   // Drawer toggle function
   function toggleDrawer() {  
     const drawer = document.getElementById('drawer');  
@@ -657,6 +460,24 @@ Join our official Telegram channel now!
     s %= 60; m %= 60;  
     return `${h > 0 ? h + 'h ' : ''}${m}m ${s}s ago`;  
   }  
+
+  // Check if match is finished (deleted from admin but within 6-12 hours)
+  function isMatchFinished(match) {
+    if (!match.deletedAt) return false;
+    const deletedTime = new Date(match.deletedAt);
+    const now = new Date();
+    const hoursDiff = (now - deletedTime) / (1000 * 60 * 60);
+    return hoursDiff <= 12; // Show in finished for 12 hours
+  }
+
+  // Auto-delete finished matches after 12 hours
+  function shouldAutoDelete(match) {
+    if (!match.deletedAt) return false;
+    const deletedTime = new Date(match.deletedAt);
+    const now = new Date();
+    const hoursDiff = (now - deletedTime) / (1000 * 60 * 60);
+    return hoursDiff > 12; // Auto delete after 12 hours
+  }
   
   function renderMatches(type = 'live') {  
   clearIntervals();  
@@ -669,165 +490,186 @@ Join our official Telegram channel now!
   const filter = document.getElementById('search').value.toLowerCase();  
   
   let filteredMatches = matches.filter(m => {  
-  const ct = new Date(m.MatchTime);  
-  const isLive = now >= ct;  
+    // Auto-delete matches that are older than 12 hours in finished
+    if (shouldAutoDelete(m)) return false;
+
+    const ct = new Date(m.MatchTime);  
+    const isLive = now >= ct;  
+    const isFinished = isMatchFinished(m);
+    
+    if (type === 'finished') {
+      return isFinished;
+    }
+    
+    // Don't show finished matches in other tabs
+    if (isFinished) return false;
+    
+    if (type === 'live' && !isLive) return false;  
+    
+    else if (type === 'today') {  
+      if (ct < todayStart || ct >= todayEnd || isLive) return false;  
+    }  
+    
+    else if (type === 'upcoming') {  
+      if (ct < now || (ct >= todayStart && ct < todayEnd)) return false;  
+    }  
+    
+    if (filter && !(m.Match.toLowerCase().includes(filter) || m.Team1.toLowerCase().includes(filter) || m.Team2.toLowerCase().includes(filter))) return false;  
+    
+    return true;  
+  });  
   
-  if (type === 'live' && !isLive) return false;  
-  
-  else if (type === 'today') {  
-    if (ct < todayStart || ct >= todayEnd || isLive) return false;  
-  }  
-  
-  else if (type === 'upcoming') {  
-    if (ct < now || (ct >= todayStart && ct < todayEnd)) return false;  
-  }  
-  
-  if (filter && !(m.Match.toLowerCase().includes(filter) || m.Team1.toLowerCase().includes(filter) || m.Team2.toLowerCase().includes(filter))) return false;  
-  
-  return true;  
-});  
-  
-// 🔀 এইখানে টাইম অনুযায়ী ছোট থেকে বড় সাজানো হচ্ছে  
-filteredMatches.sort((a, b) => new Date(a.MatchTime) - new Date(b.MatchTime));  
-  
-  if (filteredMatches.length === 0) {  
-  let emojiMessage = '😴 No matches available right now.';  
-  if (type === 'live') emojiMessage = '📴 No live matches at the moment.';  
-  else if (type === 'upcoming') emojiMessage = '🕒 No upcoming matches found.';  
-  else if (type === 'today') emojiMessage = '📅 No matches scheduled for today.';  
-  
-  list.innerHTML = `  
-    <div style="  
-      max-width: 420px;  
-      margin: 40px auto;  
-      padding: 30px 20px;  
-      background: #1e1e1e;  
-      border-radius: 14px;  
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);  
-      color: #ccc;  
-      font-family: 'Segoe UI', sans-serif;  
-      font-size: 1.25rem;  
-      font-weight: 500;  
-      text-align: center;  
-      user-select: none;  
-      display: flex;  
-      align-items: center;  
-      justify-content: center;  
-      gap: 14px;  
-    ">  
-      <span style="font-size: 2.5rem;">${emojiMessage.match(/^(\p{Emoji_Presentation}|\p{Extended_Pictographic})+/u)[0]}</span>  
-      <span>${emojiMessage.replace(/^(\p{Emoji_Presentation}|\p{Extended_Pictographic})+\s*/, '')}</span>  
-    </div>  
-  `;  
-  return;  
-}  
-  
-  filteredMatches.forEach((m, i) => {  
-  const ct = new Date(m.MatchTime);  
-  const isLive = now >= ct;  
-  
-  const div = document.createElement('div');  
-  div.className = "match";  
-  
-    let timerHtml = '';  
-  if (isLive) {  
-    const diffLive = getNow() - ct;  
-    timerHtml = `  
-      <div style="text-align: center; margin: 10px 0;">  
-        <div id="liveAnim${i}" style="width: 60px; height: 60px; margin: 0 auto;"></div>  
-        <div class="countdown" id="cd${type}${i}">Started ${formatCountUp(diffLive)}</div>  
+  // 🔀 এইখানে টাইম অনুযায়ী ছোট থেকে বড় সাজানো হচ্ছে  
+  filteredMatches.sort((a, b) => new Date(a.MatchTime) - new Date(b.MatchTime));  
+    
+    if (filteredMatches.length === 0) {  
+    let emojiMessage = '😴 No matches available right now.';  
+    if (type === 'live') emojiMessage = '📴 No live matches at the moment.';  
+    else if (type === 'upcoming') emojiMessage = '🕒 No upcoming matches found.';  
+    else if (type === 'today') emojiMessage = '📅 No matches scheduled for today.';  
+    else if (type === 'finished') emojiMessage = '🏁 No finished matches to show.';
+    
+    list.innerHTML = `  
+      <div style="  
+        max-width: 420px;  
+        margin: 40px auto;  
+        padding: 30px 20px;  
+        background: #1e1e1e;  
+        border-radius: 14px;  
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);  
+        color: #ccc;  
+        font-family: 'Segoe UI', sans-serif;  
+        font-size: 1.25rem;  
+        font-weight: 500;  
+        text-align: center;  
+        user-select: none;  
+        display: flex;  
+        align-items: center;  
+        justify-content: center;  
+        gap: 14px;  
+      ">  
+        <span style="font-size: 2.5rem;">${emojiMessage.match(/^(\p{Emoji_Presentation}|\p{Extended_Pictographic})+/u)[0]}</span>  
+        <span>${emojiMessage.replace(/^(\p{Emoji_Presentation}|\p{Extended_Pictographic})+\s*/, '')}</span>  
       </div>  
     `;  
-  } else {  
-    const dateStr = ct.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });  
-    const timeStr = ct.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });  
-    timerHtml = `  
-      <div class="match-time"> ${dateStr}</div>  
-      <div class="match-time"> ${timeStr}</div>  
-      <div class="countdown" id="cd${type}${i}">⏳ ${formatCountdown(getCountdown(m.MatchTime))}</div>  
-      ${getCountdown(m.MatchTime) <= 15 * 60 * 1000 ? `<div class="coming-soon-anim">⏳ Coming Soon...</div>` : ''}  
-    `;  
+    return;  
   }  
-  
-  div.innerHTML = `
-  <div style="background: #1a1a28; border-radius: 12px; padding: 16px; max-width: 360px; margin: auto; color: #fff; font-family: 'Segoe UI', sans-serif;">
-
-    <!-- Match Title -->
-    <div style="text-align:center; font-size:15px; font-weight:600; margin-bottom:14px; background:#000; padding:6px 10px; border-radius:8px;">
-      ${m.Match}
-    </div>
-
-    <!-- Teams Row -->
-    <div style="display: flex; justify-content: space-around; align-items: center; margin-bottom: 14px;">
-      <!-- Team 1 -->
-      <div style="display: flex; flex-direction: column; align-items: center; min-width: 90px;">
-        <img src="${m.Team1Logo}" alt="${m.Team1} logo" style="width:40px; height:40px; border-radius:50%;" loading="lazy" />
-        <span style="font-size:15px; font-weight:bold; text-align:center; margin-top:6px;">${m.Team1}</span>
-      </div>
-
-      <!-- VS Center -->
-      <div style="font-weight: bold; color: #0af; font-size:16px;">VS</div>
-
-      <!-- Team 2 -->
-      <div style="display: flex; flex-direction: column; align-items: center; min-width: 90px;">
-        <img src="${m.Team2Logo}" alt="${m.Team2} logo" style="width:40px; height:40px; border-radius:50%;" loading="lazy" />
-        <span style="font-size:15px; font-weight:bold; text-align:center; margin-top:6px;">${m.Team2}</span>
-      </div>
-    </div>
-
-    <!-- Timer -->
-    <div style="text-align:center; font-size:16px; color:#ccc; font-weight:500; margin-bottom:16px;">
-      ${timerHtml || '00:00:00'}
-    </div>
-
-    <!-- Server Buttons with Built-in Player -->
-    <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-      ${m.servers && m.servers.length > 0 ? 
-  m.servers.map((server, index) => {
-    const colors = ['#00bcd4', '#009688', '#3f51b5', '#ff5722', '#9c27b0', '#4caf50', '#ff9800'];
-    const bgColor = colors[index % colors.length];
-    return `<button onclick="handleStreamLink('${server.link}', '${m.Match} - ${server.name}')" style="background:${bgColor}; padding:6px 12px; border-radius:6px; color:#fff; border:none; cursor:pointer; font-size:14px; margin:2px;">${server.name}</button>`;
-  }).join('') 
-  : '<span style="color:#888; font-size:12px;">No servers available</span>'
-}
-    </div>
-  </div>
-`;
-  
-  list.appendChild(div);  
-  
-  // ⬇️ এইখানে Lottie animation শুরু হবে live এর জন্য  
-  if (isLive) {  
-    setTimeout(() => {  
-      bodymovin.loadAnimation({  
-        container: document.getElementById('liveAnim' + i),  
-        renderer: 'svg',  
-        loop: true,  
-        autoplay: true,  
-        path: 'https://raw.githubusercontent.com/Hasanmahmud000/HasanTv/refs/heads/main/live-icon.json'  
-      });  
-    }, 0);  
-  }  
-  
-    if (!isLive) {  
-      intervals.push(setInterval(() => {  
-        const cdEl = div.querySelector(`#cd${type}${i}`);  
-        if (cdEl) {  
-          const remain = getCountdown(m.MatchTime);  
-          cdEl.innerText = remain > 0 ? formatCountdown(remain) : "Starting soon";  
-        }  
-      }, 1000));  
+    
+    filteredMatches.forEach((m, i) => {  
+    const ct = new Date(m.MatchTime);  
+    const isLive = now >= ct;  
+    const isFinished = isMatchFinished(m);
+    
+    const div = document.createElement('div');  
+    div.className = `match ${isFinished ? 'finished' : ''}`;  
+    
+    let timerHtml = '';  
+    if (isFinished) {
+      const deletedTime = new Date(m.deletedAt);
+      const hoursAgo = Math.floor((now - deletedTime) / (1000 * 60 * 60));
+      timerHtml = `
+        <div style="text-align: center; margin: 10px 0;">
+          <div class="finished-badge">🏁 FINISHED</div>
+          <div class="countdown" style="color: #888;">Match ended ${hoursAgo}h ago</div>
+        </div>
+      `;
+    } else if (isLive) {  
+      const diffLive = getNow() - ct;  
+      timerHtml = `  
+        <div style="text-align: center; margin: 10px 0;">  
+          <div id="liveAnim${i}" style="width: 60px; height: 60px; margin: 0 auto;"></div>  
+          <div class="countdown" id="cd${type}${i}">Started ${formatCountUp(diffLive)}</div>  
+        </div>  
+      `;  
     } else {  
-      intervals.push(setInterval(() => {  
-        const cdEl = div.querySelector(`#cd${type}${i}`);  
-        if (cdEl) {  
-          const diffLive = getNow() - ct;  
-          cdEl.innerText = `Started ${formatCountUp(diffLive)}`;  
-        }  
-      }, 1000));  
+      const dateStr = ct.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });  
+      const timeStr = ct.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });  
+      timerHtml = `  
+        <div class="match-time"> ${dateStr}</div>  
+        <div class="match-time"> ${timeStr}</div>  
+        <div class="countdown" id="cd${type}${i}">⏳ ${formatCountdown(getCountdown(m.MatchTime))}</div>  
+        ${getCountdown(m.MatchTime) <= 15 * 60 * 1000 ? `<div class="coming-soon-anim">⏳ Coming Soon...</div>` : ''}  
+      `;  
     }  
-  });  
-}  
+    
+    div.innerHTML = `
+    <div style="background: #1a1a28; border-radius: 12px; padding: 16px; max-width: 360px; margin: auto; color: #fff; font-family: 'Segoe UI', sans-serif;">
+
+      <!-- Match Title -->
+      <div style="text-align:center; font-size:15px; font-weight:600; margin-bottom:14px; background:#000; padding:6px 10px; border-radius:8px;">
+        ${m.Match}
+      </div>
+
+      <!-- Teams Row -->
+      <div style="display: flex; justify-content: space-around; align-items: center; margin-bottom: 14px;">
+        <!-- Team 1 -->
+        <div style="display: flex; flex-direction: column; align-items: center; min-width: 90px;">
+          <img src="${m.Team1Logo}" alt="${m.Team1} logo" style="width:40px; height:40px; border-radius:50%;" loading="lazy" />
+          <span style="font-size:15px; font-weight:bold; text-align:center; margin-top:6px;">${m.Team1}</span>
+        </div>
+
+        <!-- VS Center -->
+        <div style="font-weight: bold; color: #0af; font-size:16px;">VS</div>
+
+        <!-- Team 2 -->
+        <div style="display: flex; flex-direction: column; align-items: center; min-width: 90px;">
+          <img src="${m.Team2Logo}" alt="${m.Team2} logo" style="width:40px; height:40px; border-radius:50%;" loading="lazy" />
+          <span style="font-size:15px; font-weight:bold; text-align:center; margin-top:6px;">${m.Team2}</span>
+        </div>
+      </div>
+
+      <!-- Timer -->
+      <div style="text-align:center; font-size:16px; color:#ccc; font-weight:500; margin-bottom:16px;">
+        ${timerHtml || '00:00:00'}
+      </div>
+
+      <!-- Server Buttons -->
+      <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+        ${!isFinished && m.servers && m.servers.length > 0 ? 
+    m.servers.map((server, index) => {
+      const colors = ['#00bcd4', '#009688', '#3f51b5', '#ff5722', '#9c27b0', '#4caf50', '#ff9800'];
+      const bgColor = colors[index % colors.length];
+      return `<a href="${server.link}" target="_blank" rel="noopener noreferrer" style="background:${bgColor}; padding:6px 12px; border-radius:6px; color:#fff; text-decoration:none; font-size:14px; margin:2px;">${server.name}</a>`;
+    }).join('') 
+    : isFinished ? '<span style="color:#888; font-size:12px;">🏁 Match Finished</span>' : '<span style="color:#888; font-size:12px;">No servers available</span>'
+  }
+      </div>
+    </div>
+  `;    
+    list.appendChild(div);  
+    
+    // ⬇️ এইখানে Lottie animation শুরু হবে live এর জন্য  
+    if (isLive && !isFinished) {  
+      setTimeout(() => {  
+        bodymovin.loadAnimation({  
+          container: document.getElementById('liveAnim' + i),  
+          renderer: 'svg',  
+          loop: true,  
+          autoplay: true,  
+          path: 'https://raw.githubusercontent.com/Hasanmahmud000/HasanTv/refs/heads/main/live-icon.json'  
+        });  
+      }, 0);  
+    }  
+    
+      if (!isLive && !isFinished) {  
+        intervals.push(setInterval(() => {  
+          const cdEl = div.querySelector(`#cd${type}${i}`);  
+          if (cdEl) {  
+            const remain = getCountdown(m.MatchTime);  
+            cdEl.innerText = remain > 0 ? formatCountdown(remain) : "Starting soon";  
+          }  
+        }, 1000));  
+      } else if (isLive && !isFinished) {  
+        intervals.push(setInterval(() => {  
+          const cdEl = div.querySelector(`#cd${type}${i}`);  
+          if (cdEl) {  
+            const diffLive = getNow() - ct;  
+            cdEl.innerText = `Started ${formatCountUp(diffLive)}`;  
+          }  
+        }, 1000));  
+      }  
+    });  
+  }  
   
   // নিচের বড় ট্যাব হ্যান্ডলার  
   function showCategory(category) {  
@@ -868,6 +710,7 @@ filteredMatches.sort((a, b) => new Date(a.MatchTime) - new Date(b.MatchTime));
   document.getElementById('subLive').classList.remove('active');  
   document.getElementById('subToday').classList.remove('active');   // নতুন Today এর জন্য  
   document.getElementById('subUpcoming').classList.remove('active');  
+  document.getElementById('subFinished').classList.remove('active');  // নতুন Finished এর জন্য
   
   document.getElementById('sub' + subTab.charAt(0).toUpperCase() + subTab.slice(1)).classList.add('active');  
 }  
@@ -895,6 +738,13 @@ document.getElementById('subToday').addEventListener('click', () => {
   setActiveSubTab(currentSubTab);  
   renderMatches(currentSubTab);  
 });  
+
+// ✅ নতুন Finished ট্যাব ইভেন্ট লিসেনার
+document.getElementById('subFinished').addEventListener('click', () => {  
+  currentSubTab = 'finished';  
+  setActiveSubTab(currentSubTab);  
+  renderMatches(currentSubTab);  
+});  
   
   document.getElementById('search').addEventListener('input', () => {  
     if(document.getElementById('subTabs').style.display === 'block'){  
@@ -913,35 +763,59 @@ document.getElementById('subToday').addEventListener('click', () => {
     const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);  
   
     // 🔹 সংখ্যাগুলো বের করো  
-    const liveCount = matches.filter(m => new Date(m.MatchTime) <= now).length;  
+    const liveCount = matches.filter(m => {
+      if (shouldAutoDelete(m) || isMatchFinished(m)) return false;
+      return new Date(m.MatchTime) <= now;
+    }).length;
+    
     const todayCount = matches.filter(m => {  
+      if (shouldAutoDelete(m) || isMatchFinished(m)) return false;
       const ct = new Date(m.MatchTime);  
       return ct >= todayStart && ct < todayEnd && ct > now;  
     }).length;  
-    const upcomingCount = matches.filter(m => new Date(m.MatchTime) > todayEnd).length;  
+    
+    const upcomingCount = matches.filter(m => {
+      if (shouldAutoDelete(m) || isMatchFinished(m)) return false;
+      return new Date(m.MatchTime) > todayEnd;
+    }).length;
+
+    const finishedCount = matches.filter(m => {
+      return isMatchFinished(m) && !shouldAutoDelete(m);
+    }).length;
   
     // 🔹 UI তে সংখ্যা বসাও  
     document.getElementById("countLive").innerText = `(${liveCount})`;  
     document.getElementById("countToday").innerText = `(${todayCount})`;  
     document.getElementById("countUpcoming").innerText = `(${upcomingCount})`;  
+    document.getElementById("countFinished").innerText = `(${finishedCount})`;
   
     // 🔹 ম্যাচগুলোকে ফিল্টার করে সাজাও  
     const todayMatches = matches.filter(m => {  
+      if (shouldAutoDelete(m) || isMatchFinished(m)) return false;
       const ct = new Date(m.MatchTime);  
       return ct >= todayStart && ct < todayEnd && ct > now;  
     });  
   
     const upcomingMatches = matches.filter(m => {  
+      if (shouldAutoDelete(m) || isMatchFinished(m)) return false;
       const ct = new Date(m.MatchTime);  
       return ct > todayEnd;  
     });  
   
-    const liveMatches = matches.filter(m => new Date(m.MatchTime) <= now);  
+    const liveMatches = matches.filter(m => {
+      if (shouldAutoDelete(m) || isMatchFinished(m)) return false;
+      return new Date(m.MatchTime) <= now;
+    });
+
+    const finishedMatches = matches.filter(m => {
+      return isMatchFinished(m) && !shouldAutoDelete(m);
+    });
   
     matches = [  
       ...liveMatches.map(m => ({ ...m, isLive: true })),  
       ...todayMatches.map(m => ({ ...m, isToday: true })),  
       ...upcomingMatches.map(m => ({ ...m, isUpcoming: true })),  
+      ...finishedMatches.map(m => ({ ...m, isFinished: true })),
     ];  
   
     showCategory('live');  
@@ -1026,10 +900,10 @@ document.getElementById('subToday').addEventListener('click', () => {
     if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
       // Only work when sub-tabs are visible (Live category)
       if (document.getElementById('subTabs').style.display === 'block') {
-        const subTabs = ['live', 'today', 'upcoming'];
+        const subTabs = ['live', 'today', 'upcoming', 'finished']; // Added finished
         const currentIndex = subTabs.indexOf(currentSubTab);
         
-                if (deltaX > 0) {
+        if (deltaX > 0) {
           // Swipe right - go to previous tab
           if (currentIndex > 0) {
             const newTab = subTabs[currentIndex - 1];
@@ -1080,7 +954,7 @@ document.getElementById('subToday').addEventListener('click', () => {
       
       if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
         if (document.getElementById('subTabs').style.display === 'block') {
-          const subTabs = ['live', 'today', 'upcoming'];
+          const subTabs = ['live', 'today', 'upcoming', 'finished']; // Added finished
           const currentIndex = subTabs.indexOf(currentSubTab);
           
           if (deltaX > 0) {
@@ -1108,186 +982,54 @@ document.getElementById('subToday').addEventListener('click', () => {
     isMouseDown = false;
   });
 
-  // Keyboard shortcuts for video player
-  document.addEventListener('keydown', function(e) {
-    const modal = document.getElementById('videoPlayerModal');
-    const video = document.getElementById('mainVideoPlayer');
-    
-    if (modal.style.display === 'flex') {
-      switch(e.key) {
-        case 'Escape':
-          closeVideoPlayer();
-          break;
-        case ' ':
-          e.preventDefault();
-          if (video.paused) {
-            video.play();
-          } else {
-            video.pause();
-          }
-          break;
-        case 'f':
-        case 'F':
-          if (video.requestFullscreen) {
-            video.requestFullscreen();
-          } else if (video.webkitRequestFullscreen) {
-            video.webkitRequestFullscreen();
-          } else if (video.msRequestFullscreen) {
-            video.msRequestFullscreen();
-          }
-          break;
-        case 'm':
-        case 'M':
-          video.muted = !video.muted;
-          break;
-        case 'ArrowLeft':
-          video.currentTime = Math.max(0, video.currentTime - 10);
-          break;
-        case 'ArrowRight':
-          video.currentTime = Math.min(video.duration, video.currentTime + 10);
-          break;
-        case 'ArrowUp':
-          e.preventDefault();
-          video.volume = Math.min(1, video.volume + 0.1);
-          break;
-        case 'ArrowDown':
-          e.preventDefault();
-          video.volume = Math.max(0, video.volume - 0.1);
-          break;
+  // Auto-refresh data every 30 seconds to update counts and remove auto-deleted matches
+  setInterval(() => {
+    fetch(matchesApi)
+    .then(res => res.json())
+        .then(data => {
+      const oldMatches = matches;
+      matches = data.matches || [];
+      
+      const now = new Date();
+      const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+
+      // Update counts
+      const liveCount = matches.filter(m => {
+        if (shouldAutoDelete(m) || isMatchFinished(m)) return false;
+        return new Date(m.MatchTime) <= now;
+      }).length;
+      
+      const todayCount = matches.filter(m => {
+        if (shouldAutoDelete(m) || isMatchFinished(m)) return false;
+        const ct = new Date(m.MatchTime);
+        return ct >= todayStart && ct < todayEnd && ct > now;
+      }).length;
+      
+      const upcomingCount = matches.filter(m => {
+        if (shouldAutoDelete(m) || isMatchFinished(m)) return false;
+        return new Date(m.MatchTime) > todayEnd;
+      }).length;
+
+      const finishedCount = matches.filter(m => {
+        return isMatchFinished(m) && !shouldAutoDelete(m);
+      }).length;
+
+      // Update UI counts
+      document.getElementById("countLive").innerText = `(${liveCount})`;
+      document.getElementById("countToday").innerText = `(${todayCount})`;
+      document.getElementById("countUpcoming").innerText = `(${upcomingCount})`;
+      document.getElementById("countFinished").innerText = `(${finishedCount})`;
+
+      // Re-render current tab if data changed
+      if (JSON.stringify(oldMatches) !== JSON.stringify(matches)) {
+        if (document.getElementById('subTabs').style.display === 'block') {
+          renderMatches(currentSubTab);
+        }
       }
-    }
-  });
-
-  // Enhanced error handling for video player
-  document.getElementById('mainVideoPlayer').addEventListener('error', function(e) {
-    console.error('Video error:', e);
-    const errorDiv = document.createElement('div');
-    errorDiv.style.cssText = `
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(0,0,0,0.8);
-      color: white;
-      padding: 20px;
-      border-radius: 8px;
-      text-align: center;
-      z-index: 10000;
-    `;
-    errorDiv.innerHTML = `
-      <h3>⚠️ Playback Error</h3>
-      <p>Unable to load the stream. This might be due to:</p>
-      <ul style="text-align: left; margin: 10px 0;">
-        <li>Network connectivity issues</li>
-        <li>Stream server is down</li>
-        <li>Unsupported video format</li>
-      </ul>
-      <button onclick="this.parentElement.remove(); closeVideoPlayer();" style="background: #0af; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-top: 10px;">Close Player</button>
-    `;
-    document.querySelector('.video-player-container').appendChild(errorDiv);
-  });
-
-  // Auto-hide controls after inactivity
-  let controlsTimeout;
-  const playerContainer = document.querySelector('.video-player-container');
-  
-  function showControls() {
-    const controls = document.querySelector('.player-controls');
-    const header = document.querySelector('.video-player-header');
-    if (controls) controls.style.opacity = '1';
-    if (header) header.style.opacity = '1';
-    
-    clearTimeout(controlsTimeout);
-    controlsTimeout = setTimeout(() => {
-      if (controls) controls.style.opacity = '0.3';
-      if (header) header.style.opacity = '0.3';
-    }, 3000);
-  }
-
-  if (playerContainer) {
-    playerContainer.addEventListener('mousemove', showControls);
-    playerContainer.addEventListener('touchstart', showControls);
-  }
-
-  // Picture-in-Picture support
-  function togglePiP() {
-    const video = document.getElementById('mainVideoPlayer');
-    if (document.pictureInPictureElement) {
-      document.exitPictureInPicture();
-    } else if (document.pictureInPictureEnabled) {
-      video.requestPictureInPicture().catch(error => {
-        console.log('PiP failed:', error);
-      });
-    }
-  }
-
-  // Add PiP button to controls
-  window.addEventListener('load', () => {
-    if (document.pictureInPictureEnabled) {
-      const pipButton = document.createElement('button');
-      pipButton.className = 'quality-btn';
-      pipButton.textContent = 'PiP';
-      pipButton.onclick = togglePiP;
-      document.querySelector('.player-controls').appendChild(pipButton);
-    }
-  });
-
-  // Network status monitoring
-  function updateNetworkStatus() {
-    const status = navigator.onLine ? 'online' : 'offline';
-    if (status === 'offline') {
-      const offlineDiv = document.createElement('div');
-      offlineDiv.id = 'offline-indicator';
-      offlineDiv.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        background: #ff4444;
-        color: white;
-        text-align: center;
-        padding: 10px;
-        z-index: 10000;
-        font-weight: bold;
-      `;
-      offlineDiv.textContent = '📡 No internet connection - Streams may not work';
-      document.body.appendChild(offlineDiv);
-    } else {
-      const offlineDiv = document.getElementById('offline-indicator');
-      if (offlineDiv) {
-        offlineDiv.remove();
-      }
-    }
-  }
-
-  window.addEventListener('online', updateNetworkStatus);
-  window.addEventListener('offline', updateNetworkStatus);
-
-  // Performance optimization - lazy loading for images
-  const imageObserver = new IntersectionObserver((entries, observer) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const img = entry.target;
-        img.src = img.dataset.src;
-        img.classList.remove('lazy');
-        observer.unobserve(img);
-      }
-    });
-  });
-
-  // Apply lazy loading to team logos
-  function applyLazyLoading() {
-    document.querySelectorAll('img[loading="lazy"]').forEach(img => {
-      imageObserver.observe(img);
-    });
-  }
-
-  // Call lazy loading after matches are rendered
-  const originalRenderMatches = renderMatches;
-  renderMatches = function(...args) {
-    originalRenderMatches.apply(this, args);
-    setTimeout(applyLazyLoading, 100);
-  };
+    })
+    .catch(e => console.error('Auto-refresh error:', e));
+  }, 30000); // Refresh every 30 seconds
 
 </script>  
 
