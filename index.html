@@ -3,18 +3,13 @@
 <head>  
   <meta charset="UTF-8" />  
   <meta name="viewport" content="width=device-width, initial-scale=1" />  
-  <title>CricStreamZone - Live Matches & Upcoming</title>
-  
-  <!-- PWA Manifest -->
-  <link rel="manifest" href="manifest.json">
-  
-  <!-- Lottie Animation Library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.4/lottie.min.js"></script>  
-  
+  <title>CricStreamZone - Live Matches & Upcoming</title>  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.4/lottie.min.js">  
+</script>  
   <style>  
-    .menu-dropdown {  
-      position: relative;  
-      display: inline-block;  
+  	.menu-dropdown {  
+  position: relative;  
+  display: inline-block;  
 }  
   
 .menu-toggle {  
@@ -118,61 +113,6 @@
   display: block;  
 }  
 
-/* Notification Permission Popup */
-.notification-popup {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10000;
-}
-
-.notification-popup-content {
-  background: #222;
-  padding: 25px;
-  border-radius: 12px;
-  max-width: 90%;
-  width: 350px;
-  text-align: center;
-  box-shadow: 0 0 20px rgba(0, 175, 255, 0.3);
-}
-
-.notification-popup h3 {
-  color: #0af;
-  margin-bottom: 15px;
-  font-size: 18px;
-}
-
-.notification-popup p {
-  color: #ccc;
-  margin-bottom: 20px;
-  line-height: 1.5;
-}
-
-.notification-popup button {
-  padding: 10px 20px;
-  margin: 0 5px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.notification-popup .allow-btn {
-  background: #0af;
-  color: white;
-}
-
-.notification-popup .deny-btn {
-  background: #666;
-  color: white;
-}
-
     body {  
       margin: 0;  
       background: #111;  
@@ -207,13 +147,73 @@
       color: #fff;  
       text-align: center;  
     }  
+    
+    /* Enhanced Notice with Animation */
     .notice {  
-      background: yellow;  
+      background: linear-gradient(45deg, #ff6b35, #f7931e, #ffd23f, #06ffa5, #4ecdc4, #45b7d1, #96ceb4, #ffeaa7);
+      background-size: 400% 400%;
+      animation: gradientShift 8s ease infinite;
       color: #000;  
-      padding: 10px;  
+      padding: 12px;  
       font-weight: bold;  
-      text-align: center;  
-    }  
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .notice::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: shimmer 3s infinite;
+    }
+    
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    @keyframes shimmer {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+    
+    .notice marquee {
+      position: relative;
+      z-index: 1;
+      font-size: 14px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    }
+
+    /* Notification Permission Button */
+    .notification-btn {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      background: linear-gradient(45deg, #ff4757, #ff6b35);
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: bold;
+      box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
+      animation: pulse 2s infinite;
+      z-index: 1000;
+      display: none;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
   
     /* সাব-ট্যাব স্টাইল */  
     .sub-tab-btns {  
@@ -364,15 +364,10 @@
 </head>  
 <body>  
 
-<!-- Notification Permission Popup -->
-<div id="notificationPopup" class="notification-popup" style="display: none;">
-  <div class="notification-popup-content">
-    <h3>🔔 Enable Notifications</h3>
-    <p>Get instant alerts for match start times and live updates. Never miss your favorite cricket matches!</p>
-    <button class="allow-btn" onclick="enableNotifications()">Allow Notifications</button>
-    <button class="deny-btn" onclick="closeNotificationPopup()">Maybe Later</button>
-  </div>
-</div>
+<!-- Notification Permission Button -->
+<button id="notificationBtn" class="notification-btn" onclick="requestNotificationPermission()">
+  🔔 Enable Notifications
+</button>
 
 <!-- Drawer / Side Menu -->  
 <div id="drawer">  
@@ -391,7 +386,7 @@
   <a href="#" onclick="showCategory('live'); toggleDrawer();">🏏 Live Matches</a>  
   <a href="#" onclick="showCategory('tv'); toggleDrawer();">📺 Live TV</a>  
   <a href="#" onclick="showCategory('fm'); toggleDrawer();">📻 FM Radio</a>
-  <a href="#" onclick="toggleNotifications(); toggleDrawer();">🔔 Notifications</a>
+  <a href="#" onclick="requestNotificationPermission(); toggleDrawer();">🔔 Enable Notifications</a>
 </div>  
 <div id="drawerOverlay" onclick="toggleDrawer()"></div>
 
@@ -406,8 +401,7 @@
 </nav>  
   
 <div class="notice">  
-  <marquee scrollamount="5">Hi Welcome To CricStreamZone ! ⚠️ Attention All Users ! For flawless live sports streaming on your mobile device ! please install the NS Player app now ! Without NS Player, videos may not play properly or could stop unexpectedly ! 📲 Don't miss a single moment — install NS Player today and enjoy uninterrupted live matches ! You can download the app from:  
-Google Play Store or join our Telegram channel for the latest updates and app links:CricStreamZone Telegram ! </marquee>  
+  <marquee scrollamount="4">🏏 Welcome To CricStreamZone - Your Ultimate Sports Streaming Destination! 🎯 | 🔥 LIVE Cricket, Football & All Sports Matches Available 24/7! ⚡ | 📱 Download NS Player for Best Experience | 🚨 Enable Notifications to Never Miss a Match! | 🎊 Join 50K+ Happy Users | 💎 Premium Quality Streams | 🌟 Zero Buffering Guarantee | 📺 Multi-Server Support | 🔔 Real-time Match Updates | 🏆 All Major Tournaments Covered | 🎮 Interactive Live Scores | 🌍 Global Sports Coverage | 💯 100% Free Forever!</marquee>  
 </div>  
   
 <!-- সাব-ট্যাব শুধুমাত্র Live Category তে দেখাবে -->  
@@ -463,9 +457,10 @@ Join our official Telegram channel now!
 </div>
 
 <script>  
-  // Notification System Variables
+  // Notification Variables
   let notificationPermission = false;
-  let scheduledNotifications = new Map();
+  let notifiedMatches = new Set();
+  let notificationCheckInterval;
 
   // Drawer toggle function
   function toggleDrawer() {  
@@ -475,164 +470,115 @@ Join our official Telegram channel now!
     overlay.classList.toggle('show');  
   }
 
-  // Notification Functions
-  function showNotificationPopup() {
-    if (Notification.permission === 'default') {
-      document.getElementById('notificationPopup').style.display = 'flex';
+  // Notification Permission Request
+  async function requestNotificationPermission() {
+    if (!('Notification' in window)) {
+      alert('This browser does not support notifications');
+      return;
     }
-  }
 
-  function closeNotificationPopup() {
-    document.getElementById('notificationPopup').style.display = 'none';
-    localStorage.setItem('notificationPopupClosed', 'true');
-  }
+    if (Notification.permission === 'granted') {
+      notificationPermission = true;
+      document.getElementById('notificationBtn').style.display = 'none';
+      showNotificationStatus('✅ Notifications enabled!');
+      startNotificationCheck();
+      return;
+    }
 
-  async function enableNotifications() {
-    try {
+    if (Notification.permission !== 'denied') {
       const permission = await Notification.requestPermission();
       if (permission === 'granted') {
         notificationPermission = true;
-        localStorage.setItem('notificationsEnabled', 'true');
-        closeNotificationPopup();
+        document.getElementById('notificationBtn').style.display = 'none';
+        showNotificationStatus('✅ Notifications enabled!');
+        startNotificationCheck();
         
-        // Show success message
-        showNotificationMessage('🔔 Notifications enabled! You\'ll get alerts for upcoming matches.', 'success');
-        
-        // Schedule notifications for existing matches
-        scheduleAllNotifications();
+        // Welcome notification
+        new Notification('🏏 CricStreamZone', {
+          body: 'Notifications enabled! You\'ll get alerts 15 minutes before matches start.',
+          icon: 'https://i.postimg.cc/3rPWWckN/icon-192.png',
+          badge: 'https://i.postimg.cc/3rPWWckN/icon-192.png'
+        });
       } else {
-        showNotificationMessage('❌ Notifications blocked. Enable them in browser settings.', 'error');
+        showNotificationStatus('❌ Notifications blocked');
       }
-    } catch (error) {
-      console.error('Notification permission error:', error);
-      showNotificationMessage('❌ Error enabling notifications.', 'error');
     }
   }
 
-  function toggleNotifications() {
-    if (Notification.permission === 'granted') {
-      const enabled = localStorage.getItem('notificationsEnabled') === 'true';
-      if (enabled) {
-        localStorage.setItem('notificationsEnabled', 'false');
-        clearAllScheduledNotifications();
-        showNotificationMessage('🔕 Notifications disabled.', 'info');
-      } else {
-        localStorage.setItem('notificationsEnabled', 'true');
-        scheduleAllNotifications();
-        showNotificationMessage('🔔 Notifications enabled!', 'success');
-      }
-    } else {
-      showNotificationPopup();
-    }
-  }
-
-  function showNotificationMessage(message, type) {
-    const colors = {
-      success: '#4caf50',
-      error: '#f44336',
-      info: '#2196f3'
-    };
-
-    const messageDiv = document.createElement('div');
-    messageDiv.innerHTML = message;
-    messageDiv.style.cssText = `
+  function showNotificationStatus(message) {
+    const statusDiv = document.createElement('div');
+    statusDiv.innerHTML = message;
+    statusDiv.style.cssText = `
       position: fixed;
       top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: ${colors[type] || colors.info};
+      right: 20px;
+      background: #0af;
       color: white;
-      padding: 12px 20px;
+      padding: 10px 15px;
       border-radius: 8px;
-      font-weight: 600;
-      z-index: 10001;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      font-weight: bold;
+      z-index: 10000;
+      animation: slideIn 0.3s ease;
     `;
-    
-    document.body.appendChild(messageDiv);
-    
-    setTimeout(() => {
-      messageDiv.remove();
-    }, 3000);
+    document.body.appendChild(statusDiv);
+    setTimeout(() => statusDiv.remove(), 3000);
   }
 
-  function scheduleNotification(match, type) {
-    if (!notificationPermission || localStorage.getItem('notificationsEnabled') !== 'true') return;
+  // Start notification checking
+  function startNotificationCheck() {
+    if (notificationCheckInterval) clearInterval(notificationCheckInterval);
+    
+    notificationCheckInterval = setInterval(() => {
+      checkUpcomingMatches();
+    }, 60000); // Check every minute
+  }
 
-    const matchTime = new Date(match.MatchTime);
+  // Check for upcoming matches and send notifications
+  function checkUpcomingMatches() {
+    if (!notificationPermission || !matches.length) return;
+
     const now = new Date();
-    let scheduleTime;
-    let title, body, icon;
-
-    if (type === 'before') {
-      scheduleTime = new Date(matchTime.getTime() - 15 * 60 * 1000); // 15 minutes before
-      title = '🏏 Match Starting Soon!';
-      body = `${match.Team1} vs ${match.Team2} starts in 15 minutes`;
-      icon = 'https://i.postimg.cc/3rPWWckN/icon-192.png';
-    } else if (type === 'start') {
-      scheduleTime = matchTime;
-      title = '🔴 Match Started!';
-      body = `${match.Team1} vs ${match.Team2} is now LIVE!`;
-      icon = 'https://i.postimg.cc/3rPWWckN/icon-192.png';
-    }
-
-    if (scheduleTime <= now) return; // Don't schedule past notifications
-
-    const timeoutId = setTimeout(() => {
-      if ('serviceWorker' in navigator && 'Notification' in window) {
-        // Send message to service worker for background notification
-        navigator.serviceWorker.ready.then(registration => {
-          registration.showNotification(title, {
-            body: body,
-            icon: icon,
-            badge: icon,
-            tag: `match-${match.Match}-${type}`,
-            requireInteraction: true,
-            actions: [
-              {
-                action: 'view',
-                title: 'Watch Now'
-              }
-            ],
-            data: {
-              matchId: match.Match,
-              url: window.location.origin
-            }
-          });
+    
+    matches.forEach(match => {
+      const matchTime = new Date(match.MatchTime);
+      const timeDiff = matchTime - now;
+      const matchId = `${match.Team1}-${match.Team2}-${match.MatchTime}`;
+      
+      // Notify 15 minutes before match starts
+      if (timeDiff > 0 && timeDiff <= 15 * 60 * 1000 && !notifiedMatches.has(matchId + '-15min')) {
+        new Notification('🏏 Match Starting Soon!', {
+          body: `${match.Team1} vs ${match.Team2} starts in 15 minutes`,
+          icon: 'https://i.postimg.cc/3rPWWckN/icon-192.png',
+          badge: 'https://i.postimg.cc/3rPWWckN/icon-192.png',
+          tag: matchId + '-15min'
         });
-      } else {
-        // Fallback for browsers without service worker
-        new Notification(title, {
-          body: body,
-          icon: icon
-        });
+        notifiedMatches.add(matchId + '-15min');
       }
       
-      // Remove from scheduled notifications
-      scheduledNotifications.delete(`${match.Match}-${type}`);
-    }, scheduleTime.getTime() - now.getTime());
-
-    // Store the timeout ID
-    scheduledNotifications.set(`${match.Match}-${type}`, timeoutId);
-  }
-
-  function scheduleAllNotifications() {
-    if (!matches || !notificationPermission) return;
-
-    clearAllScheduledNotifications();
-
-    matches.forEach(match => {
-      scheduleNotification(match, 'before');
-      scheduleNotification(match, 'start');
+      // Notify when match starts
+      if (timeDiff > -60000 && timeDiff <= 0 && !notifiedMatches.has(matchId + '-start')) {
+        new Notification('🔴 Match Started!', {
+          body: `${match.Team1} vs ${match.Team2} is now LIVE!`,
+          icon: 'https://i.postimg.cc/3rPWWckN/icon-192.png',
+          badge: 'https://i.postimg.cc/3rPWWckN/icon-192.png',
+          tag: matchId + '-start'
+        });
+        notifiedMatches.add(matchId + '-start');
+      }
     });
   }
 
-  function clearAllScheduledNotifications() {
-    scheduledNotifications.forEach(timeoutId => {
-      clearTimeout(timeoutId);
-    });
-    scheduledNotifications.clear();
-  }
+  // Check notification permission on load
+  window.addEventListener('load', () => {
+    if ('Notification' in window) {
+      if (Notification.permission === 'granted') {
+        notificationPermission = true;
+        startNotificationCheck();
+      } else if (Notification.permission === 'default') {
+        document.getElementById('notificationBtn').style.display = 'block';
+      }
+    }
+  });
 
   // Telegram popup functions
   function closeTelegramPopup() {  
@@ -646,20 +592,7 @@ Join our official Telegram channel now!
       setTimeout(() => {  
         document.getElementById('telegramPopup').style.display = 'block';  
       }, 5000); // ৫ সেকেন্ড পরে দেখাবে  
-    }
-
-    // Check notification popup
-    const notificationPopupClosed = localStorage.getItem('notificationPopupClosed');
-    if (!notificationPopupClosed && Notification.permission === 'default') {
-      setTimeout(() => {
-        showNotificationPopup();
-      }, 8000); // 8 seconds after page load
-    }
-
-    // Initialize notification permission
-    if (Notification.permission === 'granted') {
-      notificationPermission = true;
-    }
+    }  
   });
 
   // API url (আপনার গুগল অ্যাপস স্ক্রিপ্ট / API url দিন এখানে)  
@@ -734,7 +667,7 @@ filteredMatches.sort((a, b) => new Date(a.MatchTime) - new Date(b.MatchTime));
       border-radius: 14px;  
       box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);  
       color: #ccc;  
-            font-family: 'Segoe UI', sans-serif;  
+      font-family: 'Segoe UI', sans-serif;  
       font-size: 1.25rem;  
       font-weight: 500;  
       text-align: center;  
@@ -751,7 +684,7 @@ filteredMatches.sort((a, b) => new Date(a.MatchTime) - new Date(b.MatchTime));
   return;  
 }  
   
-  filteredMatches.forEach((m, i) => {  
+    filteredMatches.forEach((m, i) => {  
   const ct = new Date(m.MatchTime);  
   const isLive = now >= ct;  
   
@@ -973,19 +906,19 @@ document.getElementById('subToday').addEventListener('click', () => {
       ...upcomingMatches.map(m => ({ ...m, isUpcoming: true })),  
     ];  
   
-    // Schedule notifications for all matches
-    if (localStorage.getItem('notificationsEnabled') === 'true') {
-      scheduleAllNotifications();
+    showCategory('live');
+    
+    // Start notification checking after matches are loaded
+    if (notificationPermission) {
+      startNotificationCheck();
     }
-  
-    showCategory('live');  
   })  
     .catch(e => {  
       console.error('Error fetching matches:', e);  
       document.getElementById('match-list').innerHTML = '<p style="text-align:center; color:#f00;">Failed to load match data.</p>';  
     });
 
-  // Service Worker for PWA and Notifications
+  // Service Worker for PWA
   if ('serviceWorker' in navigator) {  
     navigator.serviceWorker.register('sw.js').then(registration => {  
   
@@ -1031,7 +964,7 @@ document.getElementById('subToday').addEventListener('click', () => {
           if (reg.installing) {  
             reg.installing.addEventListener("statechange", function () {  
               if (this.state === "installed" && navigator.serviceWorker.controller) {  
-                              showUpdatePopup();  
+                showUpdatePopup();  
               }  
             });  
           }  
@@ -1059,7 +992,7 @@ document.getElementById('subToday').addEventListener('click', () => {
     // Check if horizontal swipe is more significant than vertical
     if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
       // Only work when sub-tabs are visible (Live category)
-      if (document.getElementById('subTabs').style.display === 'block') {
+            if (document.getElementById('subTabs').style.display === 'block') {
         const subTabs = ['live', 'today', 'upcoming'];
         const currentIndex = subTabs.indexOf(currentSubTab);
         
@@ -1141,6 +1074,98 @@ document.getElementById('subToday').addEventListener('click', () => {
   document.addEventListener('mouseleave', function() {
     isMouseDown = false;
   });
+
+  // Background sync for notifications (works even when app is closed)
+  if ('serviceWorker' in navigator && 'sync' in window.ServiceWorkerRegistration.prototype) {
+    navigator.serviceWorker.ready.then(function(registration) {
+      // Register background sync
+      return registration.sync.register('background-notification-check');
+    }).catch(function(error) {
+      console.log('Background sync registration failed:', error);
+    });
+  }
+
+  // Visibility change handler - check notifications when app becomes visible
+  document.addEventListener('visibilitychange', function() {
+    if (!document.hidden && notificationPermission) {
+      checkUpcomingMatches();
+    }
+  });
+
+  // Page focus handler - refresh data when user returns to app
+  window.addEventListener('focus', function() {
+    if (notificationPermission) {
+      checkUpcomingMatches();
+    }
+    // Refresh match data
+    if (matches.length > 0) {
+      renderMatches(currentSubTab);
+    }
+  });
+
+  // Auto refresh match data every 5 minutes
+  setInterval(() => {
+    fetch(matchesApi)
+      .then(res => res.json())
+      .then(data => {
+        const oldMatchesLength = matches.length;
+        matches = data.matches || [];
+        
+        // If new matches added, show notification
+        if (notificationPermission && matches.length > oldMatchesLength) {
+          new Notification('🆕 New Matches Added!', {
+            body: 'Check out the latest matches on CricStreamZone',
+            icon: 'https://i.postimg.cc/3rPWWckN/icon-192.png',
+            badge: 'https://i.postimg.cc/3rPWWckN/icon-192.png'
+          });
+        }
+        
+        // Update counts
+        const now = new Date();
+        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+        
+        const liveCount = matches.filter(m => new Date(m.MatchTime) <= now).length;
+        const todayCount = matches.filter(m => {
+          const ct = new Date(m.MatchTime);
+          return ct >= todayStart && ct < todayEnd && ct > now;
+        }).length;
+        const upcomingCount = matches.filter(m => new Date(m.MatchTime) > todayEnd).length;
+        
+        document.getElementById("countLive").innerText = `(${liveCount})`;
+        document.getElementById("countToday").innerText = `(${todayCount})`;
+        document.getElementById("countUpcoming").innerText = `(${upcomingCount})`;
+        
+        // Re-render current view
+        if (document.getElementById('subTabs').style.display === 'block') {
+          renderMatches(currentSubTab);
+        }
+      })
+      .catch(e => console.error('Auto refresh failed:', e));
+  }, 5 * 60 * 1000); // 5 minutes
+
+  // Add CSS animation for notification button
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    .notification-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(255, 71, 87, 0.6);
+    }
+    
+    .coming-soon-anim {
+      color: #ff6b35;
+      font-weight: bold;
+      animation: pulse 1.5s infinite;
+      text-align: center;
+      margin-top: 5px;
+    }
+  `;
+  document.head.appendChild(style);
 
 </script>  
 
