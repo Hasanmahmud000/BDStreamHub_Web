@@ -1,308 +1,308 @@
-<!DOCTYPE html>  
-<html lang="en">  
-<head>  
-  <meta charset="UTF-8" />  
-  <meta name="viewport" content="width=device-width, initial-scale=1" />  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CricStreamZone - Live Matches & Upcoming</title>
   
   <!-- Manifest লিংক যোগ করুন -->
   <link rel="manifest" href="manifest.json">
   
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.4/lottie.min.js">  
-</script>  
-  <style>  
-  	.menu-dropdown {  
-  position: relative;  
-  display: inline-block;  
-}  
-  
-.menu-toggle {  
-  background: none;  
-  border: none;  
-  font-size: 22px;  
-  color: #0ff;  
-  cursor: pointer;  
-  padding: 5px;  
-  margin-left: 10px;  
-}  
-  
-.dropdown-content {  
-  display: none;  
-  position: absolute;  
-  right: 0;  
-  top: 30px;  
-  background-color: #222;  
-  box-shadow: 0 4px 8px rgba(0,0,0,0.7);  
-  border-radius: 8px;  
-  z-index: 1001;  
-  overflow: hidden;  
-  min-width: 180px;  
-}  
-  
-.dropdown-content a {  
-  color: #fff;  
-  padding: 10px 16px;  
-  display: block;  
-  text-decoration: none;  
-  font-size: 14px;  
-  transition: background 0.3s ease;  
-}  
-  
-.dropdown-content a:hover {  
-  background-color: #0af;  
-}  
-  
-.menu-dropdown:hover .dropdown-content {  
-  display: block;  
-}  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.4/lottie.min.js"></script>
+  <style>
+    /* Your existing styles here... */
+    .menu-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .menu-toggle {
+      background: none;
+      border: none;
+      font-size: 22px;
+      color: #0ff;
+      cursor: pointer;
+      padding: 5px;
+      margin-left: 10px;
+    }
+    
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 30px;
+      background-color: #222;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.7);
+      border-radius: 8px;
+      z-index: 1001;
+      overflow: hidden;
+      min-width: 180px;
+    }
+    
+    .dropdown-content a {
+      color: #fff;
+      padding: 10px 16px;
+      display: block;
+      text-decoration: none;
+      font-size: 14px;
+      transition: background 0.3s ease;
+    }
+    
+    .dropdown-content a:hover {
+      background-color: #0af;
+    }
+    
+    .menu-dropdown:hover .dropdown-content {
+      display: block;
+    }
 
-/* Drawer (Side menu) */  
-#drawer {  
-  position: fixed;  
-  top: 0;  
-  left: -600px;  
-  width: 280px;  
-  height: 100%;  
-  background: #111;  
-  z-index: 2000;  
-  padding: 20px;  
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.7);  
-  transition: left 0.3s ease;  
-}  
-#drawer.open {  
-  left: 0;  
-}  
-#drawer h3 {  
-  color: #0af;  
-  margin-bottom: 20px;  
-}  
-#drawer a {  
-  display: block;  
-  color: #fff;  
-  text-decoration: none;  
-  margin-bottom: 12px;  
-  padding: 10px;  
-  border-radius: 6px;  
-  transition: background 0.2s ease;  
-  font-weight: 600;  
-  background: #222;  
-}  
-#drawer a:hover {  
-  background: #0af;  
-  color: #fff;  
-}  
-#drawerClose {  
-  background: none;  
-  color: #ccc;  
-  border: none;  
-  font-size: 22px;  
-  position: absolute;  
-  top: 10px;  
-  right: 15px;  
-  cursor: pointer;  
-}  
+    /* Drawer (Side menu) */
+    #drawer {
+      position: fixed;
+      top: 0;
+      left: -600px;
+      width: 280px;
+      height: 100%;
+      background: #111;
+      z-index: 2000;
+      padding: 20px;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.7);
+      transition: left 0.3s ease;
+    }
+    #drawer.open {
+      left: 0;
+    }
+    #drawer h3 {
+      color: #0af;
+      margin-bottom: 20px;
+    }
+    #drawer a {
+      display: block;
+      color: #fff;
+      text-decoration: none;
+      margin-bottom: 12px;
+      padding: 10px;
+      border-radius: 6px;
+      transition: background 0.2s ease;
+      font-weight: 600;
+      background: #222;
+    }
+    #drawer a:hover {
+      background: #0af;
+      color: #fff;
+    }
+    #drawerClose {
+      background: none;
+      color: #ccc;
+      border: none;
+      font-size: 22px;
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      cursor: pointer;
+    }
 
-/* Backdrop overlay */  
-#drawerOverlay {  
-  display: none;  
-  position: fixed;  
-  top: 0;  
-  left: 0;  
-  height: 100%;  
-  width: 100%;  
-  background: #00000080;  
-  z-index: 1500;  
-}  
-#drawerOverlay.show {  
-  display: block;  
-}  
+    /* Backdrop overlay */
+    #drawerOverlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: #00000080;
+      z-index: 1500;
+    }
+    #drawerOverlay.show {
+      display: block;
+    }
 
-    body {  
-      margin: 0;  
-      background: #111;  
-      color: #fff;  
-      font-family: 'Segoe UI', sans-serif;  
-    }  
-    nav {  
-      background: #222;  
-      padding: 12px 20px;  
-      display: flex;  
-      align-items: center;  
-      justify-content: space-between;  
-    }  
-    .logo {  
-      font-size: 20px;  
-      font-weight: bold;  
-      color: #0ff;  
-    }  
-    .search-container {  
-      flex: 1;  
-      display: flex;  
-      justify-content: center;  
-    }  
-    .search-container input {  
-      border-radius: 25px;  
-      padding: 8px 15px;  
-      border: none;  
-      outline: none;  
-      width: 70%;  
-      max-width: 300px;  
-      background: #333;  
-      color: #fff;  
-      text-align: center;  
-    }  
-    .notice {  
-      background: yellow;  
-      color: #000;  
-      padding: 10px;  
-      font-weight: bold;  
-      text-align: center;  
-    }  
-  
-    /* সাব-ট্যাব স্টাইল */  
-    .sub-tab-btns {  
-      padding: 8px;  
-      text-align: center;  
-      background: #222;  
-    }  
-    .sub-tab-btns button {  
-      margin: 0 6px;  
-      padding: 6px 14px;  
-      border: none;  
-      border-radius: 5px;  
-      background: #333;  
-      color: #fff;  
-      cursor: pointer;  
-      font-weight: 600;  
-      font-size: 14px;  
-      transition: background 0.3s ease;  
-    }  
-    .sub-tab-btns button:hover {  
-      background: #0af;  
-    }  
-    .sub-tab-btns .active {  
-      background: #0af;  
-    }  
-  
-    /* নিচের বড় ট্যাব স্টাইল */  
-    .bottom-tab-btns {  
-      position: fixed;  
-      bottom: 0;  
-      width: 100%;  
-      background: #222;  
-      display: flex;  
-      justify-content: space-around;  
-      padding: 10px 0;  
-      box-shadow: 0 -2px 8px rgba(0,0,0,0.8);  
-      z-index: 1000;  
-    }  
-    .bottom-tab-btns button {  
-      background: #333;  
-      border: none;  
-      color: #fff;  
-      padding: 12px 20px;  
-      font-size: 16px;  
-      font-weight: 700;  
-      border-radius: 8px;  
-      cursor: pointer;  
-      flex: 1;  
-      margin: 0 8px;  
-      transition: background 0.3s ease;  
-    }  
-    .bottom-tab-btns button.active {  
-      background: #0af;  
-      color: #fff;  
-    }  
-    .bottom-tab-btns button:hover:not(.active) {  
-      background: #555;  
-    }  
-  
-    #match-list {  
-      padding: 10px 10px 70px; /* নিচের ট্যাব স্পেস ফাঁকা রাখলাম */  
-    }  
-    .match {  
-      background: #1a1a1a;  
-      border-radius: 12px;  
-      padding: 15px;  
-      margin-bottom: 15px;  
-      box-shadow: 0 2px 5px rgba(0,0,0,0.5);  
-      transition: transform 0.3s ease, box-shadow 0.3s ease;  
-    }  
-    .match:hover {  
-      box-shadow: 0 0 15px #0af;  
-      transform: scale(1.03);  
-    }  
-    .teams {  
-      display: flex;  
-      align-items: center;  
-      justify-content: center;  
-      font-size: 16px;  
-      font-weight: bold;  
-      margin-bottom: 8px;  
-    }  
-    .teams img {  
-      height: 30px;  
-      width: 30px;  
-      border-radius: 50%;  
-      margin: 0 10px;  
-    }  
-    .match-time {  
-      font-size: 14px;  
-      text-align: center;  
-      margin-bottom: 8px;  
-      color: #bbb;  
-    }  
-    .countdown, .started {  
-      font-size: 15px;  
-      text-align: center;  
-      color: #0f0;  
-      margin-bottom: 10px;  
-    }  
-    .btns {  
-      text-align: center;  
-      margin-top: 10px;  
-    }  
-    .btns a {  
-      background: #08f;  
-      color: #fff;  
-      padding: 6px 12px;  
-      text-decoration: none;  
-      border-radius: 5px;  
-      margin: 0 5px;  
-      display: inline-block;  
-      font-weight: 600;  
-      font-size: 14px;  
-    }  
-    .liveBlink {  
-      display: inline-block;  
-      padding: 6px 10px;  
-      font-weight: 900;  
-      font-size: 10px;  
-      color: white;  
-      background: linear-gradient(45deg, #ff003c, #ff7700, #ff003c);  
-      background-size: 200% 200%;  
-      border-radius: 25px;  
-      animation: gradientPulse 3s ease infinite, blinkOpacity 1.5s infinite;  
-      box-shadow: 0 0 10px #ff003c, 0 0 20px #ff7700;  
-      user-select: none;  
-      text-transform: uppercase;  
-    }  
-    @keyframes blinkOpacity {  
-      0%, 100% { opacity: 1; }  
-      50% { opacity: 0.3; }  
-    }  
-    @keyframes gradientPulse {  
-      0% { background-position: 0% 50%; }  
-      50% { background-position: 100% 50%; }  
-      100% { background-position: 0% 50%; }  
-    }  
-  
-    /* TV & FM আলাদা সেকশন */  
-    #tv-section, #fm-section {  
-      padding: 10px;  
-      font-size: 16px;  
-      color: #ccc;  
-      text-align: center;  
+    body {
+      margin: 0;
+      background: #111;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    nav {
+      background: #222;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-size: 20px;
+      font-weight: bold;
+      color: #0ff;
+    }
+    .search-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+    .search-container input {
+      border-radius: 25px;
+      padding: 8px 15px;
+      border: none;
+      outline: none;
+      width: 70%;
+      max-width: 300px;
+      background: #333;
+      color: #fff;
+      text-align: center;
+    }
+    .notice {
+      background: yellow;
+      color: #000;
+      padding: 10px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    /* Sub-tab styles */
+    .sub-tab-btns {
+      padding: 8px;
+      text-align: center;
+      background: #222;
+    }
+    .sub-tab-btns button {
+      margin: 0 6px;
+      padding: 6px 14px;
+      border: none;
+      border-radius: 5px;
+      background: #333;
+      color: #fff;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: background 0.3s ease;
+    }
+    .sub-tab-btns button:hover {
+      background: #0af;
+    }
+    .sub-tab-btns .active {
+      background: #0af;
+    }
+
+    /* Bottom tab styles */
+    .bottom-tab-btns {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #222;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.8);
+      z-index: 1000;
+    }
+    .bottom-tab-btns button {
+      background: #333;
+      border: none;
+      color: #fff;
+      padding: 12px 20px;
+      font-size: 16px;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      flex: 1;
+      margin: 0 8px;
+      transition: background 0.3s ease;
+    }
+    .bottom-tab-btns button.active {
+      background: #0af;
+      color: #fff;
+    }
+    .bottom-tab-btns button:hover:not(.active) {
+      background: #555;
+    }
+
+    #match-list {
+      padding: 10px 10px 70px; /* Space for bottom tab */
+    }
+    .match {
+      background: #1a1a1a;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .match:hover {
+      box-shadow: 0 0 15px #0af;
+      transform: scale(1.03);
+    }
+    .teams {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+    .teams img {
+      height: 30px;
+      width: 30px;
+      border-radius: 50%;
+      margin: 0 10px;
+    }
+    .match-time {
+      font-size: 14px;
+      text-align: center;
+      margin-bottom: 8px;
+      color: #bbb;
+    }
+    .countdown, .started {
+      font-size: 15px;
+      text-align: center;
+      color: #0f0;
+      margin-bottom: 10px;
+    }
+    .btns {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .btns a {
+      background: #08f;
+      color: #fff;
+      padding: 6px 12px;
+      text-decoration: none;
+      border-radius: 5px;
+      margin: 0 5px;
+      display: inline-block;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .liveBlink {
+      display: inline-block;
+      padding: 6px 10px;
+      font-weight: 900;
+      font-size: 10px;
+      color: white;
+      background: linear-gradient(45deg, #ff003c, #ff7700, #ff003c);
+      background-size: 200% 200%;
+      border-radius: 25px;
+      animation: gradientPulse 3s ease infinite, blinkOpacity 1.5s infinite;
+      box-shadow: 0 0 10px #ff003c, 0 0 20px #ff7700;
+      user-select: none;
+      text-transform: uppercase;
+    }
+    @keyframes blinkOpacity {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    @keyframes gradientPulse {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* TV & FM separate section */
+    #tv-section, #fm-section {
+      padding: 10px;
+      font-size: 16px;
+      color: #ccc;
+      text-align: center;
     }
 
     /* Notification Toast Styles */
@@ -321,36 +321,34 @@
       10%, 30% { transform: rotate(-10deg); }
       20%, 40% { transform: rotate(10deg); }
     }
-  </style>  
-</head>  
-<body>  
+  </style>
+</head>
+<body>
 
-<!-- Drawer / Side Menu -->  
-<div id="drawer">  
-  <button id="drawerClose" onclick="toggleDrawer()">✕</button>  
+<!-- Drawer / Side Menu -->
+<div id="drawer">
+  <button id="drawerClose" onclick="toggleDrawer()">✕</button>
+  <div style="text-align: center; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid #333;">
+    <img src="https://i.postimg.cc/3rPWWckN/icon-192.png" alt="CricStreamZone Logo" style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 10px; border: 3px solid #0af;" />
+    <div style="color: #0af; font-size: 18px; font-weight: bold;">CricStreamZone</div>
+    <div style="color: #888; font-size: 12px;">All Sports Live Streaming</div>
+  </div>
   
-  <!-- Logo Section with Image -->
-<div style="text-align: center; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid #333;">
-  <img src="https://i.postimg.cc/3rPWWckN/icon-192.png" alt="CricStreamZone Logo" style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 10px; border: 3px solid #0af;" />
-  <div style="color: #0af; font-size: 18px; font-weight: bold;">CricStreamZone</div>
-  <div style="color: #888; font-size: 12px;">All Sports Live Streaming</div>
-</div>
-  
-  <h3></h3>  
-  <a href="https://t.me/CricStreamZone" target="_blank">📣 Join Telegram</a>  
-  <a href="https://play.google.com/store/apps/details?id=com.genuine.leone" target="_blank">📲 Download NS Player</a>  
-  <a href="#" onclick="showCategory('live'); toggleDrawer();">🏏 Live Matches</a>  
-  <a href="#" onclick="showCategory('tv'); toggleDrawer();">📺 Live TV</a>  
+  <h3></h3>
+  <a href="https://t.me/CricStreamZone" target="_blank">📣 Join Telegram</a>
+  <a href="https://play.google.com/store/apps/details?id=com.genuine.leone" target="_blank">📲 Download NS Player</a>
+  <a href="#" onclick="showCategory('live'); toggleDrawer();">🏏 Live Matches</a>
+  <a href="#" onclick="showCategory('tv'); toggleDrawer();">📺 Live TV</a>
   <a href="#" onclick="showCategory('fm'); toggleDrawer();">📻 FM Radio</a>
   
   <!-- Notification Settings -->
   <a href="#" onclick="toggleNotifications(); toggleDrawer();" id="notificationToggle">
     <span id="notificationIcon">🔔</span> <span id="notificationText">Enable Notifications</span>
   </a>
-</div>  
+</div>
 <div id="drawerOverlay" onclick="toggleDrawer()"></div>
 
-<nav>  
+<nav>
   <div style="display: flex; align-items: center;">
     <button onclick="toggleDrawer()" class="menu-toggle">☰</button>
     <div class="logo">CricStreamZone</div>
@@ -358,40 +356,40 @@
   <div class="search-container">  
     <input id="search" type="text" placeholder="Search matches or teams" />  
   </div>
-</nav>  
-  
+</nav>
+
 <div class="notice">  
   <marquee scrollamount="5">Welcome To CricStreamZone ! ⚠️ Attention All Users ! For flawless live sports streaming on your mobile device ! please install the NS Player app now ! Without NS Player, videos may not play properly or could stop unexpectedly ! 📲 Don't miss a single moment — install NS Player today and enjoy uninterrupted live matches ! You can download the app from:  
 Google Play Store or join our Telegram channel for the latest updates and app links:CricStreamZone Telegram ! </marquee>  
-</div>  
-  
-<!-- সাব-ট্যাব শুধুমাত্র Live Category তে দেখাবে -->  
+</div>
+
+<!-- Sub-tabs for Live Category -->
 <div id="subTabs" class="sub-tab-btns" style="display:none;">  
   <button id="subLive" class="active">Live <span id="countLive"></span></button>  
   <button id="subToday">Today <span id="countToday"></span></button>  
   <button id="subUpcoming">Upcoming <span id="countUpcoming"></span></button>  
 </div>  
-  
+
 <div id="match-list"></div>  
-  
-<!-- TV এবং FM সেকশন -->  
+
+<!-- TV and FM sections -->
 <div id="tv-section" style="display:none;">  
   <h2>Live TV Channels</h2>  
   <p>TV Channel 1 - Link, TV Channel 2 - Link ... (এখানে TV এর লিংক দেখাবে)</p>  
 </div>  
-  
+
 <div id="fm-section" style="display:none;">  
   <h2>FM Radio Stations</h2>  
   <p>FM Station 1 - Link, FM Station 2 - Link ... (এখানে FM এর লিংক দেখাবে)</p>  
 </div>  
-  
-<!-- নিচের বড় ৩টা ট্যাব -->  
+
+<!-- Bottom tabs -->
 <div class="bottom-tab-btns">  
   <button id="bottomLive" class="active">  
     <img src="https://i.postimg.cc/BvWg87Rd/videocam-24dp-E3-E3-E3-FILL0-wght400-GRAD0-opsz24.png" alt="Live Icon" style="vertical-align: middle; margin-right: 6px;" />  
     Live  
   </button>  
-    <button id="bottomTV">  
+  <button id="bottomTV">  
     <img src="https://i.postimg.cc/K8JDvvxs/live-tv-24dp-E3-E3-E3-FILL0-wght400-GRAD0-opsz24.png" alt="TV Icon" style="vertical-align: middle; margin-right: 6px;" />  
     TV  
   </button>  
@@ -401,38 +399,17 @@ Google Play Store or join our Telegram channel for the latest updates and app li
   </button>  
 </div>  
 
-<!-- Telegram Join Popup -->  
-<div id="telegramPopup" style="display:none;">  
-  <div style="position:fixed; top:0; left:0; width:100%; height:100%; background:#000000aa; z-index:9999; display:flex; align-items:center; justify-content:center;">  
-    <div style="background:#222; padding:20px 25px; border-radius:12px; max-width:90%; width:340px; text-align:center; box-shadow:0 0 10px #000;">  
-      <h3 style="color:#0af; margin-bottom:10px;">📣 Join Our Telegram</h3>  
-      <p style="color:#ccc; font-size:14px;">🔔 For live match updates, instant scores, and exclusive stream links —  
-Join our official Telegram channel now!  
-📲 Download the NS Player app for smooth, uninterrupted streaming.</p>  
-      <div style="margin-top:15px;">  
-        <a href="https://t.me/CricStreamZone" target="_blank" style="background:#08f; color:#fff; padding:10px 18px; text-decoration:none; border-radius:8px; display:inline-block; font-weight:600;">Join Now</a>  
-        <button onclick="closeTelegramPopup()" style="margin-left:10px; background:#444; color:#ccc; padding:10px 18px; border:none; border-radius:8px; cursor:pointer;">Later</button>  
-      </div>  
-    </div>  
-  </div>  
-</div>
-
 <!-- Notification Permission Popup -->
 <div id="notificationPopup" style="display:none;">
   <div style="position:fixed; top:0; left:0; width:100%; height:100%; background:#000000dd; z-index:9998; display:flex; align-items:center; justify-content:center; backdrop-filter: blur(5px);">
     <div style="background: linear-gradient(135deg, #222 0%, #333 100%); padding:30px; border-radius:16px; max-width:90%; width:380px; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,0.5); border: 1px solid #444;">
-      
-      <!-- Animated Bell Icon -->
       <div style="font-size:64px; margin-bottom:20px; animation: bellRing 2s ease-in-out infinite;">🔔</div>
-      
       <h3 style="color:#0af; margin-bottom:15px; font-size:22px; font-weight:700;">Enable Match Alerts</h3>
-      
       <p style="color:#ccc; font-size:15px; line-height:1.6; margin-bottom:25px;">
         🏏 Get instant notifications <strong style="color:#0af;">15 minutes before</strong> matches start<br>
         🔴 Live alerts when matches begin<br>
         📱 <span style="color:#4caf50;">Never miss your favorite cricket matches!</span>
       </p>
-      
       <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
         <button onclick="enableNotifications()" style="
           background: linear-gradient(45deg, #4caf50, #45a049); 
@@ -465,7 +442,7 @@ Join our official Telegram channel now!
   </div>
 </div>
 
-<script>  
+<script>
   // ==================== NOTIFICATION SYSTEM ====================
 
   // Global notification variables
@@ -502,7 +479,7 @@ Join our official Telegram channel now!
 
     toast.style.cssText = `
       position: fixed;
-      top: 20px;
+            top: 20px;
       right: 20px;
       background: ${colors[type]};
       color: white;
@@ -589,7 +566,7 @@ Join our official Telegram channel now!
     return notificationPermission;
   }
 
-  // Enhanced notification scheduling with team names
+  // Enhanced notification scheduling with proper filtering
   function scheduleMatchNotifications() {
     if (!notificationPermission || !matches.length) {
       console.log('🔕 Notifications disabled or no matches available');
@@ -608,119 +585,162 @@ Join our official Telegram channel now!
       const fifteenMinBefore = new Date(matchTime.getTime() - 15 * 60 * 1000);
       const fiveMinBefore = new Date(matchTime.getTime() - 5 * 60 * 1000);
       
-      // Skip past matches
-      if (matchTime < now) return;
+      // ✅ Skip past matches (already finished)
+      if (matchTime < now) {
+        console.log(`⏭️ Skipping past match: ${match.Team1} vs ${match.Team2}`);
+        return;
+      }
       
-      // Schedule 15 minutes before notification
+      // ✅ Skip matches that are more than 7 days away
+      const sevenDaysFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+      if (matchTime > sevenDaysFromNow) {
+        console.log(`📅 Skipping far future match: ${match.Team1} vs ${match.Team2} (${matchTime.toLocaleDateString()})`);
+        return;
+      }
+      
+      // ✅ Skip if 15 minutes already passed
+      if (fifteenMinBefore <= now && matchTime > now) {
+        console.log(`⏰ 15-min window passed for: ${match.Team1} vs ${match.Team2}, scheduling only start notification`);
+        
+        // Only schedule match start notification
+        const timeUntilMatch = matchTime.getTime() - now.getTime();
+        
+        if (timeUntilMatch > 0 && timeUntilMatch <= 24 * 60 * 60 * 1000) { // Within 24 hours
+          const timeoutId = setTimeout(() => {
+            showNotification(
+              '🏏 Match Started!',
+              `🔴 LIVE NOW: ${match.Team1} vs ${match.Team2}\n🎯 ${match.Match}\n📺 Tap to watch live streaming!`,
+              'https://i.postimg.cc/3rPWWckN/icon-192.png',
+              { 
+                matchId: index,
+                teams: `${match.Team1} vs ${match.Team2}`,
+                type: 'match_started',
+                matchTime: match.MatchTime,
+                isLive: true
+              }
+            );
+          }, timeUntilMatch);
+          
+          scheduledNotifications.set(`start_${index}`, timeoutId);
+          scheduledCount++;
+          console.log(`🔔 Scheduled start notification for: ${match.Team1} vs ${match.Team2} in ${Math.round(timeUntilMatch/1000/60)} minutes`);
+        }
+        return;
+      }
+      
+      // ✅ Schedule 15 minutes before notification (only for upcoming matches)
       if (fifteenMinBefore > now) {
         const timeUntilNotification = fifteenMinBefore.getTime() - now.getTime();
         
-        const timeoutId = setTimeout(() => {
-          const matchDate = matchTime.toLocaleDateString('en-GB', { 
-            day: '2-digit', 
-            month: 'short' 
-          });
-          const matchTimeStr = matchTime.toLocaleTimeString('en-US', { 
-            hour: '2-digit', 
-            minute: '2-digit', 
-            hour12: true 
-          });
+        // Only schedule if within next 24 hours
+        if (timeUntilNotification <= 24 * 60 * 60 * 1000) {
+          const timeoutId = setTimeout(() => {
+            const matchDate = matchTime.toLocaleDateString('en-GB', { 
+              day: '2-digit', 
+              month: 'short' 
+            });
+            const matchTimeStr = matchTime.toLocaleTimeString('en-US', { 
+              hour: '2-digit', 
+              minute: '2-digit', 
+              hour12: true 
+            });
+            
+            showNotification(
+              '⏰ Match Starting Soon!',
+              `🏏 ${match.Team1} vs ${match.Team2}\n📅 ${matchDate} at ${matchTimeStr}\n⏱️ Starting in 15 minutes!\n🎯 ${match.Match}`,
+              'https://i.postimg.cc/3rPWWckN/icon-192.png',
+              { 
+                matchId: index,
+                teams: `${match.Team1} vs ${match.Team2}`,
+                type: '15min_before',
+                matchTime: match.MatchTime
+              }
+            );
+          }, timeUntilNotification);
           
-          showNotification(
-            '⏰ Match Starting Soon!',
-            `🏏 ${match.Team1} vs ${match.Team2}\n📅 ${matchDate} at ${matchTimeStr}\n⏱️ Starting in 15 minutes!\n🎯 ${match.Match}`,
-            'https://i.postimg.cc/3rPWWckN/icon-192.png',
-            { 
-              matchId: index,
-              teams: `${match.Team1} vs ${match.Team2}`,
-              type: '15min_before',
-              matchTime: match.MatchTime
-            }
-          );
-        }, timeUntilNotification);
-        
-        scheduledNotifications.set(`before15_${index}`, timeoutId);
-        scheduledCount++;
+          scheduledNotifications.set(`before15_${index}`, timeoutId);
+          scheduledCount++;
+          console.log(`🔔 Scheduled 15-min notification for: ${match.Team1} vs ${match.Team2} in ${Math.round(timeUntilNotification/1000/60/60)} hours`);
+        }
       }
       
-      // Schedule 5 minutes before notification (for very close matches)
-      if (fiveMinBefore > now && fiveMinBefore.getTime() - now.getTime() > 60000) {
-        const timeUntilNotification = fiveMinBefore.getTime() - now.getTime();
-        
-        const timeoutId = setTimeout(() => {
-          showNotification(
-            '🚨 Match Starting Very Soon!',
-            `🔥 ${match.Team1} vs ${match.Team2}\n⏰ Starting in just 5 minutes!\n📺 Get ready to watch!`,
-            'https://i.postimg.cc/3rPWWckN/icon-192.png',
-            { 
-              matchId: index,
-              teams: `${match.Team1} vs ${match.Team2}`,
-              type: '5min_before',
-              matchTime: match.MatchTime
-            }
-          );
-        }, timeUntilNotification);
-        
-        scheduledNotifications.set(`before5_${index}`, timeoutId);
-        scheduledCount++;
-      }
-      
-      // Schedule match start notification
+      // ✅ Schedule match start notification (only for today's matches)
       if (matchTime > now) {
         const timeUntilMatch = matchTime.getTime() - now.getTime();
         
-        const timeoutId = setTimeout(() => {
-          showNotification(
-            '🏏 Match Started!',
-            `🔴 LIVE NOW: ${match.Team1} vs ${match.Team2}\n🎯 ${match.Match}\n📺 Tap to watch live streaming!`,
-            'https://i.postimg.cc/3rPWWckN/icon-192.png',
-            { 
-              matchId: index,
-              teams: `${match.Team1} vs ${match.Team2}`,
-              type: 'match_started',
-              matchTime: match.MatchTime,
-              isLive: true
-            }
-          );
-        }, timeUntilMatch);
-        
-        scheduledNotifications.set(`start_${index}`, timeoutId);
-        scheduledCount++;
+        // Only schedule if within next 24 hours
+        if (timeUntilMatch <= 24 * 60 * 60 * 1000) {
+          const timeoutId = setTimeout(() => {
+            showNotification(
+              '🏏 Match Started!',
+              `🔴 LIVE NOW: ${match.Team1} vs ${match.Team2}\n🎯 ${match.Match}\n📺 Tap to watch live streaming!`,
+              'https://i.postimg.cc/3rPWWckN/icon-192.png',
+              { 
+                matchId: index,
+                teams: `${match.Team1} vs ${match.Team2}`,
+                type: 'match_started',
+                matchTime: match.MatchTime,
+                isLive: true
+              }
+            );
+          }, timeUntilMatch);
+          
+          scheduledNotifications.set(`start_${index}`, timeoutId);
+          scheduledCount++;
+          console.log(`🔔 Scheduled start notification for: ${match.Team1} vs ${match.Team2} in ${Math.round(timeUntilMatch/1000/60)} minutes`);
+        }
       }
     });
     
-    console.log(`📅 Scheduled ${scheduledCount} notifications for ${matches.length} matches`);
+    console.log(`📅 Total scheduled notifications: ${scheduledCount} (filtered from ${matches.length} matches)`);
     
     if (scheduledCount > 0) {
-      showToast(`🔔 ${scheduledCount} match alerts scheduled!`, 'success', 3000);
+      showToast(`🔔 ${scheduledCount} upcoming match alerts scheduled!`, 'success', 3000);
+    } else {
+      showToast(`📅 No matches in next 24 hours to schedule`, 'info', 3000);
     }
   }
 
-  // Enhanced notification display with rich content
+  // Enhanced notification display with duplicate prevention
   function showNotification(title, body, icon, matchData = null) {
     if (!notificationPermission) {
       console.log('🔕 Notifications not permitted');
       return;
     }
     
+    // ✅ Prevent duplicate notifications
+    const notificationKey = `${matchData?.matchId}_${matchData?.type}`;
+    const lastShown = localStorage.getItem(`lastNotification_${notificationKey}`);
+    const now = Date.now();
+    
+    // Don't show same notification within 10 minutes
+    if (lastShown && (now - parseInt(lastShown)) < 10 * 60 * 1000) {
+      console.log(`🚫 Duplicate notification prevented for: ${matchData?.teams}`);
+      return;
+    }
+    
+    // Store this notification time
+    localStorage.setItem(`lastNotification_${notificationKey}`, now);
+    
     const options = {
       body: body,
       icon: icon || 'https://i.postimg.cc/3rPWWckN/icon-192.png',
       badge: 'https://i.postimg.cc/3rPWWckN/icon-192.png',
       vibrate: [200, 100, 200, 100, 200],
-      tag: `cricket-match-${matchData?.matchId || 'general'}`,
+      tag: `cricket-match-${matchData?.matchId || 'general'}-${matchData?.type}`, // Unique tag
       requireInteraction: true,
       silent: false,
-      renotify: true,
+      renotify: false, // ✅ Prevent renotification
       timestamp: Date.now(),
       data: {
         matchData: matchData,
         url: '/',
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        notificationKey: notificationKey
       },
       actions: [
         {
-                    action: 'watch',
+          action: 'watch',
           title: '📺 Watch Live',
           icon: 'https://i.postimg.cc/BvWg87Rd/videocam-24dp-E3-E3-E3-FILL0-wght400-GRAD0-opsz24.png'
         },
@@ -742,7 +762,7 @@ Join our official Telegram channel now!
       navigator.serviceWorker.ready.then(registration => {
         registration.showNotification(title, options)
           .then(() => {
-            console.log('✅ Notification shown via service worker');
+            console.log(`✅ Notification shown: ${matchData?.teams} (${matchData?.type})`);
           })
           .catch(error => {
             console.error('❌ Service worker notification failed:', error);
@@ -758,6 +778,371 @@ Join our official Telegram channel now!
       new Notification(title, options);
     }
   }
+
+  // Clean up old notification records
+  function cleanupOldNotifications() {
+    const now = Date.now();
+    const oneDay = 24 * 60 * 60 * 1000;
+    
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith('lastNotification_')) {
+        const timestamp = parseInt(localStorage.getItem(key));
+        if (now - timestamp > oneDay) {
+          localStorage.removeItem(key);
+        }
+      }
+    }
+  }
+
+  // Update the refresh interval to be less frequent
+  setInterval(() => {
+    if (notificationPermission && matches.length > 0) {
+      scheduleMatchNotifications();
+      cleanupOldNotifications();
+      console.log('🔄 Notifications refreshed and cleaned up');
+    }
+  }, 60 * 60 * 1000); // Changed to 1 hour instead of 30 minutes
+
+  // ==================== ORIGINAL CODE (UNCHANGED) ====================
+
+  // Drawer toggle function
+  function toggleDrawer() {  
+    const drawer = document.getElementById('drawer');  
+    const overlay = document.getElementById('drawerOverlay');  
+    drawer.classList.toggle('open');  
+    overlay.classList.toggle('show');  
+  }
+
+  // Telegram popup functions
+  function closeTelegramPopup() {  
+    document.getElementById('telegramPopup').style.display = 'none';  
+    localStorage.setItem('hideTelegramPopup', 'true');  
+  }  
+
+  // API url (আপনার গুগল অ্যাপস স্ক্রিপ্ট / API url দিন এখানে)  
+  const matchesApi = "https://script.google.com/macros/s/AKfycbxzx4xcwEGidoxEd7BQshkR9FKHjK5o0p8ukNY4NsKNR0EsShY7eV3MUxA2iXz1V8bmHg/exec";  
+  
+  let matches = [];  
+  let intervals = [];  
+  let currentSubTab = 'live'; // Live Category এর জন্য সাব-ট্যাব  
+  
+  function clearIntervals() {  
+    intervals.forEach(i => clearInterval(i));  
+    intervals = [];  
+  }  
+  
+  function getNow() { return new Date(); }  
+  function getCountdown(t) { return Math.max(0, new Date(t) - getNow()); }  
+  function formatCountdown(ms) {  
+    let s = Math.floor(ms / 1000), m = Math.floor(s / 60), h = Math.floor(m / 60), d = Math.floor(h / 24);  
+    h %= 24; m %= 60; s %= 60;  
+    return `${d}d ${h}h ${m}m ${s}s left`;  
+  }  
+  function formatCountUp(ms) {  
+    let s = Math.floor(ms / 1000), m = Math.floor(s / 60), h = Math.floor(m / 60);  
+    s %= 60; m %= 60;  
+    return `${h > 0 ? h + 'h ' : ''}${m}m ${s}s ago`;  
+  }  
+  
+  function renderMatches(type = 'live') {  
+    clearIntervals();  
+    const now = getNow();  
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());  
+    const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);  
+  
+    const list = document.getElementById('match-list');  
+    list.innerHTML = "";  
+    const filter = document.getElementById('search').value.toLowerCase();  
+  
+    let filteredMatches = matches.filter(m => {  
+      const ct = new Date(m.MatchTime);  
+      const isLive = now >= ct;  
+  
+      if (type === 'live' && !isLive) return false;  
+  
+      else if (type === 'today') {  
+        if (ct < todayStart || ct >= todayEnd || isLive) return false;  
+      }  
+  
+      else if (type === 'upcoming') {  
+        if (ct < now || (ct >= todayStart && ct < todayEnd)) return false;  
+      }  
+  
+      if (filter && !(m.Match.toLowerCase().includes(filter) || m.Team1.toLowerCase().includes(filter) || m.Team2.toLowerCase().includes(filter))) return false;  
+  
+      return true;  
+    });  
+  
+    // 🔀 Sort by time ascending
+    filteredMatches.sort((a, b) => new Date(a.MatchTime) - new Date(b.MatchTime));  
+  
+    if (filteredMatches.length === 0) {  
+      let emojiMessage = '😴 No matches available right now.';  
+      if (type === 'live') emojiMessage = '📴 No live matches at the moment.';  
+      else if (type === 'upcoming') emojiMessage = '🕒 No upcoming matches found.';  
+      else if (type === 'today') emojiMessage = '📅 No matches scheduled for today.';  
+  
+      list.innerHTML = `  
+        <div style="  
+          max-width: 420px;  
+          margin: 40px auto;  
+          padding: 30px 20px;  
+          background: #1e1e1e;  
+          border-radius: 14px;  
+          box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);  
+          color: #ccc;  
+          font-family: 'Segoe UI', sans-serif;  
+          font-size: 1.25rem;  
+          font-weight: 500;  
+          text-align: center;  
+          user-select: none;  
+          display: flex;  
+          align-items: center;  
+          justify-content: center;  
+          gap: 14px;  
+        ">  
+          <span style="font-size: 2.5rem;">${emojiMessage.match(/^(\p{Emoji_Presentation}|\p{Extended_Pictographic})+/u)[0]}</span>  
+          <span>${emojiMessage.replace(/^(\p{Emoji_Presentation}|\p{Extended_Pictographic})+\s*/, '')}</span>  
+        </div>  
+      `;  
+      return;  
+    }  
+  
+    filteredMatches.forEach((m, i) => {  
+      const ct = new Date(m.MatchTime);  
+      const isLive = now >= ct;  
+  
+      const div = document.createElement('div');  
+      div.className = "match";  
+  
+      let timerHtml = '';  
+      if (isLive) {  
+        const diffLive = getNow() - ct;  
+        timerHtml = `  
+                    <div style="text-align: center; margin: 10px 0;">  
+            <div id="liveAnim${i}" style="width: 60px; height: 60px; margin: 0 auto;"></div>  
+            <div class="countdown" id="cd${type}${i}">Started ${formatCountUp(diffLive)}</div>  
+          </div>  
+        `;  
+      } else {  
+        const dateStr = ct.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });  
+        const timeStr = ct.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });  
+        timerHtml = `  
+          <div class="match-time"> ${dateStr}</div>  
+          <div class="match-time"> ${timeStr}</div>  
+          <div class="countdown" id="cd${type}${i}">⏳ ${formatCountdown(getCountdown(m.MatchTime))}</div>  
+          ${getCountdown(m.MatchTime) <= 15 * 60 * 1000 ? `<div class="coming-soon-anim">⏳ Coming Soon...</div>` : ''}  
+        `;  
+      }  
+  
+      div.innerHTML = `
+      <div style="background: #1a1a28; border-radius: 12px; padding: 16px; max-width: 360px; margin: auto; color: #fff; font-family: 'Segoe UI', sans-serif;">
+
+        <!-- Match Title -->
+        <div style="text-align:center; font-size:15px; font-weight:600; margin-bottom:14px; background:#000; padding:6px 10px; border-radius:8px;">
+          ${m.Match}
+        </div>
+
+        <!-- Teams Row -->
+        <div style="display: flex; justify-content: space-around; align-items: center; margin-bottom: 14px;">
+          <!-- Team 1 -->
+          <div style="display: flex; flex-direction: column; align-items: center; min-width: 90px;">
+            <img src="${m.Team1Logo}" alt="${m.Team1} logo" style="width:40px; height:40px; border-radius:50%;" loading="lazy" />
+            <span style="font-size:15px; font-weight:bold; text-align:center; margin-top:6px;">${m.Team1}</span>
+          </div>
+
+          <!-- VS Center -->
+          <div style="font-weight: bold; color: #0af; font-size:16px;">VS</div>
+
+          <!-- Team 2 -->
+          <div style="display: flex; flex-direction: column; align-items: center; min-width: 90px;">
+            <img src="${m.Team2Logo}" alt="${m.Team2} logo" style="width:40px; height:40px; border-radius:50%;" loading="lazy" />
+            <span style="font-size:15px; font-weight:bold; text-align:center; margin-top:6px;">${m.Team2}</span>
+          </div>
+        </div>
+
+        <!-- Timer -->
+        <div style="text-align:center; font-size:16px; color:#ccc; font-weight:500; margin-bottom:16px;">
+          ${timerHtml || '00:00:00'}
+        </div>
+
+        <!-- Server Buttons -->
+        <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+          ${m.servers && m.servers.length > 0 ? 
+      m.servers.map((server, index) => {
+        const colors = ['#00bcd4', '#009688', '#3f51b5', '#ff5722', '#9c27b0', '#4caf50', '#ff9800'];
+        const bgColor = colors[index % colors.length];
+        return `<a href="${server.link}" target="_blank" rel="noopener noreferrer" style="background:${bgColor}; padding:6px 12px; border-radius:6px; color:#fff; text-decoration:none; font-size:14px; margin:2px;">${server.name}</a>`;
+      }).join('') 
+      : '<span style="color:#888; font-size:12px;">No servers available</span>'
+    }
+        </div>
+      </div>
+    `;
+  
+      list.appendChild(div);  
+  
+      // ⬇️ Lottie animation for live matches
+      if (isLive) {  
+        setTimeout(() => {  
+          bodymovin.loadAnimation({  
+            container: document.getElementById('liveAnim' + i),  
+            renderer: 'svg',  
+            loop: true,  
+            autoplay: true,  
+            path: 'https://raw.githubusercontent.com/Hasanmahmud000/HasanTv/refs/heads/main/live-icon.json'  
+          });  
+        }, 0);  
+      }  
+  
+      if (!isLive) {  
+        intervals.push(setInterval(() => {  
+          const cdEl = div.querySelector(`#cd${type}${i}`);  
+          if (cdEl) {  
+            const remain = getCountdown(m.MatchTime);  
+            cdEl.innerText = remain > 0 ? formatCountdown(remain) : "Starting soon";  
+          }  
+        }, 1000));  
+      } else {  
+        intervals.push(setInterval(() => {  
+          const cdEl = div.querySelector(`#cd${type}${i}`);  
+          if (cdEl) {  
+            const diffLive = getNow() - ct;  
+            cdEl.innerText = `Started ${formatCountUp(diffLive)}`;  
+          }  
+        }, 1000));  
+      }  
+    });  
+  }
+    
+  // Bottom tab handler
+  function showCategory(category) {  
+    // Remove active from all tabs
+    document.getElementById('bottomLive').classList.remove('active');  
+    document.getElementById('bottomTV').classList.remove('active');  
+    document.getElementById('bottomFM').classList.remove('active');  
+  
+    // Add active to selected tab
+    document.getElementById('bottom' + category.charAt(0).toUpperCase() + category.slice(1)).classList.add('active');  
+  
+    // Clear search input
+    document.getElementById('search').value = '';  
+  
+    // Hide all sections
+    document.getElementById('subTabs').style.display = 'none';  
+    document.getElementById('match-list').style.display = 'none';  
+    document.getElementById('tv-section').style.display = 'none';  
+    document.getElementById('fm-section').style.display = 'none';  
+  
+    if(category === 'live') {  
+      // Show sub-tabs for Live Category
+      document.getElementById('subTabs').style.display = 'block';  
+      document.getElementById('match-list').style.display = 'block';  
+      // Set active sub-tab and render
+      currentSubTab = 'live';  
+      setActiveSubTab(currentSubTab);  
+      renderMatches(currentSubTab);  
+    } else if(category === 'tv') {  
+      document.getElementById('tv-section').style.display = 'block';  
+    } else if(category === 'fm') {  
+      document.getElementById('fm-section').style.display = 'block';  
+    }  
+  }  
+  
+  // Sub-tab handler
+  function setActiveSubTab(subTab) {  
+    document.getElementById('subLive').classList.remove('active');  
+    document.getElementById('subToday').classList.remove('active');  
+    document.getElementById('subUpcoming').classList.remove('active');  
+  
+    document.getElementById('sub' + subTab.charAt(0).toUpperCase() + subTab.slice(1)).classList.add('active');  
+  }  
+  
+  document.getElementById('bottomLive').addEventListener('click', () => showCategory('live'));  
+  document.getElementById('bottomTV').addEventListener('click', () => showCategory('tv'));  
+  document.getElementById('bottomFM').addEventListener('click', () => showCategory('fm'));  
+  
+  // Sub Tab buttons click  
+  document.getElementById('subLive').addEventListener('click', () => {  
+    currentSubTab = 'live';  
+    setActiveSubTab(currentSubTab);  
+    renderMatches(currentSubTab);  
+  });  
+  
+  document.getElementById('subUpcoming').addEventListener('click', () => {  
+    currentSubTab = 'upcoming';  
+    setActiveSubTab(currentSubTab);  
+    renderMatches(currentSubTab);  
+  });  
+  
+  document.getElementById('subToday').addEventListener('click', () => {  
+    currentSubTab = 'today';  
+    setActiveSubTab(currentSubTab);  
+    renderMatches(currentSubTab);  
+  });  
+  
+  document.getElementById('search').addEventListener('input', () => {  
+    if(document.getElementById('subTabs').style.display === 'block'){  
+      renderMatches(currentSubTab);  
+    }  
+  });  
+  
+  // Load data and show Live Category first
+  fetch(matchesApi)  
+  .then(res => res.json())  
+  .then(data => {  
+    matches = data.matches || [];  
+  
+    const now = new Date();  
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());  
+    const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);  
+  
+    // Calculate counts
+    const liveCount = matches.filter(m => new Date(m.MatchTime) <= now).length;  
+    const todayCount = matches.filter(m => {  
+      const ct = new Date(m.MatchTime);  
+      return ct >= todayStart && ct < todayEnd && ct > now;  
+    }).length;  
+    const upcomingCount = matches.filter(m => new Date(m.MatchTime) > todayEnd).length;  
+  
+    // Update UI counts
+    document.getElementById("countLive").innerText = `(${liveCount})`;  
+    document.getElementById("countToday").innerText = `(${todayCount})`;  
+    document.getElementById("countUpcoming").innerText = `(${upcomingCount})`;  
+  
+    // Filter and sort matches
+    const todayMatches = matches.filter(m => {  
+      const ct = new Date(m.MatchTime);  
+      return ct >= todayStart && ct < todayEnd && ct > now;  
+    });  
+  
+    const upcomingMatches = matches.filter(m => {  
+      const ct = new Date(m.MatchTime);  
+      return ct > todayEnd;  
+    });  
+  
+    const liveMatches = matches.filter(m => new Date(m.MatchTime) <= now);  
+  
+    matches = [  
+      ...liveMatches.map(m => ({ ...m, isLive: true })),  
+      ...todayMatches.map(m => ({ ...m, isToday: true })),  
+      ...upcomingMatches.map(m => ({ ...m, isUpcoming: true })),  
+    ];  
+  
+    showCategory('live');
+    
+    // Schedule notifications after data is loaded
+    setTimeout(() => {
+      if (notificationPermission) {
+        scheduleMatchNotifications();
+      }
+    }, 1000);
+  })  
+  .catch(e => {  
+    console.error('Error fetching matches:', e);  
+    document.getElementById('match-list').innerHTML = '<p style="text-align:center; color:#f00;">Failed to load match data.</p>';  
+  });
 
   // Show notification permission popup
   function showNotificationPermissionPopup() {
@@ -824,347 +1209,6 @@ Join our official Telegram channel now!
     }
   }
 
-  // ==================== ORIGINAL CODE (UNCHANGED) ====================
-
-  // Drawer toggle function
-  function toggleDrawer() {  
-    const drawer = document.getElementById('drawer');  
-    const overlay = document.getElementById('drawerOverlay');  
-    drawer.classList.toggle('open');  
-    overlay.classList.toggle('show');  
-  }
-
-  // Telegram popup functions
-  function closeTelegramPopup() {  
-    document.getElementById('telegramPopup').style.display = 'none';  
-    localStorage.setItem('hideTelegramPopup', 'true');  
-  }  
-
-  // API url (আপনার গুগল অ্যাপস স্ক্রিপ্ট / API url দিন এখানে)  
-  const matchesApi = "https://script.google.com/macros/s/AKfycbxzx4xcwEGidoxEd7BQshkR9FKHjK5o0p8ukNY4NsKNR0EsShY7eV3MUxA2iXz1V8bmHg/exec";  
-  
-  let matches = [];  
-  let intervals = [];  
-  let currentSubTab = 'live'; // Live Category এর জন্য সাব-ট্যাব  
-  
-  function clearIntervals() {  
-    intervals.forEach(i => clearInterval(i));  
-    intervals = [];  
-  }  
-  
-  function getNow() { return new Date(); }  
-  function getCountdown(t) { return Math.max(0, new Date(t) - getNow()); }  
-  function formatCountdown(ms) {  
-    let s = Math.floor(ms / 1000), m = Math.floor(s / 60), h = Math.floor(m / 60), d = Math.floor(h / 24);  
-    h %= 24; m %= 60; s %= 60;  
-    return `${d}d ${h}h ${m}m ${s}s left`;  
-  }  
-  function formatCountUp(ms) {  
-    let s = Math.floor(ms / 1000), m = Math.floor(s / 60), h = Math.floor(m / 60);  
-    s %= 60; m %= 60;  
-    return `${h > 0 ? h + 'h ' : ''}${m}m ${s}s ago`;  
-  }  
-  
-  function renderMatches(type = 'live') {  
-  clearIntervals();  
-  const now = getNow();  
-  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());  
-  const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);  
-  
-  const list = document.getElementById('match-list');  
-  list.innerHTML = "";  
-  const filter = document.getElementById('search').value.toLowerCase();  
-  
-  let filteredMatches = matches.filter(m => {  
-  const ct = new Date(m.MatchTime);  
-  const isLive = now >= ct;  
-  
-  if (type === 'live' && !isLive) return false;  
-  
-  else if (type === 'today') {  
-    if (ct < todayStart || ct >= todayEnd || isLive) return false;  
-  }  
-  
-  else if (type === 'upcoming') {  
-    if (ct < now || (ct >= todayStart && ct < todayEnd)) return false;  
-  }  
-  
-  if (filter && !(m.Match.toLowerCase().includes(filter) || m.Team1.toLowerCase().includes(filter) || m.Team2.toLowerCase().includes(filter))) return false;  
-  
-  return true;  
-});  
-  
-// 🔀 এইখানে টাইম অনুযায়ী ছোট থেকে বড় সাজানো হচ্ছে  
-filteredMatches.sort((a, b) => new Date(a.MatchTime) - new Date(b.MatchTime));  
-  
-  if (filteredMatches.length === 0) {  
-  let emojiMessage = '😴 No matches available right now.';  
-  if (type === 'live') emojiMessage = '📴 No live matches at the moment.';  
-  else if (type === 'upcoming') emojiMessage = '🕒 No upcoming matches found.';  
-  else if (type === 'today') emojiMessage = '📅 No matches scheduled for today.';  
-  
-  list.innerHTML = `  
-    <div style="  
-      max-width: 420px;  
-      margin: 40px auto;  
-      padding: 30px 20px;  
-      background: #1e1e1e;  
-      border-radius: 14px;  
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);  
-      color: #ccc;  
-      font-family: 'Segoe UI', sans-serif;  
-      font-size: 1.25rem;  
-      font-weight: 500;  
-      text-align: center;  
-      user-select: none;  
-      display: flex;  
-      align-items: center;  
-      justify-content: center;  
-      gap: 14px;  
-    ">  
-      <span style="font-size: 2.5rem;">${emojiMessage.match(/^(\p{Emoji_Presentation}|\p{Extended_Pictographic})+/u)[0]}</span>  
-      <span>${emojiMessage.replace(/^(\p{Emoji_Presentation}|\p{Extended_Pictographic})+\s*/, '')}</span>  
-    </div>  
-  `;  
-  return;  
-}  
-  
-  filteredMatches.forEach((m, i) => {  
-  const ct = new Date(m.MatchTime);  
-  const isLive = now >= ct;  
-  
-  const div = document.createElement('div');  
-  div.className = "match";  
-  
-  let timerHtml = '';  
-  if (isLive) {  
-    const diffLive = getNow() - ct;  
-    timerHtml = `  
-      <div style="text-align: center; margin: 10px 0;">  
-        <div id="liveAnim${i}" style="width: 60px; height: 60px; margin: 0 auto;"></div>  
-        <div class="countdown" id="cd${type}${i}">Started ${formatCountUp(diffLive)}</div>  
-      </div>  
-    `;  
-  } else {  
-    const dateStr = ct.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });  
-    const timeStr = ct.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });  
-    timerHtml = `  
-      <div class="match-time"> ${dateStr}</div>  
-      <div class="match-time"> ${timeStr}</div>  
-      <div class="countdown" id="cd${type}${i}">⏳ ${formatCountdown(getCountdown(m.MatchTime))}</div>  
-      ${getCountdown(m.MatchTime) <= 15 * 60 * 1000 ? `<div class="coming-soon-anim">⏳ Coming Soon...</div>` : ''}  
-    `;  
-  }  
-  
-  div.innerHTML = `
-  <div style="background: #1a1a28; border-radius: 12px; padding: 16px; max-width: 360px; margin: auto; color: #fff; font-family: 'Segoe UI', sans-serif;">
-
-    <!-- Match Title -->
-    <div style="text-align:center; font-size:15px; font-weight:600; margin-bottom:14px; background:#000; padding:6px 10px; border-radius:8px;">
-      ${m.Match}
-    </div>
-
-    <!-- Teams Row -->
-    <div style="display: flex; justify-content: space-around; align-items: center; margin-bottom: 14px;">
-      <!-- Team 1 -->
-      <div style="display: flex; flex-direction: column; align-items: center; min-width: 90px;">
-        <img src="${m.Team1Logo}" alt="${m.Team1} logo" style="width:40px; height:40px; border-radius:50%;" loading="lazy" />
-        <span style="font-size:15px; font-weight:bold; text-align:center; margin-top:6px;">${m.Team1}</span>
-      </div>
-
-      <!-- VS Center -->
-      <div style="font-weight: bold; color: #0af; font-size:16px;">VS</div>
-
-      <!-- Team 2 -->
-      <div style="display: flex; flex-direction: column; align-items: center; min-width: 90px;">
-        <img src="${m.Team2Logo}" alt="${m.Team2} logo" style="width:40px; height:40px; border-radius:50%;" loading="lazy" />
-        <span style="font-size:15px; font-weight:bold; text-align:center; margin-top:6px;">${m.Team2}</span>
-      </div>
-    </div>
-
-    <!-- Timer -->
-    <div style="text-align:center; font-size:16px; color:#ccc; font-weight:500; margin-bottom:16px;">
-      ${timerHtml || '00:00:00'}
-    </div>
-
-    <!-- Server Buttons -->
-    <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-      ${m.servers && m.servers.length > 0 ? 
-  m.servers.map((server, index) => {
-    const colors = ['#00bcd4', '#009688', '#3f51b5', '#ff5722', '#9c27b0', '#4caf50', '#ff9800'];
-    const bgColor = colors[index % colors.length];
-    return `<a href="${server.link}" target="_blank" rel="noopener noreferrer" style="background:${bgColor}; padding:6px 12px; border-radius:6px; color:#fff; text-decoration:none; font-size:14px; margin:2px;">${server.name}</a>`;
-  }).join('') 
-  : '<span style="color:#888; font-size:12px;">No servers available</span>'
-}
-    </div>
-  </div>
-`;
-  
-  list.appendChild(div);  
-  
-  // ⬇️ এইখানে Lottie animation শুরু হবে live এর জন্য  
-  if (isLive) {  
-    setTimeout(() => {  
-      bodymovin.loadAnimation({  
-        container: document.getElementById('liveAnim' + i),  
-        renderer: 'svg',  
-        loop: true,  
-        autoplay: true,  
-        path: 'https://raw.githubusercontent.com/Hasanmahmud000/HasanTv/refs/heads/main/live-icon.json'  
-      });  
-    }, 0);  
-  }  
-  
-    if (!isLive) {  
-      intervals.push(setInterval(() => {  
-        const cdEl = div.querySelector(`#cd${type}${i}`);  
-        if (cdEl) {  
-          const remain = getCountdown(m.MatchTime);  
-          cdEl.innerText = remain > 0 ? formatCountdown(remain) : "Starting soon";  
-        }  
-      }, 1000));  
-    } else {  
-      intervals.push(setInterval(() => {  
-        const cdEl = div.querySelector(`#cd${type}${i}`);  
-        if (cdEl) {  
-          const diffLive = getNow() - ct;  
-          cdEl.innerText = `Started ${formatCountUp(diffLive)}`;  
-        }  
-      }, 1000));  
-    }  
-  });  
-}  
-    
-  // নিচের বড় ট্যাব হ্যান্ডলার  
-  function showCategory(category) {  
-    // প্রথমে সব ট্যাব হালকা করে দেব  
-    document.getElementById('bottomLive').classList.remove('active');  
-    document.getElementById('bottomTV').classList.remove('active');  
-    document.getElementById('bottomFM').classList.remove('active');  
-  
-    // তারপর সিলেক্টেড ট্যাবে active যোগ করব  
-    document.getElementById('bottom' + category.charAt(0).toUpperCase() + category.slice(1)).classList.add('active');  
-  
-    // সার্চ ইনপুট ফাঁকা করব  
-    document.getElementById('search').value = '';  
-  
-    // সব সেকশন লুকিয়ে দিব  
-    document.getElementById('subTabs').style.display = 'none';  
-    document.getElementById('match-list').style.display = 'none';  
-    document.getElementById('tv-section').style.display = 'none';  
-    document.getElementById('fm-section').style.display = 'none';  
-  
-    if(category === 'live') {  
-      // Live Category এ উপরের সাব-ট্যাব দেখাবো  
-      document.getElementById('subTabs').style.display = 'block';  
-      document.getElementById('match-list').style.display = 'block';  
-      // প্রথমে সাব-ট্যাবে active সেট করে রেন্ডার করবো  
-      currentSubTab = 'live';  
-      setActiveSubTab(currentSubTab);  
-      renderMatches(currentSubTab);  
-    } else if(category === 'tv') {  
-      document.getElementById('tv-section').style.display = 'block';  
-    } else if(category === 'fm') {  
-      document.getElementById('fm-section').style.display = 'block';  
-    }  
-  }  
-  
-  // সাব-ট্যাব হ্যান্ডলার  
-  function setActiveSubTab(subTab) {  
-  document.getElementById('subLive').classList.remove('active');  
-  document.getElementById('subToday').classList.remove('active');   // নতুন Today এর জন্য  
-  document.getElementById('subUpcoming').classList.remove('active');  
-  
-  document.getElementById('sub' + subTab.charAt(0).toUpperCase() + subTab.slice(1)).classList.add('active');  
-}  
-  
-    document.getElementById('bottomLive').addEventListener('click', () => showCategory('live'));  
-  document.getElementById('bottomTV').addEventListener('click', () => showCategory('tv'));  
-  document.getElementById('bottomFM').addEventListener('click', () => showCategory('fm'));  
-  
-  // Sub Tab buttons click  
-document.getElementById('subLive').addEventListener('click', () => {  
-  currentSubTab = 'live';  
-  setActiveSubTab(currentSubTab);  
-  renderMatches(currentSubTab);  
-});  
-  
-document.getElementById('subUpcoming').addEventListener('click', () => {  
-  currentSubTab = 'upcoming';  
-  setActiveSubTab(currentSubTab);  
-  renderMatches(currentSubTab);  
-});  
-  
-// ✅ এই লাইনটা নিচে বসাও  
-document.getElementById('subToday').addEventListener('click', () => {  
-  currentSubTab = 'today';  
-  setActiveSubTab(currentSubTab);  
-  renderMatches(currentSubTab);  
-});  
-  
-  document.getElementById('search').addEventListener('input', () => {  
-    if(document.getElementById('subTabs').style.display === 'block'){  
-      renderMatches(currentSubTab);  
-    }  
-  });  
-  
-  // প্রথমে ডাটা লোড করে Live Category দেখাবে  
-  fetch(matchesApi)  
-  .then(res => res.json())  
-  .then(data => {  
-    matches = data.matches || [];  
-  
-    const now = new Date();  
-    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());  
-    const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);  
-  
-    // 🔹 সংখ্যাগুলো বের করো  
-    const liveCount = matches.filter(m => new Date(m.MatchTime) <= now).length;  
-    const todayCount = matches.filter(m => {  
-      const ct = new Date(m.MatchTime);  
-      return ct >= todayStart && ct < todayEnd && ct > now;  
-    }).length;  
-    const upcomingCount = matches.filter(m => new Date(m.MatchTime) > todayEnd).length;  
-  
-    // 🔹 UI তে সংখ্যা বসাও  
-    document.getElementById("countLive").innerText = `(${liveCount})`;  
-    document.getElementById("countToday").innerText = `(${todayCount})`;  
-    document.getElementById("countUpcoming").innerText = `(${upcomingCount})`;  
-  
-    // 🔹 ম্যাচগুলোকে ফিল্টার করে সাজাও  
-    const todayMatches = matches.filter(m => {  
-      const ct = new Date(m.MatchTime);  
-      return ct >= todayStart && ct < todayEnd && ct > now;  
-    });  
-  
-    const upcomingMatches = matches.filter(m => {  
-      const ct = new Date(m.MatchTime);  
-      return ct > todayEnd;  
-    });  
-  
-    const liveMatches = matches.filter(m => new Date(m.MatchTime) <= now);  
-  
-    matches = [  
-      ...liveMatches.map(m => ({ ...m, isLive: true })),  
-      ...todayMatches.map(m => ({ ...m, isToday: true })),  
-      ...upcomingMatches.map(m => ({ ...m, isUpcoming: true })),  
-    ];  
-  
-    showCategory('live');
-    
-    // 🔔 Schedule notifications after data is loaded
-    setTimeout(() => {
-      if (notificationPermission) {
-        scheduleMatchNotifications();
-      }
-    }, 1000);
-  })  
-    .catch(e => {  
-      console.error('Error fetching matches:', e);  
-      document.getElementById('match-list').innerHTML = '<p style="text-align:center; color:#f00;">Failed to load match data.</p>';  
-    });
-
   // ==================== NOTIFICATION INITIALIZATION ====================
 
   // Initialize notification system on page load
@@ -1178,29 +1222,13 @@ document.getElementById('subToday').addEventListener('click', () => {
     
     updateNotificationUI();
     
-    // Show permission request popup after 3 seconds if not granted
+    // ✅ Auto-enable notifications on first visit (show popup immediately)
     if ('Notification' in window && Notification.permission === 'default') {
       setTimeout(() => {
         showNotificationPermissionPopup();
-      }, 3000);
-    }
-
-    // Show telegram popup
-    const alreadyClosed = localStorage.getItem('hideTelegramPopup');  
-    if (!alreadyClosed) {  
-      setTimeout(() => {  
-        document.getElementById('telegramPopup').style.display = 'block';  
-      }, 5000); // ৫ সেকেন্ড পরে দেখাবে  
+      }, 1000); // Show after 1 second instead of 3
     }
   });
-
-  // Refresh notifications every 30 minutes
-  setInterval(() => {
-    if (notificationPermission && matches.length > 0) {
-      scheduleMatchNotifications();
-      console.log('🔄 Notifications refreshed');
-    }
-  }, 30 * 60 * 1000); // 30 minutes
 
   // Service Worker for PWA
   if ('serviceWorker' in navigator) {  
@@ -1237,7 +1265,7 @@ document.getElementById('subToday').addEventListener('click', () => {
         if (reg.waiting) return showUpdatePopup();  
   
         if (reg.installing) {  
-          reg.installing.addEventListener("statechange", function () {  
+                    reg.installing.addEventListener("statechange", function () {  
             if (this.state === "installed" && navigator.serviceWorker.controller) {  
               showUpdatePopup();  
             }  
@@ -1258,7 +1286,7 @@ document.getElementById('subToday').addEventListener('click', () => {
       listenForWaitingSW(registration);  
     });  
   
-        navigator.serviceWorker.addEventListener("controllerchange", () => {  
+    navigator.serviceWorker.addEventListener("controllerchange", () => {  
       window.location.reload();  
     });  
   }  
