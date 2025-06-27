@@ -3,7 +3,11 @@
 <head>  
   <meta charset="UTF-8" />  
   <meta name="viewport" content="width=device-width, initial-scale=1" />  
-  <title>CricStreamZone - Live Matches & Upcoming</title>  
+  <title>CricStreamZone - Live Matches & Upcoming</title>
+  
+  <!-- Manifest লিংক যোগ করুন -->
+  <link rel="manifest" href="manifest.json">
+  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.4/lottie.min.js">  
 </script>  
   <style>  
@@ -160,8 +164,6 @@
       padding: 8px;  
       text-align: center;  
       background: #222;  
-      overflow-x: auto;
-      white-space: nowrap;
     }  
     .sub-tab-btns button {  
       margin: 0 6px;  
@@ -174,7 +176,6 @@
       font-weight: 600;  
       font-size: 14px;  
       transition: background 0.3s ease;  
-      display: inline-block;
     }  
     .sub-tab-btns button:hover {  
       background: #0af;  
@@ -295,23 +296,6 @@
       50% { background-position: 100% 50%; }  
       100% { background-position: 0% 50%; }  
     }  
-
-    /* Finished match style */
-    .match.finished {
-      opacity: 0.7;
-      background: #2a1a1a;
-      border: 1px solid #444;
-    }
-    .finished-badge {
-      background: #666;
-      color: #fff;
-      padding: 4px 8px;
-      border-radius: 12px;
-      font-size: 12px;
-      font-weight: bold;
-      display: inline-block;
-      margin-bottom: 8px;
-    }
   
     /* TV & FM আলাদা সেকশন */  
     #tv-section, #fm-section {  
@@ -319,7 +303,24 @@
       font-size: 16px;  
       color: #ccc;  
       text-align: center;  
-    }  
+    }
+
+    /* Notification Toast Styles */
+    .notification-toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 10001;
+      max-width: 350px;
+      min-width: 250px;
+    }
+
+    /* Bell Animation */
+    @keyframes bellRing {
+      0%, 50%, 100% { transform: rotate(0deg); }
+      10%, 30% { transform: rotate(-10deg); }
+      20%, 40% { transform: rotate(10deg); }
+    }
   </style>  
 </head>  
 <body>  
@@ -340,7 +341,12 @@
   <a href="https://play.google.com/store/apps/details?id=com.genuine.leone" target="_blank">📲 Download NS Player</a>  
   <a href="#" onclick="showCategory('live'); toggleDrawer();">🏏 Live Matches</a>  
   <a href="#" onclick="showCategory('tv'); toggleDrawer();">📺 Live TV</a>  
-  <a href="#" onclick="showCategory('fm'); toggleDrawer();">📻 FM Radio</a>  
+  <a href="#" onclick="showCategory('fm'); toggleDrawer();">📻 FM Radio</a>
+  
+  <!-- Notification Settings -->
+  <a href="#" onclick="toggleNotifications(); toggleDrawer();" id="notificationToggle">
+    <span id="notificationIcon">🔔</span> <span id="notificationText">Enable Notifications</span>
+  </a>
 </div>  
 <div id="drawerOverlay" onclick="toggleDrawer()"></div>
 
@@ -364,7 +370,6 @@ Google Play Store or join our Telegram channel for the latest updates and app li
   <button id="subLive" class="active">Live <span id="countLive"></span></button>  
   <button id="subToday">Today <span id="countToday"></span></button>  
   <button id="subUpcoming">Upcoming <span id="countUpcoming"></span></button>  
-  <button id="subFinished">Finished <span id="countFinished"></span></button>  
 </div>  
   
 <div id="match-list"></div>  
@@ -412,7 +417,415 @@ Join our official Telegram channel now!
   </div>  
 </div>
 
+<!-- Notification Permission Popup -->
+<div id="notificationPopup" style="display:none;">
+  <div style="position:fixed; top:0; left:0; width:100%; height:100%; background:#000000dd; z-index:9998; display:flex; align-items:center; justify-content:center; backdrop-filter: blur(5px);">
+    <div style="background: linear-gradient(135deg, #222 0%, #333 100%); padding:30px; border-radius:16px; max-width:90%; width:380px; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,0.5); border: 1px solid #444;">
+      
+      <!-- Animated Bell Icon -->
+      <div style="font-size:64px; margin-bottom:20px; animation: bellRing 2s ease-in-out infinite;">🔔</div>
+      
+      <h3 style="color:#0af; margin-bottom:15px; font-size:22px; font-weight:700;">Enable Match Alerts</h3>
+      
+      <p style="color:#ccc; font-size:15px; line-height:1.6; margin-bottom:25px;">
+        🏏 Get instant notifications <strong style="color:#0af;">15 minutes before</strong> matches start<br>
+        🔴 Live alerts when matches begin<br>
+        📱 <span style="color:#4caf50;">Never miss your favorite cricket matches!</span>
+      </p>
+      
+      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+        <button onclick="enableNotifications()" style="
+          background: linear-gradient(45deg, #4caf50, #45a049); 
+          color:#fff; 
+          padding:14px 24px; 
+          border:none; 
+          border-radius:10px; 
+          cursor:pointer; 
+          font-weight:600;
+          font-size:15px;
+          box-shadow: 0 4px 15px rgba(76,175,80,0.3);
+          transition: transform 0.2s ease;
+        " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          ✅ Enable Alerts
+        </button>
+        <button onclick="closeNotificationPopup()" style="
+          background:#666; 
+          color:#fff; 
+          padding:14px 24px; 
+          border:none; 
+          border-radius:10px; 
+          cursor:pointer;
+          font-size:15px;
+          transition: background 0.2s ease;
+        " onmouseover="this.style.background='#777'" onmouseout="this.style.background='#666'">
+          Maybe Later
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>  
+  // ==================== NOTIFICATION SYSTEM ====================
+
+  // Global notification variables
+  let notificationPermission = false;
+  let scheduledNotifications = new Map();
+
+  // Check notification support
+  function isNotificationSupported() {
+    return 'Notification' in window && 'serviceWorker' in navigator;
+  }
+
+  // Enhanced toast message system
+  function showToast(message, type = 'info', duration = 4000) {
+    // Remove existing toasts
+    const existingToasts = document.querySelectorAll('.notification-toast');
+    existingToasts.forEach(toast => toast.remove());
+
+    const toast = document.createElement('div');
+    toast.className = 'notification-toast';
+    
+    const icons = {
+      success: '✅',
+      error: '❌', 
+      warning: '⚠️',
+      info: 'ℹ️'
+    };
+    
+    const colors = {
+      success: '#4caf50',
+      error: '#f44336',
+      warning: '#ff9800', 
+      info: '#2196f3'
+    };
+
+    toast.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: ${colors[type]};
+      color: white;
+      padding: 15px 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 10001;
+      max-width: 350px;
+      min-width: 250px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+      transform: translateX(100%);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-left: 4px solid rgba(255,255,255,0.3);
+    `;
+    
+    toast.innerHTML = `
+      <span style="font-size: 18px;">${icons[type]}</span>
+      <span style="flex: 1;">${message}</span>
+      <button onclick="this.parentElement.remove()" style="
+        background: none; 
+        border: none; 
+        color: white; 
+        font-size: 18px; 
+        cursor: pointer;
+        padding: 0;
+        margin-left: 10px;
+      ">×</button>
+    `;
+    
+    document.body.appendChild(toast);
+    
+    // Animate in
+    setTimeout(() => {
+      toast.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Auto remove
+    setTimeout(() => {
+      toast.style.transform = 'translateX(100%)';
+      toast.style.opacity = '0';
+      setTimeout(() => {
+        if (toast.parentElement) {
+          toast.remove();
+        }
+      }, 300);
+    }, duration);
+  }
+
+  // Request notification permission
+  async function requestNotificationPermission() {
+    if (!isNotificationSupported()) {
+      showToast('❌ Your browser doesn\'t support notifications', 'error');
+      return false;
+    }
+
+    try {
+      const permission = await Notification.requestPermission();
+      notificationPermission = permission === 'granted';
+      
+      if (notificationPermission) {
+        showToast('🔔 Notifications enabled! You\'ll get alerts 15 minutes before matches start.', 'success');
+        localStorage.setItem('notificationPermission', 'granted');
+        localStorage.setItem('notificationEnabledTime', Date.now());
+        
+        // Schedule notifications if matches are loaded
+        if (matches.length > 0) {
+          scheduleMatchNotifications();
+        }
+        
+      } else {
+        showToast('❌ Notification permission denied. Enable it in browser settings.', 'error');
+        localStorage.setItem('notificationPermission', 'denied');
+      }
+    } catch (error) {
+      console.error('Error requesting notification permission:', error);
+      showToast('❌ Error enabling notifications', 'error');
+    }
+    
+    updateNotificationUI();
+    return notificationPermission;
+  }
+
+  // Enhanced notification scheduling with team names
+  function scheduleMatchNotifications() {
+    if (!notificationPermission || !matches.length) {
+      console.log('🔕 Notifications disabled or no matches available');
+      return;
+    }
+    
+    // Clear existing scheduled notifications
+    scheduledNotifications.forEach(timeoutId => clearTimeout(timeoutId));
+    scheduledNotifications.clear();
+    
+    const now = new Date();
+    let scheduledCount = 0;
+    
+    matches.forEach((match, index) => {
+      const matchTime = new Date(match.MatchTime);
+      const fifteenMinBefore = new Date(matchTime.getTime() - 15 * 60 * 1000);
+      const fiveMinBefore = new Date(matchTime.getTime() - 5 * 60 * 1000);
+      
+      // Skip past matches
+      if (matchTime < now) return;
+      
+      // Schedule 15 minutes before notification
+      if (fifteenMinBefore > now) {
+        const timeUntilNotification = fifteenMinBefore.getTime() - now.getTime();
+        
+        const timeoutId = setTimeout(() => {
+          const matchDate = matchTime.toLocaleDateString('en-GB', { 
+            day: '2-digit', 
+            month: 'short' 
+          });
+          const matchTimeStr = matchTime.toLocaleTimeString('en-US', { 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            hour12: true 
+          });
+          
+          showNotification(
+            '⏰ Match Starting Soon!',
+            `🏏 ${match.Team1} vs ${match.Team2}\n📅 ${matchDate} at ${matchTimeStr}\n⏱️ Starting in 15 minutes!\n🎯 ${match.Match}`,
+            'https://i.postimg.cc/3rPWWckN/icon-192.png',
+            { 
+              matchId: index,
+              teams: `${match.Team1} vs ${match.Team2}`,
+              type: '15min_before',
+              matchTime: match.MatchTime
+            }
+          );
+        }, timeUntilNotification);
+        
+        scheduledNotifications.set(`before15_${index}`, timeoutId);
+        scheduledCount++;
+      }
+      
+      // Schedule 5 minutes before notification (for very close matches)
+      if (fiveMinBefore > now && fiveMinBefore.getTime() - now.getTime() > 60000) {
+        const timeUntilNotification = fiveMinBefore.getTime() - now.getTime();
+        
+        const timeoutId = setTimeout(() => {
+          showNotification(
+            '🚨 Match Starting Very Soon!',
+            `🔥 ${match.Team1} vs ${match.Team2}\n⏰ Starting in just 5 minutes!\n📺 Get ready to watch!`,
+            'https://i.postimg.cc/3rPWWckN/icon-192.png',
+            { 
+              matchId: index,
+              teams: `${match.Team1} vs ${match.Team2}`,
+              type: '5min_before',
+              matchTime: match.MatchTime
+            }
+          );
+        }, timeUntilNotification);
+        
+        scheduledNotifications.set(`before5_${index}`, timeoutId);
+        scheduledCount++;
+      }
+      
+      // Schedule match start notification
+      if (matchTime > now) {
+        const timeUntilMatch = matchTime.getTime() - now.getTime();
+        
+        const timeoutId = setTimeout(() => {
+          showNotification(
+            '🏏 Match Started!',
+            `🔴 LIVE NOW: ${match.Team1} vs ${match.Team2}\n🎯 ${match.Match}\n📺 Tap to watch live streaming!`,
+            'https://i.postimg.cc/3rPWWckN/icon-192.png',
+            { 
+              matchId: index,
+              teams: `${match.Team1} vs ${match.Team2}`,
+              type: 'match_started',
+              matchTime: match.MatchTime,
+              isLive: true
+            }
+          );
+        }, timeUntilMatch);
+        
+        scheduledNotifications.set(`start_${index}`, timeoutId);
+        scheduledCount++;
+      }
+    });
+    
+    console.log(`📅 Scheduled ${scheduledCount} notifications for ${matches.length} matches`);
+    
+    if (scheduledCount > 0) {
+      showToast(`🔔 ${scheduledCount} match alerts scheduled!`, 'success', 3000);
+    }
+  }
+
+  // Enhanced notification display with rich content
+  function showNotification(title, body, icon, matchData = null) {
+    if (!notificationPermission) {
+      console.log('🔕 Notifications not permitted');
+      return;
+    }
+    
+    const options = {
+      body: body,
+      icon: icon || 'https://i.postimg.cc/3rPWWckN/icon-192.png',
+      badge: 'https://i.postimg.cc/3rPWWckN/icon-192.png',
+      vibrate: [200, 100, 200, 100, 200],
+      tag: `cricket-match-${matchData?.matchId || 'general'}`,
+      requireInteraction: true,
+      silent: false,
+      renotify: true,
+      timestamp: Date.now(),
+      data: {
+        matchData: matchData,
+        url: '/',
+        timestamp: Date.now()
+      },
+      actions: [
+        {
+                    action: 'watch',
+          title: '📺 Watch Live',
+          icon: 'https://i.postimg.cc/BvWg87Rd/videocam-24dp-E3-E3-E3-FILL0-wght400-GRAD0-opsz24.png'
+        },
+        {
+          action: 'remind',
+          title: '⏰ Remind Later',
+          icon: 'https://i.postimg.cc/YC472jwd/radio-24dp-E3-E3-E3-FILL0-wght400-GRAD0-opsz24.png'
+        },
+        {
+          action: 'dismiss',
+          title: '❌ Dismiss',
+          icon: 'https://i.postimg.cc/K8JDvvxs/live-tv-24dp-E3-E3-E3-FILL0-wght400-GRAD0-opsz24.png'
+        }
+      ]
+    };
+    
+    // Use service worker for better notification handling
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.ready.then(registration => {
+        registration.showNotification(title, options)
+          .then(() => {
+            console.log('✅ Notification shown via service worker');
+          })
+          .catch(error => {
+            console.error('❌ Service worker notification failed:', error);
+            // Fallback to regular notification
+            new Notification(title, options);
+          });
+      }).catch(() => {
+        // Fallback if service worker not ready
+        new Notification(title, options);
+      });
+    } else {
+      // Direct notification for browsers without service worker
+      new Notification(title, options);
+    }
+  }
+
+  // Show notification permission popup
+  function showNotificationPermissionPopup() {
+    // Don't show if already shown recently
+    const lastShown = localStorage.getItem('notificationPopupLastShown');
+    if (lastShown && Date.now() - parseInt(lastShown) < 24 * 60 * 60 * 1000) {
+      return; // Don't show more than once per day
+    }
+
+    document.getElementById('notificationPopup').style.display = 'block';
+    localStorage.setItem('notificationPopupLastShown', Date.now());
+  }
+
+  // Enable notifications
+  async function enableNotifications() {
+    await requestNotificationPermission();
+    closeNotificationPopup();
+    
+    if (notificationPermission) {
+      scheduleMatchNotifications();
+    }
+  }
+
+  // Close notification popup
+  function closeNotificationPopup() {
+    const popup = document.getElementById('notificationPopup');
+    if (popup) {
+      popup.style.display = 'none';
+    }
+  }
+
+  // Notification toggle function
+  function toggleNotifications() {
+    if (notificationPermission) {
+      // Disable notifications
+      notificationPermission = false;
+      localStorage.removeItem('notificationPermission');
+      scheduledNotifications.forEach(timeoutId => clearTimeout(timeoutId));
+      scheduledNotifications.clear();
+      updateNotificationUI();
+      showToast('🔕 Notifications disabled', 'info');
+    } else {
+      // Enable notifications
+      requestNotificationPermission().then(() => {
+        updateNotificationUI();
+        if (notificationPermission && matches.length > 0) {
+          scheduleMatchNotifications();
+        }
+      });
+    }
+  }
+
+  // Update notification UI in drawer
+  function updateNotificationUI() {
+    const icon = document.getElementById('notificationIcon');
+    const text = document.getElementById('notificationText');
+    
+    if (notificationPermission) {
+      icon.textContent = '🔔';
+      text.textContent = 'Disable Notifications';
+    } else {
+      icon.textContent = '🔕';
+      text.textContent = 'Enable Notifications';
+    }
+  }
+
+  // ==================== ORIGINAL CODE (UNCHANGED) ====================
+
   // Drawer toggle function
   function toggleDrawer() {  
     const drawer = document.getElementById('drawer');  
@@ -426,15 +839,6 @@ Join our official Telegram channel now!
     document.getElementById('telegramPopup').style.display = 'none';  
     localStorage.setItem('hideTelegramPopup', 'true');  
   }  
-  
-  window.addEventListener('load', () => {  
-    const alreadyClosed = localStorage.getItem('hideTelegramPopup');  
-    if (!alreadyClosed) {  
-      setTimeout(() => {  
-        document.getElementById('telegramPopup').style.display = 'block';  
-      }, 5000); // ৫ সেকেন্ড পরে দেখাবে  
-    }  
-  });
 
   // API url (আপনার গুগল অ্যাপস স্ক্রিপ্ট / API url দিন এখানে)  
   const matchesApi = "https://script.google.com/macros/s/AKfycbxzx4xcwEGidoxEd7BQshkR9FKHjK5o0p8ukNY4NsKNR0EsShY7eV3MUxA2iXz1V8bmHg/exec";  
@@ -460,24 +864,6 @@ Join our official Telegram channel now!
     s %= 60; m %= 60;  
     return `${h > 0 ? h + 'h ' : ''}${m}m ${s}s ago`;  
   }  
-
-  // Check if match is finished (deleted from admin but within 6-12 hours)
-  function isMatchFinished(match) {
-    if (!match.deletedAt) return false;
-    const deletedTime = new Date(match.deletedAt);
-    const now = new Date();
-    const hoursDiff = (now - deletedTime) / (1000 * 60 * 60);
-    return hoursDiff <= 12; // Show in finished for 12 hours
-  }
-
-  // Auto-delete finished matches after 12 hours
-  function shouldAutoDelete(match) {
-    if (!match.deletedAt) return false;
-    const deletedTime = new Date(match.deletedAt);
-    const now = new Date();
-    const hoursDiff = (now - deletedTime) / (1000 * 60 * 60);
-    return hoursDiff > 12; // Auto delete after 12 hours
-  }
   
   function renderMatches(type = 'live') {  
   clearIntervals();  
@@ -490,187 +876,166 @@ Join our official Telegram channel now!
   const filter = document.getElementById('search').value.toLowerCase();  
   
   let filteredMatches = matches.filter(m => {  
-    // Auto-delete matches that are older than 12 hours in finished
-    if (shouldAutoDelete(m)) return false;
-
-    const ct = new Date(m.MatchTime);  
-    const isLive = now >= ct;  
-    const isFinished = isMatchFinished(m);
-    
-    if (type === 'finished') {
-      return isFinished;
-    }
-    
-    // Don't show finished matches in other tabs
-    if (isFinished) return false;
-    
-    if (type === 'live' && !isLive) return false;  
-    
-    else if (type === 'today') {  
-      if (ct < todayStart || ct >= todayEnd || isLive) return false;  
-    }  
-    
-    else if (type === 'upcoming') {  
-      if (ct < now || (ct >= todayStart && ct < todayEnd)) return false;  
-    }  
-    
-    if (filter && !(m.Match.toLowerCase().includes(filter) || m.Team1.toLowerCase().includes(filter) || m.Team2.toLowerCase().includes(filter))) return false;  
-    
-    return true;  
-  });  
+  const ct = new Date(m.MatchTime);  
+  const isLive = now >= ct;  
   
-  // 🔀 এইখানে টাইম অনুযায়ী ছোট থেকে বড় সাজানো হচ্ছে  
-  filteredMatches.sort((a, b) => new Date(a.MatchTime) - new Date(b.MatchTime));  
-    
-    if (filteredMatches.length === 0) {  
-    let emojiMessage = '😴 No matches available right now.';  
-    if (type === 'live') emojiMessage = '📴 No live matches at the moment.';  
-    else if (type === 'upcoming') emojiMessage = '🕒 No upcoming matches found.';  
-    else if (type === 'today') emojiMessage = '📅 No matches scheduled for today.';  
-    else if (type === 'finished') emojiMessage = '🏁 No finished matches to show.';
-    
-    list.innerHTML = `  
-      <div style="  
-        max-width: 420px;  
-        margin: 40px auto;  
-        padding: 30px 20px;  
-        background: #1e1e1e;  
-        border-radius: 14px;  
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);  
-        color: #ccc;  
-        font-family: 'Segoe UI', sans-serif;  
-        font-size: 1.25rem;  
-        font-weight: 500;  
-        text-align: center;  
-        user-select: none;  
-        display: flex;  
-        align-items: center;  
-        justify-content: center;  
-        gap: 14px;  
-      ">  
-        <span style="font-size: 2.5rem;">${emojiMessage.match(/^(\p{Emoji_Presentation}|\p{Extended_Pictographic})+/u)[0]}</span>  
-        <span>${emojiMessage.replace(/^(\p{Emoji_Presentation}|\p{Extended_Pictographic})+\s*/, '')}</span>  
+  if (type === 'live' && !isLive) return false;  
+  
+  else if (type === 'today') {  
+    if (ct < todayStart || ct >= todayEnd || isLive) return false;  
+  }  
+  
+  else if (type === 'upcoming') {  
+    if (ct < now || (ct >= todayStart && ct < todayEnd)) return false;  
+  }  
+  
+  if (filter && !(m.Match.toLowerCase().includes(filter) || m.Team1.toLowerCase().includes(filter) || m.Team2.toLowerCase().includes(filter))) return false;  
+  
+  return true;  
+});  
+  
+// 🔀 এইখানে টাইম অনুযায়ী ছোট থেকে বড় সাজানো হচ্ছে  
+filteredMatches.sort((a, b) => new Date(a.MatchTime) - new Date(b.MatchTime));  
+  
+  if (filteredMatches.length === 0) {  
+  let emojiMessage = '😴 No matches available right now.';  
+  if (type === 'live') emojiMessage = '📴 No live matches at the moment.';  
+  else if (type === 'upcoming') emojiMessage = '🕒 No upcoming matches found.';  
+  else if (type === 'today') emojiMessage = '📅 No matches scheduled for today.';  
+  
+  list.innerHTML = `  
+    <div style="  
+      max-width: 420px;  
+      margin: 40px auto;  
+      padding: 30px 20px;  
+      background: #1e1e1e;  
+      border-radius: 14px;  
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);  
+      color: #ccc;  
+      font-family: 'Segoe UI', sans-serif;  
+      font-size: 1.25rem;  
+      font-weight: 500;  
+      text-align: center;  
+      user-select: none;  
+      display: flex;  
+      align-items: center;  
+      justify-content: center;  
+      gap: 14px;  
+    ">  
+      <span style="font-size: 2.5rem;">${emojiMessage.match(/^(\p{Emoji_Presentation}|\p{Extended_Pictographic})+/u)[0]}</span>  
+      <span>${emojiMessage.replace(/^(\p{Emoji_Presentation}|\p{Extended_Pictographic})+\s*/, '')}</span>  
+    </div>  
+  `;  
+  return;  
+}  
+  
+  filteredMatches.forEach((m, i) => {  
+  const ct = new Date(m.MatchTime);  
+  const isLive = now >= ct;  
+  
+  const div = document.createElement('div');  
+  div.className = "match";  
+  
+  let timerHtml = '';  
+  if (isLive) {  
+    const diffLive = getNow() - ct;  
+    timerHtml = `  
+      <div style="text-align: center; margin: 10px 0;">  
+        <div id="liveAnim${i}" style="width: 60px; height: 60px; margin: 0 auto;"></div>  
+        <div class="countdown" id="cd${type}${i}">Started ${formatCountUp(diffLive)}</div>  
       </div>  
     `;  
-    return;  
-  }  
-    
-    filteredMatches.forEach((m, i) => {  
-    const ct = new Date(m.MatchTime);  
-    const isLive = now >= ct;  
-    const isFinished = isMatchFinished(m);
-    
-    const div = document.createElement('div');  
-    div.className = `match ${isFinished ? 'finished' : ''}`;  
-    
-    let timerHtml = '';  
-    if (isFinished) {
-      const deletedTime = new Date(m.deletedAt);
-      const hoursAgo = Math.floor((now - deletedTime) / (1000 * 60 * 60));
-      timerHtml = `
-        <div style="text-align: center; margin: 10px 0;">
-          <div class="finished-badge">🏁 FINISHED</div>
-          <div class="countdown" style="color: #888;">Match ended ${hoursAgo}h ago</div>
-        </div>
-      `;
-    } else if (isLive) {  
-      const diffLive = getNow() - ct;  
-      timerHtml = `  
-        <div style="text-align: center; margin: 10px 0;">  
-          <div id="liveAnim${i}" style="width: 60px; height: 60px; margin: 0 auto;"></div>  
-          <div class="countdown" id="cd${type}${i}">Started ${formatCountUp(diffLive)}</div>  
-        </div>  
-      `;  
-    } else {  
-      const dateStr = ct.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });  
-      const timeStr = ct.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });  
-      timerHtml = `  
-        <div class="match-time"> ${dateStr}</div>  
-        <div class="match-time"> ${timeStr}</div>  
-        <div class="countdown" id="cd${type}${i}">⏳ ${formatCountdown(getCountdown(m.MatchTime))}</div>  
-        ${getCountdown(m.MatchTime) <= 15 * 60 * 1000 ? `<div class="coming-soon-anim">⏳ Coming Soon...</div>` : ''}  
-      `;  
-    }  
-    
-    div.innerHTML = `
-    <div style="background: #1a1a28; border-radius: 12px; padding: 16px; max-width: 360px; margin: auto; color: #fff; font-family: 'Segoe UI', sans-serif;">
-
-      <!-- Match Title -->
-      <div style="text-align:center; font-size:15px; font-weight:600; margin-bottom:14px; background:#000; padding:6px 10px; border-radius:8px;">
-        ${m.Match}
-      </div>
-
-      <!-- Teams Row -->
-      <div style="display: flex; justify-content: space-around; align-items: center; margin-bottom: 14px;">
-        <!-- Team 1 -->
-        <div style="display: flex; flex-direction: column; align-items: center; min-width: 90px;">
-          <img src="${m.Team1Logo}" alt="${m.Team1} logo" style="width:40px; height:40px; border-radius:50%;" loading="lazy" />
-          <span style="font-size:15px; font-weight:bold; text-align:center; margin-top:6px;">${m.Team1}</span>
-        </div>
-
-        <!-- VS Center -->
-        <div style="font-weight: bold; color: #0af; font-size:16px;">VS</div>
-
-        <!-- Team 2 -->
-        <div style="display: flex; flex-direction: column; align-items: center; min-width: 90px;">
-          <img src="${m.Team2Logo}" alt="${m.Team2} logo" style="width:40px; height:40px; border-radius:50%;" loading="lazy" />
-          <span style="font-size:15px; font-weight:bold; text-align:center; margin-top:6px;">${m.Team2}</span>
-        </div>
-      </div>
-
-      <!-- Timer -->
-      <div style="text-align:center; font-size:16px; color:#ccc; font-weight:500; margin-bottom:16px;">
-        ${timerHtml || '00:00:00'}
-      </div>
-
-      <!-- Server Buttons -->
-      <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-        ${!isFinished && m.servers && m.servers.length > 0 ? 
-    m.servers.map((server, index) => {
-      const colors = ['#00bcd4', '#009688', '#3f51b5', '#ff5722', '#9c27b0', '#4caf50', '#ff9800'];
-      const bgColor = colors[index % colors.length];
-      return `<a href="${server.link}" target="_blank" rel="noopener noreferrer" style="background:${bgColor}; padding:6px 12px; border-radius:6px; color:#fff; text-decoration:none; font-size:14px; margin:2px;">${server.name}</a>`;
-    }).join('') 
-    : isFinished ? '<span style="color:#888; font-size:12px;">🏁 Match Finished</span>' : '<span style="color:#888; font-size:12px;">No servers available</span>'
-  }
-      </div>
-    </div>
-  `;    
-    list.appendChild(div);  
-    
-    // ⬇️ এইখানে Lottie animation শুরু হবে live এর জন্য  
-    if (isLive && !isFinished) {  
-      setTimeout(() => {  
-        bodymovin.loadAnimation({  
-          container: document.getElementById('liveAnim' + i),  
-          renderer: 'svg',  
-          loop: true,  
-          autoplay: true,  
-          path: 'https://raw.githubusercontent.com/Hasanmahmud000/HasanTv/refs/heads/main/live-icon.json'  
-        });  
-      }, 0);  
-    }  
-    
-      if (!isLive && !isFinished) {  
-        intervals.push(setInterval(() => {  
-          const cdEl = div.querySelector(`#cd${type}${i}`);  
-          if (cdEl) {  
-            const remain = getCountdown(m.MatchTime);  
-            cdEl.innerText = remain > 0 ? formatCountdown(remain) : "Starting soon";  
-          }  
-        }, 1000));  
-      } else if (isLive && !isFinished) {  
-        intervals.push(setInterval(() => {  
-          const cdEl = div.querySelector(`#cd${type}${i}`);  
-          if (cdEl) {  
-            const diffLive = getNow() - ct;  
-            cdEl.innerText = `Started ${formatCountUp(diffLive)}`;  
-          }  
-        }, 1000));  
-      }  
-    });  
+  } else {  
+    const dateStr = ct.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });  
+    const timeStr = ct.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });  
+    timerHtml = `  
+      <div class="match-time"> ${dateStr}</div>  
+      <div class="match-time"> ${timeStr}</div>  
+      <div class="countdown" id="cd${type}${i}">⏳ ${formatCountdown(getCountdown(m.MatchTime))}</div>  
+      ${getCountdown(m.MatchTime) <= 15 * 60 * 1000 ? `<div class="coming-soon-anim">⏳ Coming Soon...</div>` : ''}  
+    `;  
   }  
   
+  div.innerHTML = `
+  <div style="background: #1a1a28; border-radius: 12px; padding: 16px; max-width: 360px; margin: auto; color: #fff; font-family: 'Segoe UI', sans-serif;">
+
+    <!-- Match Title -->
+    <div style="text-align:center; font-size:15px; font-weight:600; margin-bottom:14px; background:#000; padding:6px 10px; border-radius:8px;">
+      ${m.Match}
+    </div>
+
+    <!-- Teams Row -->
+    <div style="display: flex; justify-content: space-around; align-items: center; margin-bottom: 14px;">
+      <!-- Team 1 -->
+      <div style="display: flex; flex-direction: column; align-items: center; min-width: 90px;">
+        <img src="${m.Team1Logo}" alt="${m.Team1} logo" style="width:40px; height:40px; border-radius:50%;" loading="lazy" />
+        <span style="font-size:15px; font-weight:bold; text-align:center; margin-top:6px;">${m.Team1}</span>
+      </div>
+
+      <!-- VS Center -->
+      <div style="font-weight: bold; color: #0af; font-size:16px;">VS</div>
+
+      <!-- Team 2 -->
+      <div style="display: flex; flex-direction: column; align-items: center; min-width: 90px;">
+        <img src="${m.Team2Logo}" alt="${m.Team2} logo" style="width:40px; height:40px; border-radius:50%;" loading="lazy" />
+        <span style="font-size:15px; font-weight:bold; text-align:center; margin-top:6px;">${m.Team2}</span>
+      </div>
+    </div>
+
+    <!-- Timer -->
+    <div style="text-align:center; font-size:16px; color:#ccc; font-weight:500; margin-bottom:16px;">
+      ${timerHtml || '00:00:00'}
+    </div>
+
+    <!-- Server Buttons -->
+    <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+      ${m.servers && m.servers.length > 0 ? 
+  m.servers.map((server, index) => {
+    const colors = ['#00bcd4', '#009688', '#3f51b5', '#ff5722', '#9c27b0', '#4caf50', '#ff9800'];
+    const bgColor = colors[index % colors.length];
+    return `<a href="${server.link}" target="_blank" rel="noopener noreferrer" style="background:${bgColor}; padding:6px 12px; border-radius:6px; color:#fff; text-decoration:none; font-size:14px; margin:2px;">${server.name}</a>`;
+  }).join('') 
+  : '<span style="color:#888; font-size:12px;">No servers available</span>'
+}
+    </div>
+  </div>
+`;
+  
+  list.appendChild(div);  
+  
+  // ⬇️ এইখানে Lottie animation শুরু হবে live এর জন্য  
+  if (isLive) {  
+    setTimeout(() => {  
+      bodymovin.loadAnimation({  
+        container: document.getElementById('liveAnim' + i),  
+        renderer: 'svg',  
+        loop: true,  
+        autoplay: true,  
+        path: 'https://raw.githubusercontent.com/Hasanmahmud000/HasanTv/refs/heads/main/live-icon.json'  
+      });  
+    }, 0);  
+  }  
+  
+    if (!isLive) {  
+      intervals.push(setInterval(() => {  
+        const cdEl = div.querySelector(`#cd${type}${i}`);  
+        if (cdEl) {  
+          const remain = getCountdown(m.MatchTime);  
+          cdEl.innerText = remain > 0 ? formatCountdown(remain) : "Starting soon";  
+        }  
+      }, 1000));  
+    } else {  
+      intervals.push(setInterval(() => {  
+        const cdEl = div.querySelector(`#cd${type}${i}`);  
+        if (cdEl) {  
+          const diffLive = getNow() - ct;  
+          cdEl.innerText = `Started ${formatCountUp(diffLive)}`;  
+        }  
+      }, 1000));  
+    }  
+  });  
+}  
+    
   // নিচের বড় ট্যাব হ্যান্ডলার  
   function showCategory(category) {  
     // প্রথমে সব ট্যাব হালকা করে দেব  
@@ -710,7 +1075,6 @@ Join our official Telegram channel now!
   document.getElementById('subLive').classList.remove('active');  
   document.getElementById('subToday').classList.remove('active');   // নতুন Today এর জন্য  
   document.getElementById('subUpcoming').classList.remove('active');  
-  document.getElementById('subFinished').classList.remove('active');  // নতুন Finished এর জন্য
   
   document.getElementById('sub' + subTab.charAt(0).toUpperCase() + subTab.slice(1)).classList.add('active');  
 }  
@@ -738,13 +1102,6 @@ document.getElementById('subToday').addEventListener('click', () => {
   setActiveSubTab(currentSubTab);  
   renderMatches(currentSubTab);  
 });  
-
-// ✅ নতুন Finished ট্যাব ইভেন্ট লিসেনার
-document.getElementById('subFinished').addEventListener('click', () => {  
-  currentSubTab = 'finished';  
-  setActiveSubTab(currentSubTab);  
-  renderMatches(currentSubTab);  
-});  
   
   document.getElementById('search').addEventListener('input', () => {  
     if(document.getElementById('subTabs').style.display === 'block'){  
@@ -763,67 +1120,87 @@ document.getElementById('subFinished').addEventListener('click', () => {
     const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);  
   
     // 🔹 সংখ্যাগুলো বের করো  
-    const liveCount = matches.filter(m => {
-      if (shouldAutoDelete(m) || isMatchFinished(m)) return false;
-      return new Date(m.MatchTime) <= now;
-    }).length;
-    
+    const liveCount = matches.filter(m => new Date(m.MatchTime) <= now).length;  
     const todayCount = matches.filter(m => {  
-      if (shouldAutoDelete(m) || isMatchFinished(m)) return false;
       const ct = new Date(m.MatchTime);  
       return ct >= todayStart && ct < todayEnd && ct > now;  
     }).length;  
-    
-    const upcomingCount = matches.filter(m => {
-      if (shouldAutoDelete(m) || isMatchFinished(m)) return false;
-      return new Date(m.MatchTime) > todayEnd;
-    }).length;
-
-    const finishedCount = matches.filter(m => {
-      return isMatchFinished(m) && !shouldAutoDelete(m);
-    }).length;
+    const upcomingCount = matches.filter(m => new Date(m.MatchTime) > todayEnd).length;  
   
     // 🔹 UI তে সংখ্যা বসাও  
     document.getElementById("countLive").innerText = `(${liveCount})`;  
     document.getElementById("countToday").innerText = `(${todayCount})`;  
     document.getElementById("countUpcoming").innerText = `(${upcomingCount})`;  
-    document.getElementById("countFinished").innerText = `(${finishedCount})`;
   
     // 🔹 ম্যাচগুলোকে ফিল্টার করে সাজাও  
     const todayMatches = matches.filter(m => {  
-      if (shouldAutoDelete(m) || isMatchFinished(m)) return false;
       const ct = new Date(m.MatchTime);  
       return ct >= todayStart && ct < todayEnd && ct > now;  
     });  
   
     const upcomingMatches = matches.filter(m => {  
-      if (shouldAutoDelete(m) || isMatchFinished(m)) return false;
       const ct = new Date(m.MatchTime);  
       return ct > todayEnd;  
     });  
   
-    const liveMatches = matches.filter(m => {
-      if (shouldAutoDelete(m) || isMatchFinished(m)) return false;
-      return new Date(m.MatchTime) <= now;
-    });
-
-    const finishedMatches = matches.filter(m => {
-      return isMatchFinished(m) && !shouldAutoDelete(m);
-    });
+    const liveMatches = matches.filter(m => new Date(m.MatchTime) <= now);  
   
     matches = [  
       ...liveMatches.map(m => ({ ...m, isLive: true })),  
       ...todayMatches.map(m => ({ ...m, isToday: true })),  
       ...upcomingMatches.map(m => ({ ...m, isUpcoming: true })),  
-      ...finishedMatches.map(m => ({ ...m, isFinished: true })),
     ];  
   
-    showCategory('live');  
+    showCategory('live');
+    
+    // 🔔 Schedule notifications after data is loaded
+    setTimeout(() => {
+      if (notificationPermission) {
+        scheduleMatchNotifications();
+      }
+    }, 1000);
   })  
     .catch(e => {  
       console.error('Error fetching matches:', e);  
       document.getElementById('match-list').innerHTML = '<p style="text-align:center; color:#f00;">Failed to load match data.</p>';  
     });
+
+  // ==================== NOTIFICATION INITIALIZATION ====================
+
+  // Initialize notification system on page load
+  window.addEventListener('load', () => {
+    // Check if permission was previously granted
+    const savedPermission = localStorage.getItem('notificationPermission');
+    
+    if (savedPermission === 'granted' && 'Notification' in window && Notification.permission === 'granted') {
+      notificationPermission = true;
+    }
+    
+    updateNotificationUI();
+    
+    // Show permission request popup after 3 seconds if not granted
+    if ('Notification' in window && Notification.permission === 'default') {
+      setTimeout(() => {
+        showNotificationPermissionPopup();
+      }, 3000);
+    }
+
+    // Show telegram popup
+    const alreadyClosed = localStorage.getItem('hideTelegramPopup');  
+    if (!alreadyClosed) {  
+      setTimeout(() => {  
+        document.getElementById('telegramPopup').style.display = 'block';  
+      }, 5000); // ৫ সেকেন্ড পরে দেখাবে  
+    }
+  });
+
+  // Refresh notifications every 30 minutes
+  setInterval(() => {
+    if (notificationPermission && matches.length > 0) {
+      scheduleMatchNotifications();
+      console.log('🔄 Notifications refreshed');
+    }
+  }, 30 * 60 * 1000); // 30 minutes
 
   // Service Worker for PWA
   if ('serviceWorker' in navigator) {  
@@ -900,7 +1277,7 @@ document.getElementById('subFinished').addEventListener('click', () => {
     if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
       // Only work when sub-tabs are visible (Live category)
       if (document.getElementById('subTabs').style.display === 'block') {
-        const subTabs = ['live', 'today', 'upcoming', 'finished']; // Added finished
+        const subTabs = ['live', 'today', 'upcoming'];
         const currentIndex = subTabs.indexOf(currentSubTab);
         
         if (deltaX > 0) {
@@ -954,7 +1331,7 @@ document.getElementById('subFinished').addEventListener('click', () => {
       
       if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
         if (document.getElementById('subTabs').style.display === 'block') {
-          const subTabs = ['live', 'today', 'upcoming', 'finished']; // Added finished
+          const subTabs = ['live', 'today', 'upcoming'];
           const currentIndex = subTabs.indexOf(currentSubTab);
           
           if (deltaX > 0) {
@@ -982,54 +1359,23 @@ document.getElementById('subFinished').addEventListener('click', () => {
     isMouseDown = false;
   });
 
-  // Auto-refresh data every 30 seconds to update counts and remove auto-deleted matches
-  setInterval(() => {
-    fetch(matchesApi)
-    .then(res => res.json())
-        .then(data => {
-      const oldMatches = matches;
-      matches = data.matches || [];
-      
-      const now = new Date();
-      const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-
-      // Update counts
-      const liveCount = matches.filter(m => {
-        if (shouldAutoDelete(m) || isMatchFinished(m)) return false;
-        return new Date(m.MatchTime) <= now;
-      }).length;
-      
-      const todayCount = matches.filter(m => {
-        if (shouldAutoDelete(m) || isMatchFinished(m)) return false;
-        const ct = new Date(m.MatchTime);
-        return ct >= todayStart && ct < todayEnd && ct > now;
-      }).length;
-      
-      const upcomingCount = matches.filter(m => {
-        if (shouldAutoDelete(m) || isMatchFinished(m)) return false;
-        return new Date(m.MatchTime) > todayEnd;
-      }).length;
-
-      const finishedCount = matches.filter(m => {
-        return isMatchFinished(m) && !shouldAutoDelete(m);
-      }).length;
-
-      // Update UI counts
-      document.getElementById("countLive").innerText = `(${liveCount})`;
-      document.getElementById("countToday").innerText = `(${todayCount})`;
-      document.getElementById("countUpcoming").innerText = `(${upcomingCount})`;
-      document.getElementById("countFinished").innerText = `(${finishedCount})`;
-
-      // Re-render current tab if data changed
-      if (JSON.stringify(oldMatches) !== JSON.stringify(matches)) {
-        if (document.getElementById('subTabs').style.display === 'block') {
-          renderMatches(currentSubTab);
-        }
+  // Handle service worker messages
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.addEventListener('message', event => {
+      if (event.data && event.data.action === 'showLiveMatches') {
+        // Focus on live matches when notification is clicked
+        showCategory('live');
+        currentSubTab = 'live';
+        setActiveSubTab(currentSubTab);
+        renderMatches(currentSubTab);
       }
-    })
-    .catch(e => console.error('Auto-refresh error:', e));
-  }, 30000); // Refresh every 30 seconds
+    });
+  }
+
+  // Debug notification system
+  console.log('🎯 CricStreamZone Notification System Loaded');
+  console.log('📱 Notification Support:', isNotificationSupported());
+  console.log('🔔 Current Permission:', Notification.permission);
 
 </script>  
 
